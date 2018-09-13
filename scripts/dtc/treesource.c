@@ -262,6 +262,7 @@ static void write_tree_source_node(FILE *f, struct node *tree, int level)
 	fprintf(f, "};\n");
 }
 
+
 void dt_to_source(FILE *f, struct dt_info *dti)
 {
 	struct reserve_info *re;

@@ -1162,6 +1162,7 @@ int fdt_address_cells(const void *fdt, int nodeoffset);
  */
 int fdt_size_cells(const void *fdt, int nodeoffset);
 
+
 /**********************************************************************/
 /* Write-in-place functions                                           */
 /**********************************************************************/
@@ -1694,6 +1695,7 @@ static inline int fdt_setprop_cell(void *fdt, int nodeoffset, const char *name,
  */
 #define fdt_setprop_string(fdt, nodeoffset, name, str) \
 	fdt_setprop((fdt), (nodeoffset), (name), (str), strlen(str)+1)
+
 
 /**
  * fdt_setprop_empty - set a property to an empty value
