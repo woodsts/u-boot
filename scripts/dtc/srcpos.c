@@ -33,6 +33,7 @@ struct search_path {
 /* This is the list of directories that we search for source files */
 static struct search_path *search_path_head, **search_path_tail;
 
+
 static char *get_dirname(const char *path)
 {
 	const char *slash = strrchr(path, '/');
@@ -54,6 +55,7 @@ struct srcfile_state *current_srcfile; /* = NULL */
 /* Detect infinite include recursion. */
 #define MAX_SRCFILE_DEPTH     (100)
 static int srcfile_depth; /* = 0 */
+
 
 /**
  * Try to open a file in a given directory.
@@ -247,6 +249,7 @@ srcpos_string(struct srcpos *pos)
 
 	if (pos->file && pos->file->name)
 		fname = pos->file->name;
+
 
 	if (pos->first_line != pos->last_line)
 		xasprintf(&pos_str, "%s:%d.%d-%d.%d", fname,
