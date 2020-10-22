@@ -135,7 +135,7 @@
 			sandbox,emul = <&emul0>;
 			bootph-pre-ram;
 		};
-		sandbox_pmic: sandbox_pmic {
+		sandbox_pmic: sandbox_pmic@40 {
 			reg = <0x40>;
 		};
 
@@ -143,7 +143,7 @@
 			reg = <0x41>;
 		};
 
-		i2c_emul: emul {
+		i2c_emul: emul@77 {
 			bootph-pre-ram;
 			reg = <0xff>;
 			compatible = "sandbox,i2c-emul-parent";
