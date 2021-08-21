@@ -24,5 +24,11 @@ config DDR_CLK_FREQ
 	help
 	  The DDR clock frequency, specified in Hz.
 
+config DDR_SPD
+	bool "JEDEC Serial Presence Detect (SPD) support"
+	help
+	  For memory controllers that can utilize it, add enable support for
+	  using the JEDEC SDP standard.
+
 source "drivers/ddr/altera/Kconfig"
 source "drivers/ddr/imx/Kconfig"
