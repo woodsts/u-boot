@@ -14,8 +14,6 @@
 #define CONFIG_SYS_EEPROM_PAGE_WRITE_BITS	3  /* 8 Byte write page */
 #define CONFIG_SYS_EEPROM_PAGE_WRITE_DELAY_MS	10
 
-#define CONFIG_SYS_LOAD_ADDR	0x100000	/* default load address */
-
 /* Reserve 4 MB for malloc */
 #define CONFIG_SYS_MALLOC_LEN		(4 * 1024 * 1024)
 
