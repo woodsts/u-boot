@@ -54,7 +54,4 @@
 
 #endif
 
-/* Size of malloc() pool */
-#define CONFIG_SYS_MALLOC_LEN		(4 * 1024 * 1024)
-
 #endif

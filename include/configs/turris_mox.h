@@ -42,11 +42,6 @@
 #define	CONFIG_SYS_CBSIZE	1024	/* Console I/O Buff Size */
 
 /*
- * Size of malloc() pool
- */
-#define CONFIG_SYS_MALLOC_LEN	(4 << 20) /* 4MiB for malloc() */
-
-/*
  * Other required minimal configurations
  */
 #define CONFIG_SYS_LOAD_ADDR	0x00800000	/* default load adr- 8M */

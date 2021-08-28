@@ -29,11 +29,6 @@
 #define CONFIG_INITRD_TAG
 
 /*
- * Size of malloc() pool
- */
-#define CONFIG_SYS_MALLOC_LEN		(CONFIG_ENV_SIZE + 1024 * 1024)
-
-/*
  * Hardware drivers
  */
 #define CONFIG_SYS_I2C_LEGACY

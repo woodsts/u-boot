@@ -77,10 +77,4 @@
 				"sf read 0x22000000 0x200000 0x600000; "	\
 				"bootz 0x22000000 - 0x21000000"
 #endif
-
-/*
- * Size of malloc() pool
- */
-#define CONFIG_SYS_MALLOC_LEN		(512 * 1024 + 0x1000)
-
 #endif
