@@ -597,6 +597,12 @@ ifeq ($(dot-config),1)
 # To avoid any implicit rule to kick in, define an empty command
 $(KCONFIG_CONFIG) include/config/auto.conf.cmd: ;
 
+# Make sure this uses the split config
+has_split_config = $(shell grep CONFIG_PPL_LOCALVERSION include/config/auto.conf 2>/dev/null)
+ifeq ($(has_split_config),)
+include/config/auto.conf: FORCE
+endif
+
 # If .config is newer than include/config/auto.conf, someone tinkered
 # with it and forgot to run make oldconfig.
 # if auto.conf.cmd is missing then we are probably in a cleaned tree so
