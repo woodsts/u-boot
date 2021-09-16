@@ -38,10 +38,8 @@ KBUILD_CPPFLAGS += -DCONFIG_SPL_BUILD
 endif
 ifeq ($(CONFIG_TPL_BUILD),y)
 KBUILD_CPPFLAGS += -DCONFIG_TPL_BUILD
-else
-ifeq ($(CONFIG_VPL_BUILD),y)
+else ifeq ($(CONFIG_VPL_BUILD),y)
 KBUILD_CPPFLAGS += -DCONFIG_VPL_BUILD
-endif
 endif
 
 ifeq ($(CONFIG_VPL_BUILD),y)
@@ -59,21 +57,10 @@ endif
 
 export SPL_NAME
 
-ifdef CONFIG_XPL_BUILD
-XPL_ := SPL_
-ifeq ($(CONFIG_VPL_BUILD),y)
-PHASE_ := VPL_
-else
-ifeq ($(CONFIG_TPL_BUILD),y)
-PHASE_ := TPL_
-else
-PHASE_ := SPL_
-endif
-endif
-else
+# The XPL_ and PHASE_ vars resolve to nothing so they can be used in
+# Makefiles
 XPL_ :=
 PHASE_ :=
-endif
 
 ifeq ($(obj)$(CONFIG_SUPPORT_SPL),spl)
 $(error You cannot build SPL without enabling CONFIG_SUPPORT_SPL)
