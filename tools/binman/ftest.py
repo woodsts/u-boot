@@ -4675,7 +4675,6 @@ class TestFunctional(unittest.TestCase):
         err = stderr.getvalue()
         self.assertRegex(err,
                          "Image '.*' has faked external blobs and is non-functional: .*")
-        os.remove('binman_faking_test_blob')
 
     def testVersion(self):
         """Test we can get the binman version"""
