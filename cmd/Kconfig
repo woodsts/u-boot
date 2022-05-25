@@ -2493,6 +2493,12 @@ config CMD_CBSYSINFO
 	  memory by coreboot before jumping to U-Boot. It can be useful for
 	  debugging the beaaviour of coreboot or U-Boot.
 
+config CMD_CYCLIC
+	bool "cyclic - Show information about cyclic functions"
+	help
+	  This enables the 'cyclic' command which provides information about
+	  cyclic excution functions.
+
 config CMD_DIAG
 	bool "diag - Board diagnostics"
 	help
