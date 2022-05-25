@@ -6,6 +6,7 @@
 #include <common.h>
 #include <cpu_func.h>
 #include <cros_ec.h>
+#include <cyclic.h>
 #include <dm.h>
 #include <efi.h>
 #include <efi_loader.h>
@@ -16,6 +17,7 @@
 #include <asm/global_data.h>
 #include <asm/test.h>
 #include <asm/u-boot-sandbox.h>
+#include <linux/delay.h>
 #include <linux/kernel.h>
 #include <malloc.h>
 
@@ -105,8 +107,21 @@ int dram_init(void)
 	return 0;
 }
 
+static void cyclic_demo(void *ctx)
+{
+	/* Just a small dummy delay here */
+	udelay(10);
+}
+
 int board_init(void)
 {
+	struct cyclic_struct *cyclic;
+
+	/* Register demo cyclic function */
+	cyclic = cyclic_register(cyclic_demo, 10 * 1000, "cyclic_demo", NULL);
+	if (!cyclic)
+		printf("Registering of cyclic_demo failed\n");
+
 	return 0;
 }
 
