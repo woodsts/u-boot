@@ -13,6 +13,7 @@
 #include <api.h>
 #include <bootstage.h>
 #include <cpu_func.h>
+#include <cyclic.h>
 #include <exports.h>
 #include <flash.h>
 #include <hang.h>
@@ -588,6 +589,7 @@ static int run_main_loop(void)
 static init_fnc_t init_sequence_r[] = {
 	initr_trace,
 	initr_reloc,
+	cyclic_init,
 	event_init,
 	/* TODO: could x86/PPC have this also perhaps? */
 #if defined(CONFIG_ARM) || defined(CONFIG_RISCV)
