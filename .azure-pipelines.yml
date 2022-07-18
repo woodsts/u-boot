@@ -218,6 +218,7 @@ stages:
       options: $(container_option)
     steps:
       - script: |
+          set -ex
           cd ${WORK_DIR}
           git config --global --add safe.directory $(work_dir)
           export USER=azure
