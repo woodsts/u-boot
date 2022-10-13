@@ -1108,6 +1108,17 @@ define deprecated
 
 endef
 
+define removing
+	@if [ -n "$(strip $(4))" ]; then if [ "$(got)" != "$(expect)" ]; then \
+		echo >&2 "====================== ERROR ======================="; \
+		echo >&2 "This board does not use $(firstword $(1)) (Driver Model"; \
+		echo >&2 "for $(2)). Lack of migration is now fatal."; \
+		echo >&2 "===================================================="; \
+		exit 1; \
+	fi; fi
+
+endef
+
 PHONY += inputs
 inputs: $(INPUTS-y)
 
@@ -1155,7 +1166,7 @@ endif
 	@# is enable to tell 'deprecated' that one of these symbols exists
 	$(call deprecated,CONFIG_TIMER,Timer drivers,v2023.01,$(if $(strip $(CONFIG_SYS_TIMER_RATE)$(CONFIG_SYS_TIMER_COUNTER)),x))
 	$(call deprecated,CONFIG_DM_SERIAL,Serial drivers,v2023.04,$(CONFIG_SERIAL))
-	$(call deprecated,CONFIG_DM_SCSI,SCSI drivers,v2023.04,$(CONFIG_SCSI))
+	$(call removing,CONFIG_DM_SCSI,SCSI drivers,v2023.04,$(CONFIG_SCSI))
 	@# Check that this build does not use CONFIG options that we do not
 	@# know about unless they are in Kconfig. All the existing CONFIG
 	@# options are whitelisted, so new ones should not be added.
