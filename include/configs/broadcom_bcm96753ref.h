@@ -23,10 +23,6 @@
 
 /* U-Boot */
 
-#ifdef CONFIG_MTD_RAW_NAND
-#define CONFIG_SYS_MAX_NAND_DEVICE	1
-#endif /* CONFIG_MTD_RAW_NAND */
-
 /*
  * 96753ref
  */
