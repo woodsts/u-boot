@@ -14,7 +14,6 @@
 #define CONFIG_SYS_MIPS_TIMER_FREQ	(CONFIG_SYS_MHZ * 1000000)
 
 /* Memory configuration */
-#define CONFIG_SYS_MONITOR_LEN		(512 * 1024)
 
 #define CONFIG_SYS_SDRAM_BASE		0x80000000 /* cached (KSEG0) address */
 #define CONFIG_SYS_INIT_SP_OFFSET	0x400000
