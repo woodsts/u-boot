@@ -23,7 +23,6 @@
 /*
  * High Level Configuration Options
  */
-#define CONFIG_HOSTNAME		"tuge1"
 
 /* include common defines/options for all Keymile boards */
 #include "km/keymile-common.h"

@@ -8,7 +8,6 @@
 #ifndef __KMCENT2_H
 #define __KMCENT2_H
 
-#define CONFIG_HOSTNAME		"kmcent2"
 #define KM_BOARD_NAME	CONFIG_HOSTNAME
 
 /*

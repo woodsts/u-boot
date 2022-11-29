@@ -23,7 +23,6 @@
 /*
  * High Level Configuration Options
  */
-#define CONFIG_HOSTNAME		"kmsupx5"
 
 /* include common defines/options for all Keymile boards */
 #include "km/keymile-common.h"
