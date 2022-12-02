@@ -23,17 +23,12 @@
 #include <u-boot/rsa-mod-exp.h>
 #include <u-boot/rsa.h>
 
-#ifndef __UBOOT__
 /*
  * NOTE:
  * Since host tools, like mkimage, make use of openssl library for
  * RSA encryption, rsa_verify_with_pkey()/rsa_gen_key_prop() are
  * of no use and should not be compiled in.
- * So just turn off CONFIG_RSA_VERIFY_WITH_PKEY.
  */
-
-#undef CONFIG_RSA_VERIFY_WITH_PKEY
-#endif
 
 /* Default public exponent for backward compatibility */
 #define RSA_DEFAULT_PUBEXP	65537
@@ -506,6 +501,7 @@ int rsa_verify_hash(struct image_sign_info *info,
 {
 	int ret = -EACCES;
 
+#if !defined(USE_HOSTCC)
 	if (CONFIG_IS_ENABLED(RSA_VERIFY_WITH_PKEY) && !info->fdt_blob) {
 		/* don't rely on fdt properties */
 		ret = rsa_verify_with_pkey(info, hash, sig, sig_len);
@@ -513,6 +509,7 @@ int rsa_verify_hash(struct image_sign_info *info,
 			debug("%s: rsa_verify_with_pkey() failed\n", __func__);
 		return ret;
 	}
+#endif
 
 	if (CONFIG_IS_ENABLED(FIT_SIGNATURE)) {
 		const void *blob = info->fdt_blob;
