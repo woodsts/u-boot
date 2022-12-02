@@ -90,8 +90,3 @@
 		"era " __stringify(CONFIG_ENV_ADDR) " +0x40000\0"	 \
 	"unlock=yes\0"							 \
 	""
-
-/*
- * QE UEC ethernet configuration
- */
-#define CONFIG_UEC_ETH
