@@ -176,8 +176,8 @@
 #define CONFIG_KM_DEF_ENV
 #endif
 
-#ifndef CONFIG_KM_DEF_BOOT_ARGS_CPU
-#define CONFIG_KM_DEF_BOOT_ARGS_CPU		""
+#ifndef CFG_KM_DEF_BOOT_ARGS_CPU
+#define CFG_KM_DEF_BOOT_ARGS_CPU		""
 #endif
 
 #define CONFIG_KM_DEF_ENV_CPU						\

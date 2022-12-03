@@ -15,7 +15,7 @@
  * than just the VLAN tag (i.e. eDSA tag). It is passed as a kernel boot
  * parameters
  */
-#define CONFIG_KM_DEF_BOOT_ARGS_CPU	"fsl_dpaa_fman.fsl_fm_max_frm=1558"
+#define CFG_KM_DEF_BOOT_ARGS_CPU	"fsl_dpaa_fman.fsl_fm_max_frm=1558"
 
 #include "km/keymile-common.h"
 

@@ -98,7 +98,7 @@
 		CONFIG_KM_ECC_MODE					\
 		" phram.phram=phvar,${varaddr}," __stringify(CONFIG_KM_PHRAM)\
 		" " CONFIG_KM_UBI_LINUX_MTD " "				\
-		CONFIG_KM_DEF_BOOT_ARGS_CPU				\
+		CFG_KM_DEF_BOOT_ARGS_CPU				\
 		"\0"							\
 	"addpanic="							\
 		"setenv bootargs ${bootargs} panic=1 panic_on_oops=1\0"	\

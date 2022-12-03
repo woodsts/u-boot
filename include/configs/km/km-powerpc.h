@@ -28,7 +28,7 @@
 #define CONFIG_PRAM		((CONFIG_KM_PNVRAM + CONFIG_KM_PHRAM)>>10)
 
 /* architecture specific default bootargs */
-#define CONFIG_KM_DEF_BOOT_ARGS_CPU		""
+#define CFG_KM_DEF_BOOT_ARGS_CPU		""
 
 #define CONFIG_KM_DEF_ENV_CPU						\
 	"u-boot="CONFIG_HOSTNAME "/u-boot.bin\0"		\
