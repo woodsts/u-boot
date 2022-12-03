@@ -421,7 +421,7 @@ int get_scl(void);
 	"fpgacfg=true\0"						\
 	""
 
-#define CONFIG_HW_ENV_SETTINGS						\
+#define CFG_HW_ENV_SETTINGS						\
 	"hwconfig=fsl_ddr:ctlr_intlv=cacheline\0"			\
 	"usb_phy_type=" __stringify(__USB_PHY_TYPE) "\0"		\
 	"usb_dr_mode=host\0"
@@ -443,7 +443,7 @@ int get_scl(void);
 	CONFIG_KM_DEF_ENV						\
 	CONFIG_KM_DEF_ARCH						\
 	CONFIG_KM_NEW_ENV						\
-	CONFIG_HW_ENV_SETTINGS						\
+	CFG_HW_ENV_SETTINGS						\
 	"EEprom_ivm=pca9547:70:9\0"					\
 	""
 
