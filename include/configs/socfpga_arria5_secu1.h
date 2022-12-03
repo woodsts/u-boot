@@ -42,7 +42,7 @@
 	"_fpga_loadsafe=echo Loading FPGA SAFE image..." \
 		" && mw ${rmtu_page} ${fpga_safebase} && mw ${rmtu_reconfig} 1\0" \
 
-#define CONFIG_KM_NEW_ENV \
+#define CFG_KM_NEW_ENV \
 	"newenv=" \
 		"nand erase 0x100000 0x40000\0"
 
@@ -55,7 +55,7 @@
 #define CFG_EXTRA_ENV_SETTINGS \
 	FPGA_RMTU_ENV \
 	CFG_KM_DEF_ENV_BOOTTARGETS \
-	CONFIG_KM_NEW_ENV \
+	CFG_KM_NEW_ENV \
 	"socfpga_legacy_reset_compat=1\0"	\
 	"altbootcmd=run bootcmd;\0"	\
 	"bootlimit=6\0"	\

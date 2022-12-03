@@ -206,7 +206,7 @@
 	"checkfdt=true\0"						\
 	""
 
-#define CONFIG_KM_NEW_ENV						\
+#define CFG_KM_NEW_ENV						\
 	"newenv=protect off " __stringify(ENV_DEL_ADDR)			\
 		" +" __stringify(CFG_ENV_TOTAL_SIZE) " && "		\
 		"erase " __stringify(ENV_DEL_ADDR)			\
@@ -220,7 +220,7 @@
 			"asrc,spdif,lpuart1,ftm1\0"
 
 #define CFG_EXTRA_ENV_SETTINGS					\
-	CONFIG_KM_NEW_ENV						\
+	CFG_KM_NEW_ENV						\
 	CFG_KM_DEF_ENV						\
 	CFG_HW_ENV_SETTINGS						\
 	"EEprom_ivm=pca9547:70:9\0"					\

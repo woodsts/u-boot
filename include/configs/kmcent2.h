@@ -426,7 +426,7 @@ int get_scl(void);
 	"usb_phy_type=" __stringify(__USB_PHY_TYPE) "\0"		\
 	"usb_dr_mode=host\0"
 
-#define CONFIG_KM_NEW_ENV						\
+#define CFG_KM_NEW_ENV						\
 	"newenv=protect off " __stringify(ENV_DEL_ADDR)			\
 		" +" __stringify(CFG_ENV_TOTAL_SIZE) " && "		\
 		"erase " __stringify(ENV_DEL_ADDR)			\
@@ -442,7 +442,7 @@ int get_scl(void);
 #define CFG_EXTRA_ENV_SETTINGS					\
 	CFG_KM_DEF_ENV						\
 	CFG_KM_DEF_ARCH						\
-	CONFIG_KM_NEW_ENV						\
+	CFG_KM_NEW_ENV						\
 	CFG_HW_ENV_SETTINGS						\
 	"EEprom_ivm=pca9547:70:9\0"					\
 	""
