@@ -24,16 +24,16 @@
 #define CFG_KM_UBI_PARTITION_NAME_BOOT	"ubi0"
 #endif /* CFG_KM_UBI_PARTITION_NAME_BOOT */
 
-#ifndef CONFIG_KM_UBI_PART_BOOT_OPTS
-#define CONFIG_KM_UBI_PART_BOOT_OPTS		""
-#endif /* CONFIG_KM_UBI_PART_BOOT_OPTS */
+#ifndef CFG_KM_UBI_PART_BOOT_OPTS
+#define CFG_KM_UBI_PART_BOOT_OPTS		""
+#endif /* CFG_KM_UBI_PART_BOOT_OPTS */
 
 #ifndef CFG_KM_UBI_PARTITION_NAME_APP
 /* one flash chip only called boot */
 /* boot: CFG_KM_UBI_PARTITION_NAME_BOOT */
 # define CFG_KM_UBI_LINUX_MTD					\
 	"ubi.mtd=" CFG_KM_UBI_PARTITION_NAME_BOOT			\
-	CONFIG_KM_UBI_PART_BOOT_OPTS
+	CFG_KM_UBI_PART_BOOT_OPTS
 # define CFG_KM_DEV_ENV_FLASH_BOOT_UBI				\
 	"ubiattach=ubi part " CFG_KM_UBI_PARTITION_NAME_BOOT "\0"
 #else /* CFG_KM_UBI_PARTITION_NAME_APP */
@@ -42,7 +42,7 @@
 /* app:  CFG_KM_UBI_PARTITION_NAME_APP */
 # define CFG_KM_UBI_LINUX_MTD					\
 	"ubi.mtd=" CFG_KM_UBI_PARTITION_NAME_BOOT			\
-	CONFIG_KM_UBI_PART_BOOT_OPTS " "				\
+	CFG_KM_UBI_PART_BOOT_OPTS " "				\
 	"ubi.mtd=" CFG_KM_UBI_PARTITION_NAME_APP
 # define CFG_KM_DEV_ENV_FLASH_BOOT_UBI				\
 	"ubiattach=if test ${boot_bank} -eq 0; then; "			\
