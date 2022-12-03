@@ -12,7 +12,7 @@
 #define CFG_SYS_NAND_BASE CFG_SYS_KMBEC_FPGA_BASE /* PRIO_BASE_ADDRESS */
 
 #define CONFIG_KM_UBI_PARTITION_NAME_BOOT	"ubi0"
-#define CONFIG_KM_UBI_PARTITION_NAME_APP	"ubi1"
+#define CFG_KM_UBI_PARTITION_NAME_APP	"ubi1"
 
 /* include common defines/options for all Keymile boards */
 #include "km/keymile-common.h"
