@@ -169,7 +169,7 @@
  * Environment
  */
 
-#define CONFIG_ENV_TOTAL_SIZE		0x40000
+#define CFG_ENV_TOTAL_SIZE		0x40000
 #define ENV_DEL_ADDR		CONFIG_ENV_ADDR_REDUND  /* direct for newenv */
 
 #ifndef CONFIG_KM_DEF_ENV		/* if not set by keymile-common.h */
@@ -208,11 +208,11 @@
 
 #define CONFIG_KM_NEW_ENV						\
 	"newenv=protect off " __stringify(ENV_DEL_ADDR)			\
-		" +" __stringify(CONFIG_ENV_TOTAL_SIZE) " && "		\
+		" +" __stringify(CFG_ENV_TOTAL_SIZE) " && "		\
 		"erase " __stringify(ENV_DEL_ADDR)			\
-		" +" __stringify(CONFIG_ENV_TOTAL_SIZE) " && "		\
+		" +" __stringify(CFG_ENV_TOTAL_SIZE) " && "		\
 		"protect on " __stringify(ENV_DEL_ADDR)			\
-		" +" __stringify(CONFIG_ENV_TOTAL_SIZE) "\0"
+		" +" __stringify(CFG_ENV_TOTAL_SIZE) "\0"
 
 #define CONFIG_HW_ENV_SETTINGS						\
 	"hwconfig=devdis:esdhc,usb3,usb2,sata,sec,dcu,duart2,qspi,"	\

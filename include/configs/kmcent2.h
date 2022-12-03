@@ -138,7 +138,7 @@
 #define CFG_SYS_NUM_CPC		CONFIG_SYS_NUM_DDR_CTLRS
 
 /* Environment in parallel NOR-Flash */
-#define CONFIG_ENV_TOTAL_SIZE		0x040000
+#define CFG_ENV_TOTAL_SIZE		0x040000
 #define ENV_DEL_ADDR		0xebf00000	/*direct for newenv*/
 
 /*
@@ -428,11 +428,11 @@ int get_scl(void);
 
 #define CONFIG_KM_NEW_ENV						\
 	"newenv=protect off " __stringify(ENV_DEL_ADDR)			\
-		" +" __stringify(CONFIG_ENV_TOTAL_SIZE) " && "		\
+		" +" __stringify(CFG_ENV_TOTAL_SIZE) " && "		\
 		"erase " __stringify(ENV_DEL_ADDR)			\
-		" +" __stringify(CONFIG_ENV_TOTAL_SIZE) " && "		\
+		" +" __stringify(CFG_ENV_TOTAL_SIZE) " && "		\
 		"protect on " __stringify(ENV_DEL_ADDR)			\
-		" +" __stringify(CONFIG_ENV_TOTAL_SIZE) "\0"
+		" +" __stringify(CFG_ENV_TOTAL_SIZE) "\0"
 
 /* ppc_82xx is the equivalent to ppc_6xx, the generic ppc toolchain */
 #ifndef CONFIG_KM_DEF_ARCH
