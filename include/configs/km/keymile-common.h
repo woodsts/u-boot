@@ -51,10 +51,10 @@
 #endif /* CFG_KM_UBI_PARTITION_NAME_APP */
 
 #ifdef CONFIG_NAND_ECC_BCH
-#define CONFIG_KM_UIMAGE_NAME "ecc_bch_uImage\0"
+#define CFG_KM_UIMAGE_NAME "ecc_bch_uImage\0"
 #define CFG_KM_ECC_MODE    " eccmode=bch"
 #else
-#define CONFIG_KM_UIMAGE_NAME "uImage\0"
+#define CFG_KM_UIMAGE_NAME "uImage\0"
 #define CFG_KM_ECC_MODE
 #endif
 
@@ -124,7 +124,7 @@
 	"cramfsaddr=" __stringify(CONFIG_KM_CRAMFS_ADDR) "\0"		\
 	"cramfsloadkernel=cramfsload ${load_addr_r} ${uimage}\0"	\
 	"ubicopy=ubi read ${cramfsaddr} bootfs${boot_bank}\0"		\
-	"uimage=" CONFIG_KM_UIMAGE_NAME					\
+	"uimage=" CFG_KM_UIMAGE_NAME					\
 	CFG_KM_DEV_ENV_FLASH_BOOT_UBI
 
 /*
