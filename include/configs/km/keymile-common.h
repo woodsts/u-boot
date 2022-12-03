@@ -31,7 +31,7 @@
 #ifndef CONFIG_KM_UBI_PARTITION_NAME_APP
 /* one flash chip only called boot */
 /* boot: CONFIG_KM_UBI_PARTITION_NAME_BOOT */
-# define CONFIG_KM_UBI_LINUX_MTD					\
+# define CFG_KM_UBI_LINUX_MTD					\
 	"ubi.mtd=" CONFIG_KM_UBI_PARTITION_NAME_BOOT			\
 	CONFIG_KM_UBI_PART_BOOT_OPTS
 # define CFG_KM_DEV_ENV_FLASH_BOOT_UBI				\
@@ -40,7 +40,7 @@
 /* two flash chips called boot and app */
 /* boot: CONFIG_KM_UBI_PARTITION_NAME_BOOT */
 /* app:  CONFIG_KM_UBI_PARTITION_NAME_APP */
-# define CONFIG_KM_UBI_LINUX_MTD					\
+# define CFG_KM_UBI_LINUX_MTD					\
 	"ubi.mtd=" CONFIG_KM_UBI_PARTITION_NAME_BOOT			\
 	CONFIG_KM_UBI_PART_BOOT_OPTS " "				\
 	"ubi.mtd=" CONFIG_KM_UBI_PARTITION_NAME_APP
@@ -97,7 +97,7 @@
 		" mem=${kernelmem} init=${init}"			\
 		CFG_KM_ECC_MODE					\
 		" phram.phram=phvar,${varaddr}," __stringify(CONFIG_KM_PHRAM)\
-		" " CONFIG_KM_UBI_LINUX_MTD " "				\
+		" " CFG_KM_UBI_LINUX_MTD " "				\
 		CFG_KM_DEF_BOOT_ARGS_CPU				\
 		"\0"							\
 	"addpanic="							\
