@@ -78,13 +78,13 @@
 #define CONFIG_KM_DEF_ENV "km-common=empty\0"
 #endif
 
-#ifndef CONFIG_KM_DEF_ARCH
-#define CONFIG_KM_DEF_ARCH	"arch=ppc_82xx\0"
+#ifndef CFG_KM_DEF_ARCH
+#define CFG_KM_DEF_ARCH	"arch=ppc_82xx\0"
 #endif
 
 #define CFG_EXTRA_ENV_SETTINGS \
 	CONFIG_KM_DEF_ENV						 \
-	CONFIG_KM_DEF_ARCH						 \
+	CFG_KM_DEF_ARCH						 \
 	"newenv="							 \
 		"prot off " __stringify(CONFIG_ENV_ADDR) " +0x40000 && " \
 		"era " __stringify(CONFIG_ENV_ADDR) " +0x40000\0"	 \

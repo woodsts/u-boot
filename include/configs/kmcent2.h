@@ -435,13 +435,13 @@ int get_scl(void);
 		" +" __stringify(CFG_ENV_TOTAL_SIZE) "\0"
 
 /* ppc_82xx is the equivalent to ppc_6xx, the generic ppc toolchain */
-#ifndef CONFIG_KM_DEF_ARCH
-#define CONFIG_KM_DEF_ARCH	"arch=ppc_82xx\0"
+#ifndef CFG_KM_DEF_ARCH
+#define CFG_KM_DEF_ARCH	"arch=ppc_82xx\0"
 #endif
 
 #define CFG_EXTRA_ENV_SETTINGS					\
 	CONFIG_KM_DEF_ENV						\
-	CONFIG_KM_DEF_ARCH						\
+	CFG_KM_DEF_ARCH						\
 	CONFIG_KM_NEW_ENV						\
 	CFG_HW_ENV_SETTINGS						\
 	"EEprom_ivm=pca9547:70:9\0"					\
