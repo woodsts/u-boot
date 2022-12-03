@@ -82,7 +82,7 @@
 #define CONFIG_KM_DEF_ARCH	"arch=ppc_82xx\0"
 #endif
 
-#define CONFIG_EXTRA_ENV_SETTINGS \
+#define CFG_EXTRA_ENV_SETTINGS \
 	CONFIG_KM_DEF_ENV						 \
 	CONFIG_KM_DEF_ARCH						 \
 	"newenv="							 \

@@ -52,7 +52,7 @@
 	"develop=" \
 		"tftp 0x200000 scripts/develop-secu.txt && env import -t 0x200000 ${filesize} && saveenv && reset\0"
 
-#define CONFIG_EXTRA_ENV_SETTINGS \
+#define CFG_EXTRA_ENV_SETTINGS \
 	FPGA_RMTU_ENV \
 	CONFIG_KM_DEF_ENV_BOOTTARGETS \
 	CONFIG_KM_NEW_ENV \
