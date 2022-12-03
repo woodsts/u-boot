@@ -74,8 +74,8 @@
 /*
  * Environment Configuration
  */
-#ifndef CONFIG_KM_DEF_ENV		/* if not set by keymile-common.h */
-#define CONFIG_KM_DEF_ENV "km-common=empty\0"
+#ifndef CFG_KM_DEF_ENV		/* if not set by keymile-common.h */
+#define CFG_KM_DEF_ENV "km-common=empty\0"
 #endif
 
 #ifndef CFG_KM_DEF_ARCH
@@ -83,7 +83,7 @@
 #endif
 
 #define CFG_EXTRA_ENV_SETTINGS \
-	CONFIG_KM_DEF_ENV						 \
+	CFG_KM_DEF_ENV						 \
 	CFG_KM_DEF_ARCH						 \
 	"newenv="							 \
 		"prot off " __stringify(CONFIG_ENV_ADDR) " +0x40000 && " \

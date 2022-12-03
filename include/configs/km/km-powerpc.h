@@ -30,7 +30,7 @@
 /* architecture specific default bootargs */
 #define CFG_KM_DEF_BOOT_ARGS_CPU		""
 
-#define CONFIG_KM_DEF_ENV_CPU						\
+#define CFG_KM_DEF_ENV_CPU						\
 	"u-boot="CONFIG_HOSTNAME "/u-boot.bin\0"		\
 	"update="							\
 		"protect off " __stringify(BOOTFLASH_START) " +${filesize} && "\

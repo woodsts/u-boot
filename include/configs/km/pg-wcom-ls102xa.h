@@ -172,15 +172,15 @@
 #define CFG_ENV_TOTAL_SIZE		0x40000
 #define ENV_DEL_ADDR		CONFIG_ENV_ADDR_REDUND  /* direct for newenv */
 
-#ifndef CONFIG_KM_DEF_ENV		/* if not set by keymile-common.h */
-#define CONFIG_KM_DEF_ENV
+#ifndef CFG_KM_DEF_ENV		/* if not set by keymile-common.h */
+#define CFG_KM_DEF_ENV
 #endif
 
 #ifndef CFG_KM_DEF_BOOT_ARGS_CPU
 #define CFG_KM_DEF_BOOT_ARGS_CPU		""
 #endif
 
-#define CONFIG_KM_DEF_ENV_CPU						\
+#define CFG_KM_DEF_ENV_CPU						\
 	"boot=bootm ${load_addr_r} - ${fdt_addr_r}\0"			\
 	"cramfsloadfdt="						\
 		"cramfsload ${fdt_addr_r} "				\
@@ -221,7 +221,7 @@
 
 #define CFG_EXTRA_ENV_SETTINGS					\
 	CONFIG_KM_NEW_ENV						\
-	CONFIG_KM_DEF_ENV						\
+	CFG_KM_DEF_ENV						\
 	CFG_HW_ENV_SETTINGS						\
 	"EEprom_ivm=pca9547:70:9\0"					\
 	"ethrotate=no\0"						\

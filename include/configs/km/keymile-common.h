@@ -15,8 +15,8 @@
 
 #define CFG_SYS_BAUDRATE_TABLE { 9600, 19200, 38400, 57600, 115200, 230400 }
 
-#ifndef CONFIG_KM_DEF_ENV_BOOTPARAMS
-#define CONFIG_KM_DEF_ENV_BOOTPARAMS \
+#ifndef CFG_KM_DEF_ENV_BOOTPARAMS
+#define CFG_KM_DEF_ENV_BOOTPARAMS \
 	"actual_bank=0\0"
 #endif
 
@@ -34,7 +34,7 @@
 # define CONFIG_KM_UBI_LINUX_MTD					\
 	"ubi.mtd=" CONFIG_KM_UBI_PARTITION_NAME_BOOT			\
 	CONFIG_KM_UBI_PART_BOOT_OPTS
-# define CONFIG_KM_DEV_ENV_FLASH_BOOT_UBI				\
+# define CFG_KM_DEV_ENV_FLASH_BOOT_UBI				\
 	"ubiattach=ubi part " CONFIG_KM_UBI_PARTITION_NAME_BOOT "\0"
 #else /* CONFIG_KM_UBI_PARTITION_NAME_APP */
 /* two flash chips called boot and app */
@@ -44,7 +44,7 @@
 	"ubi.mtd=" CONFIG_KM_UBI_PARTITION_NAME_BOOT			\
 	CONFIG_KM_UBI_PART_BOOT_OPTS " "				\
 	"ubi.mtd=" CONFIG_KM_UBI_PARTITION_NAME_APP
-# define CONFIG_KM_DEV_ENV_FLASH_BOOT_UBI				\
+# define CFG_KM_DEV_ENV_FLASH_BOOT_UBI				\
 	"ubiattach=if test ${boot_bank} -eq 0; then; "			\
 	"ubi part " CONFIG_KM_UBI_PARTITION_NAME_BOOT "; else; "	\
 	"ubi part " CONFIG_KM_UBI_PARTITION_NAME_APP "; fi\0"
@@ -65,7 +65,7 @@
  * available targets:
  * - 'release': for a standalone system		kernel/rootfs from flash
  */
-#define CONFIG_KM_DEF_ENV_BOOTTARGETS					\
+#define CFG_KM_DEF_ENV_BOOTTARGETS					\
 	"subbootcmds=ubiattach ubicopy checkfdt cramfsloadfdt "		\
 		"set_fdthigh cramfsloadkernel flashargs add_default "	\
 		"addpanic boot\0"					\
@@ -88,7 +88,7 @@
  * - 'flashargs': defaults arguments for flash base boot
  *
  */
-#define CONFIG_KM_DEF_ENV_BOOTARGS					\
+#define CFG_KM_DEF_ENV_BOOTARGS					\
 	"add_default="							\
 		"setenv bootargs ${bootargs} "				\
 		"ip=${ipaddr}:${serverip}:${gatewayip}:${netmask}"	\
@@ -120,12 +120,12 @@
  * processor specific settings
  * - 'cramfsloadfdt': copy fdt from a cramfs to ram
  */
-#define CONFIG_KM_DEF_ENV_FLASH_BOOT					\
+#define CFG_KM_DEF_ENV_FLASH_BOOT					\
 	"cramfsaddr=" __stringify(CONFIG_KM_CRAMFS_ADDR) "\0"		\
 	"cramfsloadkernel=cramfsload ${load_addr_r} ${uimage}\0"	\
 	"ubicopy=ubi read ${cramfsaddr} bootfs${boot_bank}\0"		\
 	"uimage=" CONFIG_KM_UIMAGE_NAME					\
-	CONFIG_KM_DEV_ENV_FLASH_BOOT_UBI
+	CFG_KM_DEV_ENV_FLASH_BOOT_UBI
 
 /*
  * constants
@@ -133,7 +133,7 @@
  *
  * - 'default': setup default environment
  */
-#define CONFIG_KM_DEF_ENV_CONSTANTS					\
+#define CFG_KM_DEF_ENV_CONSTANTS					\
 	"backup_bank=0\0"						\
 	"release=run newenv; reset\0"					\
 	"pnvramsize=" __stringify(CONFIG_KM_PNVRAM) "\0"		\
@@ -142,15 +142,15 @@
 	"env_version=1\0"						\
 	""
 
-#ifndef CONFIG_KM_DEF_ENV
-#define CONFIG_KM_DEF_ENV	\
-	CONFIG_KM_DEF_ENV_BOOTPARAMS					\
+#ifndef CFG_KM_DEF_ENV
+#define CFG_KM_DEF_ENV	\
+	CFG_KM_DEF_ENV_BOOTPARAMS					\
 	"netdev=" __stringify(CONFIG_KM_DEF_NETDEV) "\0"		\
-	CONFIG_KM_DEF_ENV_CPU						\
-	CONFIG_KM_DEF_ENV_BOOTTARGETS					\
-	CONFIG_KM_DEF_ENV_BOOTARGS					\
-	CONFIG_KM_DEF_ENV_FLASH_BOOT					\
-	CONFIG_KM_DEF_ENV_CONSTANTS					\
+	CFG_KM_DEF_ENV_CPU						\
+	CFG_KM_DEF_ENV_BOOTTARGETS					\
+	CFG_KM_DEF_ENV_BOOTARGS					\
+	CFG_KM_DEF_ENV_FLASH_BOOT					\
+	CFG_KM_DEF_ENV_CONSTANTS					\
 	"altbootcmd=run bootcmd\0"					\
 	"boot=bootm ${load_addr_r} - ${fdt_addr_r}\0"			\
 	"bootcmd=km_checkbidhwk &&  "					\
@@ -169,6 +169,6 @@
 	"load_addr_r=" __stringify(CONFIG_KM_KERNEL_ADDR) "\0"		\
 	"load=tftpboot ${load_addr_r} ${u-boot}\0"			\
 	""
-#endif /* CONFIG_KM_DEF_ENV */
+#endif /* CFG_KM_DEF_ENV */
 
 #endif /* __CONFIG_KEYMILE_H */

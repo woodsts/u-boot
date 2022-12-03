@@ -46,7 +46,7 @@
 	"newenv=" \
 		"nand erase 0x100000 0x40000\0"
 
-#define CONFIG_KM_DEF_ENV_BOOTTARGETS \
+#define CFG_KM_DEF_ENV_BOOTTARGETS \
 	"release=" \
 		"run newenv; reset\0" \
 	"develop=" \
@@ -54,7 +54,7 @@
 
 #define CFG_EXTRA_ENV_SETTINGS \
 	FPGA_RMTU_ENV \
-	CONFIG_KM_DEF_ENV_BOOTTARGETS \
+	CFG_KM_DEF_ENV_BOOTTARGETS \
 	CONFIG_KM_NEW_ENV \
 	"socfpga_legacy_reset_compat=1\0"	\
 	"altbootcmd=run bootcmd;\0"	\

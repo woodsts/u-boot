@@ -388,13 +388,13 @@ int get_scl(void);
 /*
  * Environment Configuration
  */
-#ifndef CONFIG_KM_DEF_ENV		/* if not set by keymile-common.h */
-#define CONFIG_KM_DEF_ENV
+#ifndef CFG_KM_DEF_ENV		/* if not set by keymile-common.h */
+#define CFG_KM_DEF_ENV
 #endif
 
 #define __USB_PHY_TYPE	utmi
 
-#define CONFIG_KM_DEF_ENV_CPU						\
+#define CFG_KM_DEF_ENV_CPU						\
 	"boot=bootm ${load_addr_r} - ${fdt_addr_r}\0"			\
 	"cramfsloadfdt="						\
 		"cramfsload ${fdt_addr_r} "				\
@@ -440,7 +440,7 @@ int get_scl(void);
 #endif
 
 #define CFG_EXTRA_ENV_SETTINGS					\
-	CONFIG_KM_DEF_ENV						\
+	CFG_KM_DEF_ENV						\
 	CFG_KM_DEF_ARCH						\
 	CONFIG_KM_NEW_ENV						\
 	CFG_HW_ENV_SETTINGS						\
