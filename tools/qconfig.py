@@ -16,6 +16,7 @@ import doctest
 import filecmp
 import fnmatch
 import glob
+import io
 import multiprocessing
 import os
 import queue
@@ -28,6 +29,7 @@ import threading
 import time
 import unittest
 
+from buildman import boards
 from buildman import bsettings
 from buildman import kconfiglib
 from buildman import toolchain
@@ -93,6 +95,16 @@ def check_clean_directory():
     for fname in '.config', 'include/config':
         if os.path.exists(fname):
             sys.exit("source tree is not clean, please run 'make mrproper'")
+
+def write_commit(msg):
+    """Create a new commit with all modified files
+
+    Args:
+        msg (str): Commit message
+    """
+    subprocess.call(['git', 'add', '-u'])
+    rc = subprocess.call(['git', 'commit', '-s', '-m', msg])
+    return rc == 0
 
 def get_make_cmd():
     """Get the command name of GNU Make.
@@ -1175,39 +1187,59 @@ def prefix_config(cfg):
     return oper + cfg
 
 
-RE_MK_CONFIGS = re.compile(r'CONFIG_(\$\(XPL_\)|\$\(PHASE_\))?([A-Za-z0-9_]*)')
-RE_IFDEF = re.compile(r'(ifdef|ifndef)')
+RE_MK_CONFIGS = re.compile(r'CONFIG_(\$\(XPL_(?:PHASE_)?\))?([A-Za-z0-9_]*)')
+
+# Makefile ifdefs: this only handles 'else' on its own line, so not
+# 'else ifeq ...', for example
+RE_IF = re.compile(r'^(ifdef|ifndef|endif|ifeq|ifneq|else)([^,]*,([^,]*)\))?.*$')
+
+# Normal CONFIG options in C
 RE_C_CONFIGS = re.compile(r'CONFIG_([A-Za-z0-9_]*)')
+
+# CONFIG_IS_ENABLED() construct
 RE_CONFIG_IS = re.compile(r'CONFIG_IS_ENABLED\(([A-Za-z0-9_]*)\)')
 
+# Preprocessor #if/#ifdef directives, etc.
+RE_IFDEF = re.compile(r'^\s*#\s*(ifdef|ifndef|endif|if|elif|else)\s*(?:#.*)?(.*)$')
+
 class ConfigUse:
-    """Tracks whether a config relates to SPL or not"""
-    def __init__(self, cfg, is_spl, fname, rest):
-        """Set up a new ConfigUse
+    """Holds information about a use of a CONFIG option"""
+    def __init__(self, cfg, is_spl, conds, fname, rest, is_mk):
+        """Set up a new use of a CONFIG option
 
         Args:
-            cfg (str): CONFIG option, without any CONFIG_ or xPL_ prefix
-            is_spl (bool): True if this option relates to SPL
-            fname (str): Makefile filename where the CONFIG option was found
-            rest (str): Line of the Makefile
+            cfg (str): Config option, without the CONFIG_
+            is_spl (bool): True if it indicates an SPL option, i.e. has a
+                $(SPL_) or similar, False if not
+            conds (list of str): List of conditions for this use, e.g.
+                ['SPL_BUILD']
+            fname (str): Filename contining the use
+            rest (str): Entire line from the file
+            is_mk (bool): True if this is in a Makefile, False if not
         """
         self.cfg = cfg
         self.is_spl = is_spl
+        self.conds = list(c for c in conds if '(NONE)' not in c)
         self.fname = fname
         self.rest = rest
+        self.is_mk = is_mk
 
     def __hash__(self):
         return hash((self.cfg, self.is_spl))
 
-def scan_makefiles(fnames):
+    def __str__(self):
+        return (f'ConfigUse({self.cfg}, is_spl={self.is_spl}, '
+                f'is_mk={self.is_mk}, fname={self.fname}, rest={self.rest}')
+
+def scan_makefiles(fname_dict):
     """Scan Makefiles looking for Kconfig options
 
     Looks for uses of CONFIG options in Makefiles
 
     Args:
-        fnames (list of tuple):
-            str: Makefile filename where the option was found
-            str: Line of the Makefile
+        fname_dict (dict lines):
+            key: Makefile filename where the option was found
+            value: List of str lines of the Makefile
 
     Returns:
         tuple:
@@ -1220,48 +1252,85 @@ def scan_makefiles(fnames):
 
     >>> RE_MK_CONFIGS.search('CONFIG_FRED').groups()
     (None, 'FRED')
-    >>> RE_MK_CONFIGS.search('CONFIG_$(XPL_)MARY').groups()
-    ('$(XPL_)', 'MARY')
+    >>> RE_MK_CONFIGS.search('CONFIG_$(SPL_)MARY').groups()
+    ('$(SPL_)', 'MARY')
     >>> RE_MK_CONFIGS.search('CONFIG_$(PHASE_)MARY').groups()
     ('$(PHASE_)', 'MARY')
+    >>> RE_IF.match('ifdef CONFIG_SPL_BUILD').groups()
+    ('ifdef', None, None)
+    >>> RE_IF.match('endif # CONFIG_SPL_BUILD').groups()
+    ('endif', None, None)
+    >>> RE_IF.match('endif').groups()
+    ('endif', None, None)
+    >>> RE_IF.match('else').groups()
+    ('else', None, None)
     """
     all_uses = collections.defaultdict(list)
     fname_uses = {}
-    for fname, rest in fnames:
-        m_iter = RE_MK_CONFIGS.finditer(rest)
-        for mat in m_iter:
-            real_opt = mat.group(2)
-            if real_opt == '':
-                continue
-            is_spl = False
-            if mat.group(1):
-                is_spl = True
-            use = ConfigUse(real_opt, is_spl, fname, rest)
-            if fname not in fname_uses:
-                fname_uses[fname] = set()
-            fname_uses[fname].add(use)
-            all_uses[use].append(rest)
+    for fname, rest_list in fname_dict.items():
+        conds = []
+        for rest in rest_list:
+            m_iter = RE_MK_CONFIGS.finditer(rest)
+            m_cond = RE_IF.match(rest)
+            #print('line', conds, m_cond and m_cond.group(1) or '.', rest)
+            last_use = None
+            use = None
+            for m in m_iter:
+                real_opt = m.group(2)
+                if real_opt == '':
+                    continue
+                is_spl = False
+                if m.group(1):
+                    is_spl = True
+                use = ConfigUse(real_opt, is_spl, conds, fname, rest, True)
+                if fname not in fname_uses:
+                    fname_uses[fname] = set()
+                fname_uses[fname].add(use)
+                all_uses[use].append(rest)
+                last_use = use
+            if m_cond:
+                cfg = last_use.cfg if last_use else '(NONE)'
+                cond = m_cond.group(1)
+                if cond == 'ifdef':
+                    conds.append(cfg)
+                elif cond == 'ifndef':
+                    conds.append(f'~{cfg}')
+                elif cond == 'ifeq':
+                    #print('todo', fname, m_cond.group(3), fname, rest)
+                    conds.append(f'{m_cond.group(3)}={cfg}')
+                elif cond == 'ifneq':
+                    conds.append(f'{m_cond.group(3)}={cfg}')
+                    #print('todo', m_cond.group(3))
+                elif cond == 'endif':
+                    conds.pop()
+                elif cond == 'else':
+                    cond = conds.pop()
+                    if cond.startswith('~'):
+                        cond = cond[1:]
+                    else:
+                        cond = f'~{cond}'
+                    conds.append(cond)
+                else:
+                    print(f'unknown condition: {rest}')
+        if conds:
+            print(f'leftover {conds}')
     return all_uses, fname_uses
 
-
-def scan_src_files(fnames):
+def scan_src_files(fname_dict, all_uses, fname_uses):
     """Scan source files (other than Makefiles) looking for Kconfig options
 
     Looks for uses of CONFIG options
 
     Args:
-        fnames (list of tuple):
-            str: Makefile filename where the option was found
-            str: Line of the Makefile
-
-    Returns:
-        tuple:
-            dict: all_uses
-                key (ConfigUse): object
-                value (list of str): matching lines
-            dict: Uses by filename
-                key (str): filename
-                value (set of ConfigUse): uses in that filename
+        fname_dict (dict):
+            key (str): Filename
+            value (list of ConfigUse): List of uses in that filename
+        all_uses (dict): to add more uses to:
+            key (ConfigUse): object
+            value (list of str): matching lines
+        fname (dict): to add more uses-by-filename to
+            key (str): filename
+            value (set of ConfigUse): uses in that filename
 
     >>> RE_C_CONFIGS.search('CONFIG_FRED').groups()
     ('FRED',)
@@ -1269,41 +1338,81 @@ def scan_src_files(fnames):
     ('MARY',)
     >>> RE_CONFIG_IS.search('#if CONFIG_IS_ENABLED(OF_PLATDATA)').groups()
     ('OF_PLATDATA',)
+    >>> RE_IFDEF.match('#ifdef CONFIG_SPL_BUILD').groups()
+    ('ifdef', 'CONFIG_SPL_BUILD')
+    >>> RE_IFDEF.match('#endif # CONFIG_SPL_BUILD').groups()
+    ('endif', '')
+    >>> RE_IFDEF.match('#endif').groups()
+    ('endif', '')
+    >>> RE_IFDEF.match('#else').groups()
+    ('else', '')
+    >>> RE_IFDEF.match(' # if defined(CONFIG_CMD_NET) && !defined(CONFIG_DM_ETH)').groups()
+    ('if', 'defined(CONFIG_CMD_NET) && !defined(CONFIG_DM_ETH)')
     """
     fname = None
     rest = None
 
     def add_uses(m_iter, is_spl):
+        last_use = None
         for mat in m_iter:
+            found = True
             real_opt = mat.group(1)
             if real_opt == '':
                 continue
-            use = ConfigUse(real_opt, is_spl, fname, rest)
+            use = ConfigUse(real_opt, is_spl, conds, fname, rest, False)
             if fname not in fname_uses:
                 fname_uses[fname] = set()
             fname_uses[fname].add(use)
             all_uses[use].append(rest)
+            last_use = use
+        return last_use
 
-    all_uses = collections.defaultdict(list)
-    fname_uses = {}
-    for fname, rest in fnames:
-        m_iter = RE_C_CONFIGS.finditer(rest)
-        add_uses(m_iter, False)
+    for fname, rest_list in fname_dict.items():
+        conds = []
+        for rest in rest_list:
+            m_iter = RE_C_CONFIGS.finditer(rest)
+            m_cond = RE_IFDEF.match(rest)
+            last_use1 = add_uses(m_iter, False)
 
-        m_iter2 = RE_CONFIG_IS.finditer(rest)
-        add_uses(m_iter2, True)
-
-    return all_uses, fname_uses
+            m_iter2 = RE_CONFIG_IS.finditer(rest)
+            last_use2 = add_uses(m_iter2, True)
+            last_use = last_use1 or last_use2
+            if m_cond:
+                cfg = last_use.cfg if last_use else '(NONE)'
+                cond = m_cond.group(1)
+                #print(fname, rest, cond, conds)
+                if cond == 'ifdef':
+                    conds.append(cfg)
+                elif cond == 'ifndef':
+                    conds.append(f'~{cfg}')
+                elif cond == 'if':
+                    #print('todo', fname, m_cond.group(3), fname, rest)
+                    conds.append(f'{m_cond.group(2)}={cfg}')
+                elif cond == 'endif':
+                    conds.pop()
+                elif cond == 'else':
+                    cond = conds.pop()
+                    if cond.startswith('~'):
+                        cond = cond[1:]
+                    else:
+                        cond = f'~{cond}'
+                    conds.append(cond)
+                elif cond == 'elif':
+                    cond = conds.pop()
+                    conds.append(cfg)
+                else:
+                    print(f'{fname}: unknown condition: {rest}')
 
 
 MODE_NORMAL, MODE_SPL, MODE_PROPER = range(3)
 
-def do_scan_source(path, do_update):
+def do_scan_source(path, do_update, show_conflicts, do_commit):
     """Scan the source tree for Kconfig inconsistencies
 
     Args:
         path (str): Path to source tree
-        do_update (bool) : True to write to scripts/kconf_... files
+        do_update (bool): True to write to scripts/kconf_... files
+        show_conflicts (bool): True to show conflicts
     """
     def is_not_proper(name):
         for prefix in SPL_PREFIXES:
@@ -1395,95 +1504,130 @@ def do_scan_source(path, do_update):
             for i, use in enumerate(uses[name]):
                 print(f'{"   " if i else ""}{use.fname}: {use.rest.strip()}')
 
+    def do_scan():
+        """Scan the source tree
 
-    print('Scanning Kconfig')
-    kconf = scan_kconfig()
-    print(f'Scanning source in {path}')
-    args = ['git', 'grep', '-E', r'IS_ENABLED|\bCONFIG']
-    with subprocess.Popen(args, stdout=subprocess.PIPE) as proc:
-        out, _ = proc.communicate()
-    lines = out.splitlines()
-    re_fname = re.compile('^([^:]*):(.*)')
-    src_list = []
-    mk_list = []
-    for line in lines:
-        linestr = line.decode('utf-8')
-        m_fname = re_fname.search(linestr)
-        if not m_fname:
-            continue
-        fname, rest = m_fname.groups()
-        dirname, leaf = os.path.split(fname)
-        root, ext = os.path.splitext(leaf)
-        if ext == '.autoconf':
-            pass
-        elif ext in ['.c', '.h', '.S', '.lds', '.dts', '.dtsi', '.asl', '.cfg',
-                     '.env', '.tmpl']:
-            src_list.append([fname, rest])
-        elif 'Makefile' in root or ext == '.mk':
-            mk_list.append([fname, rest])
-        elif ext in ['.yml', '.sh', '.py', '.awk', '.pl', '.rst', '', '.sed']:
-            pass
-        elif 'Kconfig' in root or 'Kbuild' in root:
-            pass
-        elif 'README' in root:
-            pass
-        elif dirname in ['configs']:
-            pass
-        elif dirname.startswith('doc') or dirname.startswith('scripts/kconfig'):
-            pass
-        else:
-            print(f'Not sure how to handle file {fname}')
+        This runs a 'git grep' and then picks out uses of CONFIG options from
+        the resulting output
 
-    # Scan the Makefiles
-    all_uses, _ = scan_makefiles(mk_list)
+        Returns: tuple
+            dict of uses of CONFIG in Makefiles:
+                key (str): Filename
+                value (list of ConfigUse): List of uses in that filename
+            dict of uses of CONFIG in source files:
+                key (str): Filename
+                value (list of ConfigUse): List of uses in that filename
+        """
+        def finish_file(last_fname, rest_list):
+            if is_mkfile:
+                mk_dict[last_fname] = rest_list
+            else:
+                src_dict[last_fname] = rest_list
+            rest_list = []
 
-    spl_not_found = set()
-    proper_not_found = set()
+        print(f'Scanning source in {path}')
+        args = ['git', 'grep', '-E',
+                r'IS_ENABLED|\bCONFIG|CONFIG_SPL_BUILD|if|else|endif']
+        with subprocess.Popen(args, stdout=subprocess.PIPE) as proc:
+            out, _ = proc.communicate()
+        lines = out.splitlines()
+        re_fname = re.compile('^([^:]*):(.*)')
+        src_dict = collections.OrderedDict()
+        mk_dict = collections.OrderedDict()
+        last_fname = None
+        rest_list = []
+        is_mkfile = None
+        for line in lines:
+            linestr = line.decode('utf-8')
+            m_fname = re_fname.search(linestr)
+            if not m_fname:
+                continue
+            fname, rest = m_fname.groups()
+            if fname != last_fname:
+                finish_file(last_fname, rest_list)
+                rest_list = []
+                last_fname = fname
 
-    # Make sure we know about all the options
-    print('\nCONFIG options present in Makefiles but not Kconfig:')
-    not_found = check_not_found(all_uses, MODE_NORMAL)
-    show_uses(not_found)
+            dirname, leaf = os.path.split(fname)
+            root, ext = os.path.splitext(leaf)
+            #if dirname != '' or root != 'Makefile':
+                #continue
+            if (dirname.startswith('test') or
+                dirname.startswith('lib/efi_selftest')):
+                # Ignore test code since it is mostly only for sandbox
+                pass
+            elif ext == '.autoconf':
+                pass
+            elif ext in ['.c', '.h', '.S', '.lds', '.dts', '.dtsi', '.asl',
+                         '.cfg', '.env', '.tmpl']:
+                rest_list.append(rest)
+                is_mkfile = False
+            elif 'Makefile' in root or ext == '.mk':
+                rest_list.append(rest)
+                is_mkfile = True
+            elif ext in ['.yml', '.sh', '.py', '.awk', '.pl', '.rst', '', '.sed',
+                         '.src', '.inc', '.l', '.i_shipped', '.txt', '.cmd',
+                         '.cfg', '.y', '.cocci', '.ini', '.asn1', '.base',
+                         '.cnf', '.patch', '.mak', '.its', '.svg', '.tcl',
+                         '.css', '.config', '.conf']:
+                pass
+            elif 'Kconfig' in root or 'Kbuild' in root:
+                pass
+            elif 'README' in root:
+                pass
+            elif dirname in ['configs']:
+                pass
+            elif dirname.startswith('doc') or dirname.startswith('scripts/kconfig'):
+                pass
+            else:
+                print(f'Not sure how to handle file {fname}')
+        finish_file(last_fname, rest_list)
+        return mk_dict, src_dict
 
-    print('\nCONFIG options present in Makefiles but not Kconfig (SPL):')
-    not_found = check_not_found(all_uses, MODE_SPL)
-    show_uses(not_found)
-    spl_not_found |= {is_not_proper(key) or key for key in not_found.keys()}
+    def check_mk_missing(all_uses, spl_not_found, proper_not_found):
+        # Make sure we know about all the options in Makefiles
+        print('\nCONFIG options present in Makefiles but not Kconfig:')
+        not_found = check_not_found(all_uses, MODE_NORMAL)
+        show_uses(not_found)
 
-    print('\nCONFIG options used as Proper in Makefiles but without a non-xPL_ variant:')
-    not_found = check_not_found(all_uses, MODE_PROPER)
-    show_uses(not_found)
-    proper_not_found |= {not_found.keys()}
+        print('\nCONFIG options present in Makefiles but not Kconfig (SPL):')
+        not_found = check_not_found(all_uses, MODE_SPL)
+        show_uses(not_found)
+        spl_not_found |= set(is_not_proper(key) or key for key in not_found.keys())
 
-    # Scan the source code
-    all_uses, _ = scan_src_files(src_list)
+        print('\nCONFIG options used as Proper in Makefiles but without a non-SPL_ variant:')
+        not_found = check_not_found(all_uses, MODE_PROPER)
+        show_uses(not_found)
+        proper_not_found |= set(key for key in not_found.keys())
 
-    # Make sure we know about all the options
-    print('\nCONFIG options present in source but not Kconfig:')
-    not_found = check_not_found(all_uses, MODE_NORMAL)
-    show_uses(not_found)
+    def check_src_missing(all_uses, spl_not_found, proper_not_found):
+        # Make sure we know about all the options in source files
+        print('\nCONFIG options present in source but not Kconfig:')
+        not_found = check_not_found(all_uses, MODE_NORMAL)
+        show_uses(not_found)
 
-    print('\nCONFIG options present in source but not Kconfig (SPL):')
-    not_found = check_not_found(all_uses, MODE_SPL)
-    show_uses(not_found)
-    spl_not_found |= {is_not_proper(key) or key for key in not_found.keys()}
+        print('\nCONFIG options present in source but not Kconfig (SPL):')
+        not_found = check_not_found(all_uses, MODE_SPL)
+        show_uses(not_found)
+        spl_not_found |= set(is_not_proper(key) or key
+                             for key in not_found.keys())
 
-    print('\nCONFIG options used as Proper in source but without a non-xPL_ variant:')
-    not_found = check_not_found(all_uses, MODE_PROPER)
-    show_uses(not_found)
-    proper_not_found |= {not_found.keys()}
+        print('\nCONFIG options used as Proper in source but without a non-SPL_ variant:')
+        not_found = check_not_found(all_uses, MODE_PROPER)
+        show_uses(not_found)
+        proper_not_found |= set(key for key in not_found.keys())
 
-    print('\nCONFIG options used as SPL but without an xPL_ variant:')
-    for item in sorted(spl_not_found):
-        print(f'   {item}')
+    def show_summary(spl_not_found, proper_not_found):
+        print('\nCONFIG options used as SPL but without an SPL_ variant:')
+        for item in sorted(spl_not_found):
+            print(f'   {item}')
 
-    print('\nCONFIG options used as Proper but without a non-xPL_ variant:')
-    for item in sorted(proper_not_found):
-        print(f'   {item}')
+        print('\nCONFIG options used as Proper but without a non-SPL_ variant:')
+        for item in sorted(proper_not_found):
+            print(f'   {item}')
 
-    # Write out the updated information
-    if do_update:
-        with open(os.path.join(path, 'scripts', 'conf_nospl'), 'w',
+    def write_update(spl_not_found, proper_not_found):
+        with open(os.path.join(path, 'scripts', 'conf_nospl'),
                   encoding='utf-8') as out:
             print('# These options should not be enabled in SPL builds\n',
                   file=out)
@@ -1497,6 +1641,168 @@ def do_scan_source(path, do_update):
                 print(item, file=out)
     return 0
 
+    def check_conflict(kconf, all_uses, show):
+        """Check conflicts between uses of CONFIG options in source
+
+        Sometimes an option is used in an SPL context in once place and not in
+        another. For example if we see CONFIG_SPL_FOO and CONFIG_FOO then we
+        don't know whether FOO should be enabled in SPL if CONFIG_FOO is
+        enabled, or only if CONFIG_SPL_FOO is enabled.,
+
+        This function detects such situations
+
+        Args:
+            kconf (Kconfiglib.Kconfig): Kconfig tree read from source
+            all_uses (dict): dict to add more uses to:
+                key (ConfigUse): object
+                value (list of str): matching lines
+            show (bool): True to show the problems
+
+        Returns:
+            dict of conflicts:
+                key: filename
+                value: list of ConfigUse objects
+        """
+        conflict_dict = collections.defaultdict(list)
+        cfg_dict = collections.defaultdict(list)
+
+        uses = collections.defaultdict(list)
+        for use in all_uses:
+            uses[use.cfg].append(use)
+
+        bad = 0
+        for cfg in sorted(uses):
+            use_list = uses[cfg]
+
+            # Check if
+            #  - there is no SPL_ version of the symbol, and
+            #  - some uses are SPL and some are not
+            is_spl = list(set(u.is_spl for u in use_list))
+            if len(is_spl) > 1 and f'SPL_{cfg}' not in kconf.syms:
+                if show:
+                    print(f'{cfg}: {is_spl}')
+                for use in use_list:
+                    if show:
+                        print(f'   spl={use.is_spl}: {use.conds} {use.fname} {use.rest}')
+                    if use.is_spl:
+                        conflict_dict[use.fname].append(use)
+                        cfg_dict[use.cfg].append(use)
+                bad += 1
+        print(f'total bad: {bad}')
+        return conflict_dict, cfg_dict
+
+    def replace_in_file(fname, use_or_uses):
+        """Replace a CONFIG pattern in a file
+
+        Args:
+            fname (str): Filename to replace in
+            use_or_uses (ConfigUse or list of ConfigUse): Uses to replace
+        """
+        with open(fname, encoding='utf-8') as inf:
+            data = inf.read()
+        out = io.StringIO()
+
+        if isinstance(use_or_uses, list):
+            uses = use_or_uses
+        else:
+            uses = [use_or_uses]
+
+        re_cfgs = []
+        for use in uses:
+            if use.is_mk:
+                expr = r'CONFIG_(?:\$\(SPL_(?:TPL_)?\))%s\b' % use.cfg
+            else:
+                expr = r'CONFIG_IS_ENABLED\(%s\)' % use.cfg
+            re_cfgs.append(re.compile(expr))
+
+        for line in data.splitlines():
+            new_line = line
+            if 'CONFIG_' in line:
+                todo = []
+                for i, re_cfg in enumerate(re_cfgs):
+                    if not re_cfg.search(line):
+                        todo.append(re_cfg)
+                    use = uses[i]
+                    if use.is_mk:
+                        new_line = re_cfg.sub(f'CONFIG_{use.cfg}', new_line)
+                    else:
+                        new = f'IS_ENABLED(CONFIG_{use.cfg})'
+                        new_line = re_cfg.sub(new, new_line)
+                re_cfgs = todo
+            out.write(new_line)
+            out.write('\n')
+        out_data = out.getvalue()
+        if out_data == data:
+            print(f'\n\nfailed with {fname}\n\n')
+        with open(fname, 'w', encoding='utf-8') as outf:
+            outf.write(out_data)
+
+    def update_source(conflicts):
+        """Replace any SPL constructs with plain non-SPL ones
+
+        CONFIG_IS_ENABLED(FOO) becomes IS_ENABLED(CONFIG_FOO)
+        CONFIG$_(SPL_TPL_)FOO becomes CONFIG_FOO
+
+        Args:
+            conflicts (dict): dict of conflicts:
+                key (str): filename
+                value (list of ConfigUse): uses within that file
+        """
+        print(f'Updating {len(conflicts)} files')
+        for fname, uses in conflicts.items():
+            replace_in_file(fname, uses)
+
+    def create_commits(cfg_dict):
+        """Create a set of commits to fix SPL conflicts
+
+        """
+        print(f'Creating {len(cfg_dict)} commits')
+        for cfg, uses in cfg_dict.items():
+            print(f'Processing {cfg}')
+            for use in uses:
+                #print(f'   {use.fname}: {use}')
+                replace_in_file(use.fname, use)
+            plural = 's' if len(uses) > 1 else ''
+            msg = f'Correct SPL use{plural} of {cfg}'
+            msg += f'\n\nThis converts {len(uses)} usage{plural} '
+            msg += 'of this option to the non-SPL form, since there is\n'
+            msg += f'no SPL_{cfg} defined in Kconfig'
+            if not write_commit(msg):
+                print('failed\n', uses)
+                break
+
+    print('Scanning Kconfig')
+    kconf = boards.KconfigScanner(os.getcwd())._conf
+
+    all_uses = collections.defaultdict(list)
+    fname_uses = {}
+    mk_dict, src_dict = do_scan()
+
+    # Scan the Makefiles
+    all_uses, fname_uses = scan_makefiles(mk_dict)
+    scan_src_files(src_dict, all_uses, fname_uses)
+
+    conflicts, cfg_dict = check_conflict(kconf, all_uses, show_conflicts)
+
+    if do_update:
+        update_source(conflicts)
+    if do_commit:
+        create_commits(cfg_dict)
+
+    # Look for CONFIG options that are not found
+    spl_not_found = set()
+    proper_not_found = set()
+    check_mk_missing(all_uses, spl_not_found, proper_not_found)
+
+    # Scan the source code
+    scan_src_files(src_dict, all_uses, fname_uses)
+    check_src_missing(all_uses, spl_not_found, proper_not_found)
+
+    show_summary(spl_not_found, proper_not_found)
+
+    # Write out the updated information
+    if do_update:
+        write_update(spl_not_found, proper_not_found)
 
 def parse_args():
     """Parse the program arguments
@@ -1542,9 +1848,11 @@ doc/develop/moveconfig.rst for documentation.'''
     parser.add_argument('-l', '--list', action='store_true', default=False,
                       help='Show a sorted list of board names, one per line')
     parser.add_argument('-I', '--imply-flags', type=str, default='',
-                      help="control the -i option ('help' for help")
+                      help="control the -i option ('help' for help)")
     parser.add_argument('-j', '--jobs', type=int, default=cpu_count,
                       help='the number of jobs to run simultaneously')
+    parser.add_argument('-L', '--list-problems', action='store_true',
+                        help='list problems found with --scan-source')
     parser.add_argument('-n', '--dry-run', action='store_true', default=False,
                       help='perform a trial run (show log with no changes)')
     parser.add_argument('-r', '--git-ref', type=str,
@@ -1566,8 +1874,10 @@ doc/develop/moveconfig.rst for documentation.'''
     parser.add_argument('configs', nargs='*')
 
     args = parser.parse_args()
-    if not any((args.force_sync, args.build_db, args.imply, args.find,
-                args.scan_source, args.test)):
+    configs = args.configs
+
+    if not any((len(configs), args.force_sync, args.build_db, args.imply,
+                args.find)):
         parser.print_usage()
         sys.exit(1)
 
@@ -1682,12 +1992,13 @@ def main():
     check_top_directory()
 
     # prefix the option name with CONFIG_ if missing
-    args.configs = [prefix_config(cfg) for cfg in args.configs]
+    configs = [prefix_config(cfg) for cfg in args.configs]
 
     if args.test:
         return do_tests()
     if args.scan_source:
-        return do_scan_source(os.getcwd(), args.update)
+        return do_scan_source(os.getcwd(), args.update, args.list_problems,
+                              args.commit)
     if args.imply:
         if imply(args):
             parser.print_usage()
@@ -1699,7 +2010,15 @@ def main():
     config_db, progress = move_config(args)
 
     if args.commit:
-        add_commit(args.configs)
+        if configs:
+            msg = 'Convert %s %sto Kconfig' % (configs[0],
+                    'et al ' if len(configs) > 1 else '')
+            msg += ('\n\nThis converts the following to Kconfig:\n   %s\n' %
+                    '\n   '.join(configs))
+        else:
+            msg = 'configs: Resync with savedefconfig'
+            msg += '\n\nRsync all defconfig files using moveconfig.py'
+        write_commit(msg)
 
     if args.build_db:
         return write_db(config_db, progress)
