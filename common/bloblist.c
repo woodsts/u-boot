@@ -538,7 +538,7 @@ int bloblist_init(void)
 		 * in the fixed address is not valid. we must allocate the
 		 * memory for it now.
 		 */
-		if (CONFIG_IS_ENABLED(BLOBLIST_ALLOC)) {
+		if (IS_ENABLED(CONFIG_BLOBLIST_ALLOC)) {
 			void *ptr = memalign(BLOBLIST_ALIGN, size);
 
 			if (!ptr)
@@ -569,7 +569,7 @@ int bloblist_init(void)
 
 int bloblist_maybe_init(void)
 {
-	if (CONFIG_IS_ENABLED(BLOBLIST) && !(gd->flags & GD_FLG_BLOBLIST_READY))
+	if (IS_ENABLED(CONFIG_BLOBLIST) && !(gd->flags & GD_FLG_BLOBLIST_READY))
 		return bloblist_init();
 
 	return 0;

@@ -65,7 +65,7 @@ static void smbios_print_generic(struct smbios_header *table)
 {
 	char *str = (char *)table + table->length;
 
-	if (CONFIG_IS_ENABLED(HEXDUMP)) {
+	if (IS_ENABLED(CONFIG_HEXDUMP)) {
 		printf("Header and Data:\n");
 		print_hex_dump("\t", DUMP_PREFIX_OFFSET, 16, 1,
 			       table, table->length, false);

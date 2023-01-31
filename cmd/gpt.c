@@ -262,7 +262,7 @@ static void print_gpt_info(void)
 		       curr->gpt_part_info.name);
 		printf("Type %s, bootable %d\n", curr->gpt_part_info.type,
 		       curr->gpt_part_info.bootable & PART_BOOTABLE);
-		if (CONFIG_IS_ENABLED(PARTITION_UUIDS))
+		if (IS_ENABLED(CONFIG_PARTITION_UUIDS))
 			printf("UUID %s\n",
 			       disk_partition_uuid(&curr->gpt_part_info));
 		if (CONFIG_IS_ENABLED(PARTITION_TYPE_GUID))
@@ -318,7 +318,7 @@ static int create_gpt_partitions_list(int numparts, const char *guid,
 				disk_partition_type_guid(&curr->gpt_part_info),
 				UUID_STR_LEN + 1);
 		}
-		if (CONFIG_IS_ENABLED(PARTITION_UUIDS)) {
+		if (IS_ENABLED(CONFIG_PARTITION_UUIDS)) {
 			strcat(partitions_list, ",uuid=");
 			strncat(partitions_list,
 				disk_partition_uuid(&curr->gpt_part_info),

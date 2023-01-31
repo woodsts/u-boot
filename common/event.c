@@ -21,7 +21,7 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
-#if CONFIG_IS_ENABLED(EVENT_DEBUG)
+#if IS_ENABLED(CONFIG_EVENT_DEBUG)
 const char *const type_name[] = {
 	"none",
 	"test",
@@ -55,7 +55,7 @@ _Static_assert(ARRAY_SIZE(type_name) == EVT_COUNT, "event type_name size");
 
 const char *event_type_name(enum event_t type)
 {
-#if CONFIG_IS_ENABLED(EVENT_DEBUG)
+#if IS_ENABLED(CONFIG_EVENT_DEBUG)
 	if (type < ARRAY_SIZE(type_name))
 		return type_name[type];
 	else
@@ -142,7 +142,7 @@ int event_notify(enum event_t type, void *data, int size)
 	if (ret)
 		return log_msg_ret("sta", ret);
 
-	if (CONFIG_IS_ENABLED(EVENT_DYNAMIC)) {
+	if (IS_ENABLED(CONFIG_EVENT_DYNAMIC)) {
 		ret = notify_dynamic(&event);
 		if (ret)
 			return log_msg_ret("dyn", ret);
@@ -172,7 +172,7 @@ void event_show_spy_list(void)
 	}
 }
 
-#if CONFIG_IS_ENABLED(EVENT_DYNAMIC)
+#if IS_ENABLED(CONFIG_EVENT_DYNAMIC)
 static void spy_free(struct event_spy *spy)
 {
 	list_del(&spy->sibling_node);

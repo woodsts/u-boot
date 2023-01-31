@@ -42,7 +42,7 @@ int dram_init(void)
 	return 0;
 }
 
-#if CONFIG_IS_ENABLED(DM_PMIC)
+#if IS_ENABLED(CONFIG_DM_PMIC)
 int power_init_board(void)
 {
 	struct udevice *dev;
@@ -155,8 +155,8 @@ int board_late_init(void)
 
 	set_wdog_reset(wdog);
 
-#if CONFIG_IS_ENABLED(FSL_ESDHC_IMX)
-#if CONFIG_IS_ENABLED(ENV_IS_IN_MMC) || CONFIG_IS_ENABLED(ENV_IS_NOWHERE)
+#if IS_ENABLED(CONFIG_FSL_ESDHC_IMX)
+#if IS_ENABLED(CONFIG_ENV_IS_IN_MMC) || IS_ENABLED(CONFIG_ENV_IS_NOWHERE)
 	board_late_mmc_env_init();
 #endif /* CONFIG_ENV_IS_IN_MMC or CONFIG_ENV_IS_NOWHERE */
 #endif
@@ -196,8 +196,8 @@ int board_ehci_hcd_init(int port)
 	return 0;
 }
 
-#if CONFIG_IS_ENABLED(FSL_ESDHC_IMX)
-#if CONFIG_IS_ENABLED(ENV_IS_IN_MMC) || CONFIG_IS_ENABLED(ENV_IS_NOWHERE)
+#if IS_ENABLED(CONFIG_FSL_ESDHC_IMX)
+#if IS_ENABLED(CONFIG_ENV_IS_IN_MMC) || IS_ENABLED(CONFIG_ENV_IS_NOWHERE)
 int board_mmc_get_env_dev(int devno)
 {
 	int dev_env = 0;
@@ -238,7 +238,7 @@ int mmc_map_to_kernel_blk(int dev_no)
 }
 #endif
 
-#if CONFIG_IS_ENABLED(ENV_IS_NOWHERE)
+#if IS_ENABLED(CONFIG_ENV_IS_NOWHERE)
 int mmc_get_env_dev(void)
 {
 	return board_mmc_get_env_dev(0);

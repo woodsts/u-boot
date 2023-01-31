@@ -40,7 +40,7 @@ void arch_print_bdinfo(void)
 	if (gd->arch.resv_ram)
 		bdinfo_print_num_ll("Reserved ram", gd->arch.resv_ram);
 #endif
-#if !(CONFIG_IS_ENABLED(SYS_ICACHE_OFF) && CONFIG_IS_ENABLED(SYS_DCACHE_OFF))
+#if !(IS_ENABLED(CONFIG_SYS_ICACHE_OFF) && IS_ENABLED(CONFIG_SYS_DCACHE_OFF))
 	bdinfo_print_num_l("TLB addr", gd->arch.tlb_addr);
 #endif
 	bdinfo_print_num_l("irq_sp", gd->irq_sp);	/* irq stack pointer */
@@ -57,7 +57,7 @@ void arch_print_bdinfo(void)
 #ifdef CONFIG_BOARD_TYPES
 	printf("Board Type  = %ld\n", gd->board_type);
 #endif
-#if CONFIG_IS_ENABLED(SYS_MALLOC_F)
+#if IS_ENABLED(CONFIG_SYS_MALLOC_F)
 	printf("Early malloc usage: %x / %x\n", gd->malloc_ptr,
 	       CONFIG_VAL(SYS_MALLOC_F_LEN));
 #endif

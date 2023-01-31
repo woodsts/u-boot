@@ -299,7 +299,7 @@ struct dm_serial_ops {
 struct serial_dev_priv {
 	struct stdio_dev *sdev;
 
-#if CONFIG_IS_ENABLED(SERIAL_RX_BUFFER)
+#if IS_ENABLED(CONFIG_SERIAL_RX_BUFFER)
 	char buf[CONFIG_SERIAL_RX_BUFFER_SIZE];
 	uint rd_ptr;
 	uint wr_ptr;
@@ -374,7 +374,7 @@ void serial_setbrg(void);
 void serial_putc(const char ch);
 void serial_putc_raw(const char ch);
 void serial_puts(const char *str);
-#if defined(CONFIG_CONSOLE_FLUSH_SUPPORT) && CONFIG_IS_ENABLED(DM_SERIAL)
+#if defined(CONFIG_CONSOLE_FLUSH_SUPPORT) && IS_ENABLED(CONFIG_DM_SERIAL)
 void serial_flush(void);
 #else
 static inline void serial_flush(void) {}

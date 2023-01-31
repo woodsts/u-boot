@@ -133,7 +133,7 @@ fdt_addr_t fdtdec_get_addr_size_fixed(const void *blob, int node,
 		return FDT_ADDR_T_NONE;
 	}
 
-#if CONFIG_IS_ENABLED(OF_TRANSLATE)
+#if IS_ENABLED(CONFIG_OF_TRANSLATE)
 	if (translate)
 		addr = fdt_translate_address(blob, node, prop_addr);
 	else
@@ -918,7 +918,7 @@ int fdt_get_resource(const void *fdt, int node, const char *property,
 
 	while (ptr + na + ns <= end) {
 		if (i == index) {
-			if (CONFIG_IS_ENABLED(OF_TRANSLATE))
+			if (IS_ENABLED(CONFIG_OF_TRANSLATE))
 				res->start = fdt_translate_address(fdt, node, ptr);
 			else
 				res->start = fdtdec_get_number(ptr, na);
@@ -1164,41 +1164,41 @@ int fdtdec_setup_mem_size_base_lowest(void)
 
 static int uncompress_blob(const void *src, ulong sz_src, void **dstp)
 {
-#if CONFIG_IS_ENABLED(MULTI_DTB_FIT_GZIP) ||\
-	CONFIG_IS_ENABLED(MULTI_DTB_FIT_LZO)
+#if IS_ENABLED(CONFIG_MULTI_DTB_FIT_GZIP) ||\
+	IS_ENABLED(CONFIG_MULTI_DTB_FIT_LZO)
 	size_t sz_out = CONFIG_VAL(MULTI_DTB_FIT_UNCOMPRESS_SZ);
 	bool gzip = 0, lzo = 0;
 	ulong sz_in = sz_src;
 	void *dst;
 	int rc;
 
-	if (CONFIG_IS_ENABLED(GZIP) && CONFIG_IS_ENABLED(MULTI_DTB_FIT_GZIP))
+	if (IS_ENABLED(CONFIG_GZIP) && IS_ENABLED(CONFIG_MULTI_DTB_FIT_GZIP))
 		if (gzip_parse_header(src, sz_in) >= 0)
 			gzip = 1;
-	if (CONFIG_IS_ENABLED(LZO) && CONFIG_IS_ENABLED(MULTI_DTB_FIT_LZO))
+	if (IS_ENABLED(CONFIG_LZO) && IS_ENABLED(CONFIG_MULTI_DTB_FIT_LZO))
 		if (!gzip && lzop_is_valid_header(src))
 			lzo = 1;
 
 	if (!gzip && !lzo)
 		return -EBADMSG;
 
-	if (CONFIG_IS_ENABLED(MULTI_DTB_FIT_DYN_ALLOC)) {
+	if (IS_ENABLED(CONFIG_MULTI_DTB_FIT_DYN_ALLOC)) {
 		dst = malloc(sz_out);
 		if (!dst) {
 			puts("uncompress_blob: Unable to allocate memory\n");
 			return -ENOMEM;
 		}
 	} else  {
-# if CONFIG_IS_ENABLED(MULTI_DTB_FIT_USER_DEFINED_AREA)
+# if IS_ENABLED(CONFIG_MULTI_DTB_FIT_USER_DEFINED_AREA)
 		dst = (void *)CONFIG_VAL(MULTI_DTB_FIT_USER_DEF_ADDR);
 # else
 		return -ENOTSUPP;
 # endif
 	}
 
-	if (CONFIG_IS_ENABLED(GZIP) && gzip)
+	if (IS_ENABLED(CONFIG_GZIP) && gzip)
 		rc = gunzip(dst, sz_out, (u8 *)src, &sz_in);
-	else if (CONFIG_IS_ENABLED(LZO) && lzo)
+	else if (IS_ENABLED(CONFIG_LZO) && lzo)
 		rc = lzop_decompress(src, sz_in, dst, &sz_out);
 	else
 		hang();
@@ -1206,7 +1206,7 @@ static int uncompress_blob(const void *src, ulong sz_src, void **dstp)
 	if (rc < 0) {
 		/* not a valid compressed blob */
 		puts("uncompress_blob: Unable to uncompress\n");
-		if (CONFIG_IS_ENABLED(MULTI_DTB_FIT_DYN_ALLOC))
+		if (IS_ENABLED(CONFIG_MULTI_DTB_FIT_DYN_ALLOC))
 			free(dst);
 		return -EBADMSG;
 	}
@@ -1232,7 +1232,7 @@ static void *fdt_find_separate(void)
 
 #ifdef CONFIG_XPL_BUILD
 	/* FDT is at end of BSS unless it is in a different memory region */
-	if (CONFIG_IS_ENABLED(SEPARATE_BSS))
+	if (IS_ENABLED(CONFIG_SEPARATE_BSS))
 		fdt_blob = (ulong *)_image_binary_end;
 	else
 		fdt_blob = (ulong *)__bss_end;
@@ -1672,7 +1672,7 @@ int fdtdec_setup(void)
 	int ret;
 
 	/* The devicetree is typically appended to U-Boot */
-	if (CONFIG_IS_ENABLED(OF_BLOBLIST)) {
+	if (IS_ENABLED(CONFIG_OF_BLOBLIST)) {
 		ret = bloblist_maybe_init();
 		if (ret)
 			return ret;
@@ -1722,7 +1722,7 @@ int fdtdec_setup(void)
 		}
 	}
 
-	if (CONFIG_IS_ENABLED(MULTI_DTB_FIT))
+	if (IS_ENABLED(CONFIG_MULTI_DTB_FIT))
 		setup_multi_dtb_fit();
 
 	ret = fdtdec_prepare_fdt(gd->fdt_blob);

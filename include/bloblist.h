@@ -453,7 +453,7 @@ int bloblist_reloc(void *to, uint to_size);
  */
 int bloblist_init(void);
 
-#if CONFIG_IS_ENABLED(BLOBLIST)
+#if IS_ENABLED(CONFIG_BLOBLIST)
 /**
  * bloblist_maybe_init() - Init the bloblist system if not already done
  *

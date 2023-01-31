@@ -60,7 +60,7 @@ int initcall_run_list(const init_fnc_t init_sequence[])
 		type = initcall_is_event(func);
 
 		if (type) {
-			if (!CONFIG_IS_ENABLED(EVENT))
+			if (!IS_ENABLED(CONFIG_EVENT))
 				continue;
 			debug("initcall: event %d/%s\n", type,
 			      event_type_name(type));
@@ -77,7 +77,7 @@ int initcall_run_list(const init_fnc_t init_sequence[])
 	}
 
 	if (ret) {
-		if (CONFIG_IS_ENABLED(EVENT)) {
+		if (IS_ENABLED(CONFIG_EVENT)) {
 			char buf[60];
 
 			/* don't worry about buf size as we are dying here */

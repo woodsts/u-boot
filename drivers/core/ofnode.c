@@ -23,7 +23,7 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
-#if CONFIG_IS_ENABLED(OFNODE_MULTI_TREE)
+#if IS_ENABLED(CONFIG_OFNODE_MULTI_TREE)
 static void *oftree_list[CONFIG_OFNODE_MULTI_TREE_MAX];
 static int oftree_count;
 
@@ -168,7 +168,7 @@ void *ofnode_to_fdt(ofnode node)
 	if (of_live_active())
 		return NULL;
 #endif
-	if (CONFIG_IS_ENABLED(OFNODE_MULTI_TREE) && ofnode_valid(node))
+	if (IS_ENABLED(CONFIG_OFNODE_MULTI_TREE) && ofnode_valid(node))
 		return ofnode_lookup_fdt(node);
 
 	/* Use the control FDT by default */
@@ -189,7 +189,7 @@ int ofnode_to_offset(ofnode node)
 	if (of_live_active())
 		return -1;
 #endif
-	if (CONFIG_IS_ENABLED(OFNODE_MULTI_TREE) && node.of_offset >= 0)
+	if (IS_ENABLED(CONFIG_OFNODE_MULTI_TREE) && node.of_offset >= 0)
 		return OFTREE_OFFSET(node.of_offset);
 
 	return node.of_offset;
@@ -199,7 +199,7 @@ oftree oftree_from_fdt(void *fdt)
 {
 	oftree tree;
 
-	if (CONFIG_IS_ENABLED(OFNODE_MULTI_TREE))
+	if (IS_ENABLED(CONFIG_OFNODE_MULTI_TREE))
 		return oftree_ensure(fdt);
 
 #ifdef OF_CHECKS
@@ -224,7 +224,7 @@ ofnode noffset_to_ofnode(ofnode other_node, int of_offset)
 
 	if (of_live_active())
 		node.np = NULL;
-	else if (!CONFIG_IS_ENABLED(OFNODE_MULTI_TREE) || of_offset < 0 ||
+	else if (!IS_ENABLED(CONFIG_OFNODE_MULTI_TREE) || of_offset < 0 ||
 		 !ofnode_valid(other_node))
 		node.of_offset = of_offset;
 	else
@@ -283,7 +283,7 @@ static ofnode ofnode_from_tree_offset(oftree tree, int offset)
 {
 	ofnode node;
 
-	if (CONFIG_IS_ENABLED(OFNODE_MULTI_TREE) && offset >= 0) {
+	if (IS_ENABLED(CONFIG_OFNODE_MULTI_TREE) && offset >= 0) {
 		int tree_id = oftree_find(tree.fdt);
 
 		if (tree_id == -1)
@@ -659,7 +659,7 @@ int ofnode_read_u32_array(ofnode node, const char *propname,
 	}
 }
 
-#if !CONFIG_IS_ENABLED(DM_INLINE_OFNODE)
+#if !IS_ENABLED(CONFIG_DM_INLINE_OFNODE)
 bool ofnode_is_enabled(ofnode node)
 {
 	if (ofnode_is_np(node)) {
@@ -1405,7 +1405,7 @@ fdt_addr_t ofnode_get_addr_size(ofnode node, const char *property,
 		ns = of_n_size_cells(np);
 		*sizep = of_read_number(prop + na, ns);
 
-		if (CONFIG_IS_ENABLED(OF_TRANSLATE) && ns > 0)
+		if (IS_ENABLED(CONFIG_OF_TRANSLATE) && ns > 0)
 			return of_translate_address(np, prop);
 		else
 			return of_read_number(prop, na);

@@ -22,7 +22,7 @@ struct blk_desc;
 struct bootflow;
 struct jmp_buf_data;
 
-#if CONFIG_IS_ENABLED(EFI_LOADER)
+#if IS_ENABLED(CONFIG_EFI_LOADER)
 
 /**
  * __efi_runtime_data - declares a non-const variable for EFI runtime section
@@ -90,7 +90,7 @@ void efi_print_image_infos(void *pc);
 /* Hook at initialization */
 efi_status_t efi_launch_capsules(void);
 
-#else /* CONFIG_IS_ENABLED(EFI_LOADER) */
+#else /* IS_ENABLED(CONFIG_EFI_LOADER) */
 
 /* Without CONFIG_EFI_LOADER we don't have a runtime section, stub it out */
 #define __efi_runtime_data
@@ -110,9 +110,9 @@ static inline efi_status_t efi_launch_capsules(void)
 	return EFI_SUCCESS;
 }
 
-#endif /* CONFIG_IS_ENABLED(EFI_LOADER) */
+#endif /* IS_ENABLED(CONFIG_EFI_LOADER) */
 
-#if CONFIG_IS_ENABLED(EFI_BINARY_EXEC)
+#if IS_ENABLED(CONFIG_EFI_BINARY_EXEC)
 /* Call this to unset the current device name */
 void efi_clear_bootdev(void);
 /* Call this to set the current device name */

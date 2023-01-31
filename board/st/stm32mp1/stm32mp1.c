@@ -271,7 +271,7 @@ static int setup_led(enum led_state_t cmd)
 	struct udevice *dev;
 	int ret;
 
-	if (!CONFIG_IS_ENABLED(LED))
+	if (!IS_ENABLED(CONFIG_LED))
 		return 0;
 
 	ret = get_led(&dev, "u-boot,boot-led");
@@ -291,7 +291,7 @@ static void __maybe_unused led_error_blink(u32 nb_blink)
 	if (!nb_blink)
 		return;
 
-	if (CONFIG_IS_ENABLED(LED)) {
+	if (IS_ENABLED(CONFIG_LED)) {
 		ret = get_led(&led, "u-boot,error-led");
 		if (!ret) {
 			/* make u-boot,error-led blinking */
@@ -615,7 +615,7 @@ error:
 
 static bool board_is_stm32mp15x_dk2(void)
 {
-	if (CONFIG_IS_ENABLED(TARGET_ST_STM32MP15X) &&
+	if (IS_ENABLED(CONFIG_TARGET_ST_STM32MP15X) &&
 	    of_machine_is_compatible("st,stm32mp157c-dk2"))
 		return true;
 
@@ -624,7 +624,7 @@ static bool board_is_stm32mp15x_dk2(void)
 
 static bool board_is_stm32mp15x_ev1(void)
 {
-	if (CONFIG_IS_ENABLED(TARGET_ST_STM32MP15X) &&
+	if (IS_ENABLED(CONFIG_TARGET_ST_STM32MP15X) &&
 	    (of_machine_is_compatible("st,stm32mp157a-ev1") ||
 	     of_machine_is_compatible("st,stm32mp157c-ev1") ||
 	     of_machine_is_compatible("st,stm32mp157d-ev1") ||
@@ -749,9 +749,9 @@ enum env_location env_get_location(enum env_operation op, int prio)
 	switch (bootmode & TAMP_BOOT_DEVICE_MASK) {
 	case BOOT_FLASH_SD:
 	case BOOT_FLASH_EMMC:
-		if (CONFIG_IS_ENABLED(ENV_IS_IN_MMC))
+		if (IS_ENABLED(CONFIG_ENV_IS_IN_MMC))
 			return ENVL_MMC;
-		else if (CONFIG_IS_ENABLED(ENV_IS_IN_EXT4))
+		else if (IS_ENABLED(CONFIG_ENV_IS_IN_EXT4))
 			return ENVL_EXT4;
 		else
 			return ENVL_NOWHERE;
@@ -764,7 +764,7 @@ enum env_location env_get_location(enum env_operation op, int prio)
 			return ENVL_NOWHERE;
 
 	case BOOT_FLASH_NOR:
-		if (CONFIG_IS_ENABLED(ENV_IS_IN_SPI_FLASH))
+		if (IS_ENABLED(CONFIG_ENV_IS_IN_SPI_FLASH))
 			return ENVL_SPI_FLASH;
 		else
 			return ENVL_NOWHERE;

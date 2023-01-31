@@ -916,7 +916,7 @@ int dwc3_uboot_init(struct dwc3_device *dwc3_dev)
 
 	if (!IS_ENABLED(CONFIG_USB_DWC3_GADGET))
 		dwc->dr_mode = USB_DR_MODE_HOST;
-	else if (!CONFIG_IS_ENABLED(USB_HOST))
+	else if (!IS_ENABLED(CONFIG_USB_HOST))
 		dwc->dr_mode = USB_DR_MODE_PERIPHERAL;
 
 	if (dwc->dr_mode == USB_DR_MODE_UNKNOWN)
@@ -988,7 +988,7 @@ MODULE_AUTHOR("Felipe Balbi <balbi@ti.com>");
 MODULE_LICENSE("GPL v2");
 MODULE_DESCRIPTION("DesignWare USB3 DRD Controller Driver");
 
-#if !CONFIG_IS_ENABLED(DM_USB_GADGET)
+#if !IS_ENABLED(CONFIG_DM_USB_GADGET)
 __weak int dwc3_uboot_interrupt_status(struct udevice *dev)
 {
 	return 1;
@@ -1021,7 +1021,7 @@ int dm_usb_gadget_handle_interrupts(struct udevice *dev)
 }
 #endif
 
-#if CONFIG_IS_ENABLED(PHY) && CONFIG_IS_ENABLED(DM_USB)
+#if IS_ENABLED(CONFIG_PHY) && IS_ENABLED(CONFIG_DM_USB)
 int dwc3_setup_phy(struct udevice *dev, struct phy_bulk *phys)
 {
 	int ret;
@@ -1051,7 +1051,7 @@ int dwc3_shutdown_phy(struct udevice *dev, struct phy_bulk *phys)
 }
 #endif
 
-#if CONFIG_IS_ENABLED(DM_USB)
+#if IS_ENABLED(CONFIG_DM_USB)
 void dwc3_of_parse(struct dwc3 *dwc)
 {
 	const u8 *tmp;

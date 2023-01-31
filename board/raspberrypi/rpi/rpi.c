@@ -588,7 +588,7 @@ int ft_board_setup(void *blob, struct bd_info *bd)
 	return 0;
 }
 
-#if CONFIG_IS_ENABLED(GENERATE_ACPI_TABLE)
+#if IS_ENABLED(CONFIG_GENERATE_ACPI_TABLE)
 static bool is_rpi4(void)
 {
 	return of_machine_is_compatible("brcm,bcm2711") ||

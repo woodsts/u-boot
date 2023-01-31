@@ -76,7 +76,7 @@ static int spl_mmc_find_device(struct mmc **mmcp, int mmc_dev)
 {
 	int ret;
 
-#if CONFIG_IS_ENABLED(DM_MMC)
+#if IS_ENABLED(CONFIG_DM_MMC)
 	struct udevice *dev;
 	struct uclass *uc;
 
@@ -100,7 +100,7 @@ static int spl_mmc_find_device(struct mmc **mmcp, int mmc_dev)
 		       mmc_dev, ret);
 		return ret;
 	}
-#if CONFIG_IS_ENABLED(DM_MMC)
+#if IS_ENABLED(CONFIG_DM_MMC)
 	log_debug("mmc %d: %s\n", mmc_dev, (*mmcp)->dev->name);
 #endif
 
@@ -145,7 +145,7 @@ static int mmc_load_image_raw_partition(struct spl_image_info *spl_image,
 }
 #endif
 
-#if CONFIG_IS_ENABLED(FALCON_BOOT_MMCSD)
+#if IS_ENABLED(CONFIG_FALCON_BOOT_MMCSD)
 static int mmc_load_image_raw_os(struct spl_image_info *spl_image,
 				 struct spl_boot_device *bootdev,
 				 struct mmc *mmc)
@@ -326,7 +326,7 @@ int __weak spl_mmc_emmc_boot_partition(struct mmc *mmc)
 static int spl_mmc_get_mmc_devnum(struct mmc *mmc)
 {
 	struct blk_desc *block_dev;
-#if !CONFIG_IS_ENABLED(BLK)
+#if !IS_ENABLED(CONFIG_BLK)
 	block_dev = &mmc->block_dev;
 #else
 	block_dev = mmc_get_blk_desc(mmc);
@@ -375,7 +375,7 @@ int spl_mmc_load(struct spl_image_info *spl_image,
 	case MMCSD_MODE_EMMCBOOT:
 		part = spl_mmc_emmc_boot_partition(mmc);
 
-		if (CONFIG_IS_ENABLED(MMC_TINY))
+		if (IS_ENABLED(CONFIG_MMC_TINY))
 			ret = mmc_switch_part(mmc, part);
 		else
 			ret = blk_dselect_hwpart(mmc_get_blk_desc(mmc), part);

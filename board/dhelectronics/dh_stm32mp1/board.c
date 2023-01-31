@@ -235,7 +235,7 @@ static void board_get_coding_straps(void)
 
 	gpio_free_list_nodev(gpio, ret);
 
-	if (CONFIG_IS_ENABLED(DISPLAY_PRINT))
+	if (IS_ENABLED(CONFIG_DISPLAY_PRINT))
 		printf("Code:  SoM:rev=%d,ddr3=%d Board:rev=%d\n",
 		       somcode, ddr3code, brdcode);
 }

@@ -454,7 +454,7 @@ int dfu_write_from_mem_addr(struct dfu_entity *dfu, void *buf, int size);
 /* Each entity has 5 arguments in maximum. */
 #define DFU_MAX_ENTITY_ARGS	5
 
-#if CONFIG_IS_ENABLED(DFU_MMC)
+#if IS_ENABLED(CONFIG_DFU_MMC)
 extern int dfu_fill_entity_mmc(struct dfu_entity *dfu, char *devstr,
 			       char **argv, int argc);
 #else
@@ -466,7 +466,7 @@ static inline int dfu_fill_entity_mmc(struct dfu_entity *dfu, char *devstr,
 }
 #endif
 
-#if CONFIG_IS_ENABLED(DFU_NAND)
+#if IS_ENABLED(CONFIG_DFU_NAND)
 extern int dfu_fill_entity_nand(struct dfu_entity *dfu, char *devstr,
 				char **argv, int argc);
 #else
@@ -478,7 +478,7 @@ static inline int dfu_fill_entity_nand(struct dfu_entity *dfu, char *devstr,
 }
 #endif
 
-#if CONFIG_IS_ENABLED(DFU_RAM)
+#if IS_ENABLED(CONFIG_DFU_RAM)
 extern int dfu_fill_entity_ram(struct dfu_entity *dfu, char *devstr,
 			       char **argv, int argc);
 #else
@@ -490,7 +490,7 @@ static inline int dfu_fill_entity_ram(struct dfu_entity *dfu, char *devstr,
 }
 #endif
 
-#if CONFIG_IS_ENABLED(DFU_SF)
+#if IS_ENABLED(CONFIG_DFU_SF)
 extern int dfu_fill_entity_sf(struct dfu_entity *dfu, char *devstr,
 			      char **argv, int argc);
 #else
@@ -502,7 +502,7 @@ static inline int dfu_fill_entity_sf(struct dfu_entity *dfu, char *devstr,
 }
 #endif
 
-#if CONFIG_IS_ENABLED(DFU_MTD)
+#if IS_ENABLED(CONFIG_DFU_MTD)
 extern int dfu_fill_entity_mtd(struct dfu_entity *dfu, char *devstr,
 			       char **argv, int argc);
 #else
@@ -514,7 +514,7 @@ static inline int dfu_fill_entity_mtd(struct dfu_entity *dfu, char *devstr,
 }
 #endif
 
-#if CONFIG_IS_ENABLED(DFU_VIRT)
+#if IS_ENABLED(CONFIG_DFU_VIRT)
 int dfu_fill_entity_virt(struct dfu_entity *dfu, char *devstr,
 			 char **argv, int argc);
 int dfu_write_medium_virt(struct dfu_entity *dfu, u64 offset,
@@ -531,7 +531,7 @@ static inline int dfu_fill_entity_virt(struct dfu_entity *dfu, char *devstr,
 }
 #endif
 
-#if CONFIG_IS_ENABLED(DFU_SCSI)
+#if IS_ENABLED(CONFIG_DFU_SCSI)
 int dfu_fill_entity_scsi(struct dfu_entity *dfu, char *devstr,
 			 char **argv, int argc);
 #else
@@ -546,7 +546,7 @@ static inline int dfu_fill_entity_scsi(struct dfu_entity *dfu, char *devstr,
 extern bool dfu_reinit_needed;
 extern bool dfu_alt_info_changed;
 
-#if CONFIG_IS_ENABLED(DFU_WRITE_ALT)
+#if IS_ENABLED(CONFIG_DFU_WRITE_ALT)
 /**
  * dfu_write_by_name() - write data to DFU medium
  * @dfu_entity_name:	Name of DFU entity to write

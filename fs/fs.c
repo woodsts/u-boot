@@ -187,7 +187,7 @@ struct fstype_info {
 };
 
 static struct fstype_info fstypes[] = {
-#if CONFIG_IS_ENABLED(FS_FAT)
+#if IS_ENABLED(CONFIG_FS_FAT)
 	{
 		.fstype = FS_TYPE_FAT,
 		.name = "fat",
@@ -198,7 +198,7 @@ static struct fstype_info fstypes[] = {
 		.exists = fat_exists,
 		.size = fat_size,
 		.read = fat_read_file,
-#if CONFIG_IS_ENABLED(FAT_WRITE)
+#if IS_ENABLED(CONFIG_FAT_WRITE)
 		.write = file_fat_write,
 		.unlink = fat_unlink,
 		.mkdir = fat_mkdir,
@@ -215,7 +215,7 @@ static struct fstype_info fstypes[] = {
 	},
 #endif
 
-#if CONFIG_IS_ENABLED(FS_EXT4)
+#if IS_ENABLED(CONFIG_FS_EXT4)
 	{
 		.fstype = FS_TYPE_EXT,
 		.name = "ext4",
@@ -260,7 +260,7 @@ static struct fstype_info fstypes[] = {
 		.ln = fs_ln_unsupported,
 	},
 #endif
-#if CONFIG_IS_ENABLED(SEMIHOSTING)
+#if IS_ENABLED(CONFIG_SEMIHOSTING)
 	{
 		.fstype = FS_TYPE_SEMIHOSTING,
 		.name = "semihosting",
@@ -321,7 +321,7 @@ static struct fstype_info fstypes[] = {
 	},
 #endif
 #endif
-#if CONFIG_IS_ENABLED(FS_SQUASHFS)
+#if IS_ENABLED(CONFIG_FS_SQUASHFS)
 	{
 		.fstype = FS_TYPE_SQUASHFS,
 		.name = "squashfs",
@@ -530,7 +530,7 @@ int fs_size(const char *filename, loff_t *size)
 	return ret;
 }
 
-#if CONFIG_IS_ENABLED(LMB)
+#if IS_ENABLED(CONFIG_LMB)
 /* Check if a file may be read to the given address */
 static int fs_read_lmb_check(const char *filename, ulong addr, loff_t offset,
 			     loff_t len, struct fstype_info *info)
@@ -570,7 +570,7 @@ static int _fs_read(const char *filename, ulong addr, loff_t offset, loff_t len,
 	void *buf;
 	int ret;
 
-#if CONFIG_IS_ENABLED(LMB)
+#if IS_ENABLED(CONFIG_LMB)
 	if (do_lmb_check) {
 		ret = fs_read_lmb_check(filename, addr, offset, len, info);
 		if (ret)

@@ -14,7 +14,7 @@
 #include <image.h>
 #include <version.h>
 
-#if CONFIG_IS_ENABLED(FIT_SIGNATURE)
+#if IS_ENABLED(CONFIG_FIT_SIGNATURE)
 #include <openssl/pem.h>
 #include <openssl/evp.h>
 #endif
@@ -1155,7 +1155,7 @@ static int fit_config_add_verification_data(const char *keydir,
 	return 0;
 }
 
-#if CONFIG_IS_ENABLED(FIT_SIGNATURE)
+#if IS_ENABLED(CONFIG_FIT_SIGNATURE)
 /*
  * 0) open file (open)
  * 1) read certificate (PEM_read_X509)

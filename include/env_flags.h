@@ -14,7 +14,7 @@ enum env_flags_vartype {
 	env_flags_vartype_decimal,
 	env_flags_vartype_hex,
 	env_flags_vartype_bool,
-#if CONFIG_IS_ENABLED(NET)
+#if IS_ENABLED(CONFIG_NET)
 	env_flags_vartype_ipaddr,
 	env_flags_vartype_macaddr,
 #endif
@@ -41,7 +41,7 @@ enum env_flags_varaccess {
 #define CFG_ENV_FLAGS_LIST_STATIC ""
 #endif
 
-#if CONFIG_IS_ENABLED(NET)
+#if IS_ENABLED(CONFIG_NET)
 #ifdef CONFIG_REGEX
 #define ETHADDR_WILDCARD "\\d*"
 #else

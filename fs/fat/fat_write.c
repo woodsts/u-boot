@@ -1158,7 +1158,7 @@ getit:
  */
 static void dentry_set_time(dir_entry *dentptr)
 {
-	if (CONFIG_IS_ENABLED(DM_RTC)) {
+	if (IS_ENABLED(CONFIG_DM_RTC)) {
 		struct udevice *dev;
 		struct rtc_time tm;
 		u16 date;

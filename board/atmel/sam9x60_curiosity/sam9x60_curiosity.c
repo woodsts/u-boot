@@ -28,7 +28,7 @@ void at91_prepare_cpu_var(void);
 
 static void board_leds_init(void)
 {
-#if CONFIG_IS_ENABLED(LED)
+#if IS_ENABLED(CONFIG_LED)
 	const char *led_name;
 	struct udevice *dev;
 	int ret;

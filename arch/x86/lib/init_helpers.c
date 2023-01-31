@@ -14,7 +14,7 @@ DECLARE_GLOBAL_DATA_PTR;
 
 int init_cache_f_r(void)
 {
-	bool do_mtrr = CONFIG_IS_ENABLED(X86_32BIT_INIT) ||
+	bool do_mtrr = IS_ENABLED(CONFIG_X86_32BIT_INIT) ||
 		 IS_ENABLED(CONFIG_FSP_VERSION2) ||
 		 (IS_ENABLED(CONFIG_TPL) && IS_ENABLED(CONFIG_HAVE_MRC));
 	int ret;

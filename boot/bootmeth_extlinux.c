@@ -145,7 +145,7 @@ static int extlinux_local_boot(struct udevice *dev, struct bootflow *bflow)
 	return extlinux_boot(dev, bflow, extlinux_getfile, true, bflow->fname);
 }
 
-#if CONFIG_IS_ENABLED(BOOTSTD_FULL)
+#if IS_ENABLED(CONFIG_BOOTSTD_FULL)
 static int extlinux_local_read_all(struct udevice *dev, struct bootflow *bflow)
 {
 	return extlinux_read_all(dev, bflow, extlinux_getfile, true,
@@ -170,7 +170,7 @@ static struct bootmeth_ops extlinux_bootmeth_ops = {
 	.read_file	= bootmeth_common_read_file,
 	.boot		= extlinux_local_boot,
 	.set_property	= extlinux_set_property,
-#if CONFIG_IS_ENABLED(BOOTSTD_FULL)
+#if IS_ENABLED(CONFIG_BOOTSTD_FULL)
 	.read_all	= extlinux_local_read_all,
 #endif
 };

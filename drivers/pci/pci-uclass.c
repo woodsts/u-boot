@@ -722,7 +722,7 @@ static bool pci_need_device_pre_reloc(struct udevice *bus, uint vendor,
 	u32 vendev;
 	int index;
 
-	if (xpl_phase() == PHASE_SPL && CONFIG_IS_ENABLED(PCI_PNP))
+	if (xpl_phase() == PHASE_SPL && IS_ENABLED(CONFIG_PCI_PNP))
 		return true;
 
 	for (index = 0;
@@ -797,7 +797,7 @@ static int pci_find_and_bind_driver(struct udevice *parent,
 			 */
 			if (!(gd->flags & GD_FLG_RELOC) &&
 			    !(drv->flags & DM_FLAG_PRE_RELOC) &&
-			    (!CONFIG_IS_ENABLED(PCI_PNP) ||
+			    (!IS_ENABLED(CONFIG_PCI_PNP) ||
 			     xpl_phase() != PHASE_SPL))
 				return log_msg_ret("pre", -EPERM);
 
@@ -1151,7 +1151,7 @@ static int pci_uclass_post_probe(struct udevice *bus)
 	if (ret)
 		return log_msg_ret("bind", ret);
 
-	if (CONFIG_IS_ENABLED(PCI_PNP) && ll_boot_init() &&
+	if (IS_ENABLED(CONFIG_PCI_PNP) && ll_boot_init() &&
 	    (!hose->skip_auto_config_until_reloc ||
 	     (gd->flags & GD_FLG_RELOC))) {
 		ret = pci_auto_config_devices(bus);

@@ -115,7 +115,7 @@ static void usage(const char *msg)
 		"          -B => align size in hex for FIT structure and header\n"
 		"          -b => append the device tree binary to the FIT\n"
 		"          -t => update the timestamp in the FIT\n");
-#if CONFIG_IS_ENABLED(FIT_SIGNATURE)
+#if IS_ENABLED(CONFIG_FIT_SIGNATURE)
 	fprintf(stderr,
 		"Signing / verified boot options: [-k keydir] [-K dtb] [ -c <comment>] [-p addr] [-r] [-N engine]\n"
 		"          -k => set directory containing private keys\n"

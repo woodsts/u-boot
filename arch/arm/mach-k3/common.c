@@ -112,7 +112,7 @@ int early_console_init(void)
 }
 #endif
 
-#if CONFIG_IS_ENABLED(FIT_IMAGE_POST_PROCESS) && !IS_ENABLED(CONFIG_SYS_K3_SPL_ATF)
+#if IS_ENABLED(CONFIG_FIT_IMAGE_POST_PROCESS) && !IS_ENABLED(CONFIG_SYS_K3_SPL_ATF)
 void board_fit_image_post_process(const void *fit, int node, void **p_image,
 				  size_t *p_size)
 {

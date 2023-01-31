@@ -318,7 +318,7 @@ static int label_localboot(struct pxe_label *label)
 
 static void label_boot_kaslrseed(void)
 {
-#if CONFIG_IS_ENABLED(DM_RNG)
+#if IS_ENABLED(CONFIG_DM_RNG)
 	ulong fdt_addr;
 	struct fdt_header *working_fdt;
 	int err;

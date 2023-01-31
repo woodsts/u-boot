@@ -222,7 +222,7 @@ static const struct udevice_id ssusb_of_match[] = {
 	{},
 };
 
-#if CONFIG_IS_ENABLED(DM_USB_GADGET)
+#if IS_ENABLED(CONFIG_DM_USB_GADGET)
 static int mtu3_gadget_probe(struct udevice *dev)
 {
 	struct ssusb_mtk *ssusb = dev_to_ssusb(dev->parent);
@@ -325,7 +325,7 @@ static int mtu3_glue_bind(struct udevice *parent)
 	dr_mode = usb_get_dr_mode(node);
 
 	switch (dr_mode) {
-#if CONFIG_IS_ENABLED(DM_USB_GADGET)
+#if IS_ENABLED(CONFIG_DM_USB_GADGET)
 	case USB_DR_MODE_PERIPHERAL:
 	case USB_DR_MODE_OTG:
 		dev_dbg(parent, "%s: dr_mode: peripheral\n", __func__);

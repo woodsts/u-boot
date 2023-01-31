@@ -235,7 +235,7 @@ int video_fill(struct udevice *dev, u32 colour)
 
 	switch (priv->bpix) {
 	case VIDEO_BPP16:
-		if (CONFIG_IS_ENABLED(VIDEO_BPP16)) {
+		if (IS_ENABLED(CONFIG_VIDEO_BPP16)) {
 			u16 *ppix = priv->fb;
 			u16 *end = priv->fb + priv->fb_size;
 
@@ -244,7 +244,7 @@ int video_fill(struct udevice *dev, u32 colour)
 			break;
 		}
 	case VIDEO_BPP32:
-		if (CONFIG_IS_ENABLED(VIDEO_BPP32)) {
+		if (IS_ENABLED(CONFIG_VIDEO_BPP32)) {
 			u32 *ppix = priv->fb;
 			u32 *end = priv->fb + priv->fb_size;
 
@@ -300,14 +300,14 @@ u32 video_index_to_colour(struct video_priv *priv, enum colour_idx idx)
 {
 	switch (priv->bpix) {
 	case VIDEO_BPP16:
-		if (CONFIG_IS_ENABLED(VIDEO_BPP16)) {
+		if (IS_ENABLED(CONFIG_VIDEO_BPP16)) {
 			return ((colours[idx].r >> 3) << 11) |
 			       ((colours[idx].g >> 2) <<  5) |
 			       ((colours[idx].b >> 3) <<  0);
 		}
 		break;
 	case VIDEO_BPP32:
-		if (CONFIG_IS_ENABLED(VIDEO_BPP32)) {
+		if (IS_ENABLED(CONFIG_VIDEO_BPP32)) {
 			switch (priv->format) {
 			case VIDEO_X2R10G10B10:
 				return (colours[idx].r << 22) |
@@ -343,7 +343,7 @@ void video_set_default_colors(struct udevice *dev, bool invert)
 	struct video_priv *priv = dev_get_uclass_priv(dev);
 	int fore, back;
 
-	if (CONFIG_IS_ENABLED(SYS_WHITE_ON_BLACK)) {
+	if (IS_ENABLED(CONFIG_SYS_WHITE_ON_BLACK)) {
 		/* White is used when switching to bold, use light gray here */
 		fore = VID_LIGHT_GRAY;
 		back = VID_BLACK;
@@ -402,7 +402,7 @@ static void video_flush_dcache(struct udevice *vid, bool use_copy)
 	cacheline_size = CONFIG_SYS_CACHELINE_SIZE;
 #endif
 
-	if (CONFIG_IS_ENABLED(SYS_DCACHE_OFF))
+	if (IS_ENABLED(CONFIG_SYS_DCACHE_OFF))
 		return;
 
 	if (!priv->flush_dcache)
@@ -469,7 +469,7 @@ int video_sync(struct udevice *vid, bool force)
 			return ret;
 	}
 
-	if (CONFIG_IS_ENABLED(CYCLIC) && !force &&
+	if (IS_ENABLED(CONFIG_CYCLIC) && !force &&
 	    get_timer(priv->last_sync) < CONFIG_VIDEO_SYNC_MS)
 		return 0;
 
@@ -603,7 +603,7 @@ static int video_post_probe(struct udevice *dev)
 	 * NOTE:
 	 * This assumes that reserved video memory only uses a single framebuffer
 	 */
-	if (xpl_phase() == PHASE_SPL && CONFIG_IS_ENABLED(BLOBLIST)) {
+	if (xpl_phase() == PHASE_SPL && IS_ENABLED(CONFIG_BLOBLIST)) {
 		struct video_handoff *ho;
 
 		ho = bloblist_add(BLOBLISTT_U_BOOT_VIDEO, sizeof(*ho), 0);
@@ -625,7 +625,7 @@ static int video_post_probe(struct udevice *dev)
 	/* Set up colors  */
 	video_set_default_colors(dev, false);
 
-	if (!CONFIG_IS_ENABLED(NO_FB_CLEAR))
+	if (!IS_ENABLED(CONFIG_NO_FB_CLEAR))
 		video_clear(dev);
 
 	/*
@@ -667,8 +667,8 @@ static int video_post_probe(struct udevice *dev)
 		return ret;
 	}
 
-	if (CONFIG_IS_ENABLED(VIDEO_LOGO) &&
-	    !CONFIG_IS_ENABLED(SPLASH_SCREEN) && !plat->hide_logo) {
+	if (IS_ENABLED(CONFIG_VIDEO_LOGO) &&
+	    !IS_ENABLED(CONFIG_SPLASH_SCREEN) && !plat->hide_logo) {
 		ret = show_splash(dev);
 		if (ret) {
 			log_debug("Cannot show splash screen\n");
@@ -677,7 +677,7 @@ static int video_post_probe(struct udevice *dev)
 	}
 
 	/* register cyclic as soon as the first video device is probed */
-	if (CONFIG_IS_ENABLED(CYCLIC) && (gd->flags && GD_FLG_RELOC) &&
+	if (IS_ENABLED(CONFIG_CYCLIC) && (gd->flags && GD_FLG_RELOC) &&
 	    !uc_priv->cyc_active) {
 		uint ms = CONFIG_IF_ENABLED_INT(CYCLIC, VIDEO_SYNC_CYCLIC_MS);
 

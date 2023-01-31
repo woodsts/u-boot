@@ -77,7 +77,7 @@ static inline int store_block(uchar *src, unsigned int offset, unsigned int len)
 	ulong newsize = offset + len;
 	uchar *ptr;
 
-	if (CONFIG_IS_ENABLED(LMB) && wget_info->set_bootdev) {
+	if (IS_ENABLED(CONFIG_LMB) && wget_info->set_bootdev) {
 		if (store_addr < image_load_addr ||
 		    lmb_read_check(store_addr, len)) {
 			printf("\nwget error: ");

@@ -11,7 +11,7 @@
 #include <command.h>
 #include <console.h>
 #include <led.h>
-#if CONFIG_IS_ENABLED(CMD_MTD_OTP)
+#if IS_ENABLED(CONFIG_CMD_MTD_OTP)
 #include <hexdump.h>
 #endif
 #include <malloc.h>
@@ -205,7 +205,7 @@ static bool mtd_oob_write_is_empty(struct mtd_oob_ops *op)
 	return true;
 }
 
-#if CONFIG_IS_ENABLED(CMD_MTD_OTP)
+#if IS_ENABLED(CONFIG_CMD_MTD_OTP)
 static int do_mtd_otp_read(struct cmd_tbl *cmdtp, int flag, int argc,
 			   char *const argv[])
 {
@@ -777,7 +777,7 @@ U_BOOT_LONGHELP(mtd,
 	"\n"
 	"Specific functions:\n"
 	"mtd bad                               <name>\n"
-#if CONFIG_IS_ENABLED(CMD_MTD_OTP)
+#if IS_ENABLED(CONFIG_CMD_MTD_OTP)
 	"mtd otpread                           <name> [u|f] <off> <size>\n"
 	"mtd otpwrite                          <name> <off> <hex string>\n"
 	"mtd otplock                           <name> <off> <size>\n"
@@ -793,7 +793,7 @@ U_BOOT_LONGHELP(mtd,
 	"\t<size>: length of the operation in bytes (default: the entire device)\n"
 	"\t\t* must be a multiple of a block for erase\n"
 	"\t\t* must be a multiple of a page otherwise (special case: default is a page with dump)\n"
-#if CONFIG_IS_ENABLED(CMD_MTD_OTP)
+#if IS_ENABLED(CONFIG_CMD_MTD_OTP)
 	"\t<hex string>: hex string without '0x' and spaces. Example: ABCD1234\n"
 	"\t[u|f]: user or factory OTP region\n"
 #endif
@@ -801,7 +801,7 @@ U_BOOT_LONGHELP(mtd,
 	"The .dontskipff option forces writing empty pages, don't use it if unsure.\n");
 
 U_BOOT_CMD_WITH_SUBCMDS(mtd, "MTD utils", mtd_help_text,
-#if CONFIG_IS_ENABLED(CMD_MTD_OTP)
+#if IS_ENABLED(CONFIG_CMD_MTD_OTP)
 		U_BOOT_SUBCMD_MKENT(otpread, 5, 1, do_mtd_otp_read),
 		U_BOOT_SUBCMD_MKENT(otpwrite, 4, 1, do_mtd_otp_write),
 		U_BOOT_SUBCMD_MKENT(otplock, 4, 1, do_mtd_otp_lock),

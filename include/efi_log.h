@@ -126,7 +126,7 @@ struct efil_free_pool {
  * Common errors are -ENOENT if there is no log and -ENOSPC if the log is full
  */
 
-#if CONFIG_IS_ENABLED(EFI_LOG)
+#if IS_ENABLED(CONFIG_EFI_LOG)
 
 /**
  * efi_logs_testing() - Record a test call to an efi function

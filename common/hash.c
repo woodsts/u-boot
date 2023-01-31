@@ -206,7 +206,7 @@ static int __maybe_unused hash_finish_crc32(struct hash_algo *algo, void *ctx,
  * Note that algorithm names must be in lower case.
  */
 static struct hash_algo hash_algo[] = {
-#if CONFIG_IS_ENABLED(MD5)
+#if IS_ENABLED(CONFIG_MD5)
 	{
 		.name		= "md5",
 		.digest_size	= MD5_SUM_LEN,
@@ -214,17 +214,17 @@ static struct hash_algo hash_algo[] = {
 		.hash_func_ws	= md5_wd,
 	},
 #endif
-#if CONFIG_IS_ENABLED(SHA1)
+#if IS_ENABLED(CONFIG_SHA1)
 	{
 		.name		= "sha1",
 		.digest_size	= SHA1_SUM_LEN,
 		.chunk_size	= CHUNKSZ_SHA1,
-#if CONFIG_IS_ENABLED(SHA_HW_ACCEL)
+#if IS_ENABLED(CONFIG_SHA_HW_ACCEL)
 		.hash_func_ws	= hw_sha1,
 #else
 		.hash_func_ws	= sha1_csum_wd,
 #endif
-#if CONFIG_IS_ENABLED(SHA_PROG_HW_ACCEL)
+#if IS_ENABLED(CONFIG_SHA_PROG_HW_ACCEL)
 		.hash_init	= hw_sha_init,
 		.hash_update	= hw_sha_update,
 		.hash_finish	= hw_sha_finish,
@@ -235,17 +235,17 @@ static struct hash_algo hash_algo[] = {
 #endif
 	},
 #endif
-#if CONFIG_IS_ENABLED(SHA256)
+#if IS_ENABLED(CONFIG_SHA256)
 	{
 		.name		= "sha256",
 		.digest_size	= SHA256_SUM_LEN,
 		.chunk_size	= CHUNKSZ_SHA256,
-#if CONFIG_IS_ENABLED(SHA_HW_ACCEL)
+#if IS_ENABLED(CONFIG_SHA_HW_ACCEL)
 		.hash_func_ws	= hw_sha256,
 #else
 		.hash_func_ws	= sha256_csum_wd,
 #endif
-#if CONFIG_IS_ENABLED(SHA_PROG_HW_ACCEL)
+#if IS_ENABLED(CONFIG_SHA_PROG_HW_ACCEL)
 		.hash_init	= hw_sha_init,
 		.hash_update	= hw_sha_update,
 		.hash_finish	= hw_sha_finish,
@@ -256,17 +256,17 @@ static struct hash_algo hash_algo[] = {
 #endif
 	},
 #endif
-#if CONFIG_IS_ENABLED(SHA384)
+#if IS_ENABLED(CONFIG_SHA384)
 	{
 		.name		= "sha384",
 		.digest_size	= SHA384_SUM_LEN,
 		.chunk_size	= CHUNKSZ_SHA384,
-#if CONFIG_IS_ENABLED(SHA512_HW_ACCEL)
+#if IS_ENABLED(CONFIG_SHA512_HW_ACCEL)
 		.hash_func_ws	= hw_sha384,
 #else
 		.hash_func_ws	= sha384_csum_wd,
 #endif
-#if CONFIG_IS_ENABLED(SHA512_HW_ACCEL) && CONFIG_IS_ENABLED(SHA_PROG_HW_ACCEL)
+#if IS_ENABLED(CONFIG_SHA512_HW_ACCEL) && IS_ENABLED(CONFIG_SHA_PROG_HW_ACCEL)
 		.hash_init	= hw_sha_init,
 		.hash_update	= hw_sha_update,
 		.hash_finish	= hw_sha_finish,
@@ -277,17 +277,17 @@ static struct hash_algo hash_algo[] = {
 #endif
 	},
 #endif
-#if CONFIG_IS_ENABLED(SHA512)
+#if IS_ENABLED(CONFIG_SHA512)
 	{
 		.name		= "sha512",
 		.digest_size	= SHA512_SUM_LEN,
 		.chunk_size	= CHUNKSZ_SHA512,
-#if CONFIG_IS_ENABLED(SHA512_HW_ACCEL)
+#if IS_ENABLED(CONFIG_SHA512_HW_ACCEL)
 		.hash_func_ws	= hw_sha512,
 #else
 		.hash_func_ws	= sha512_csum_wd,
 #endif
-#if CONFIG_IS_ENABLED(SHA512_HW_ACCEL) && CONFIG_IS_ENABLED(SHA_PROG_HW_ACCEL)
+#if IS_ENABLED(CONFIG_SHA512_HW_ACCEL) && IS_ENABLED(CONFIG_SHA_PROG_HW_ACCEL)
 		.hash_init	= hw_sha_init,
 		.hash_update	= hw_sha_update,
 		.hash_finish	= hw_sha_finish,
@@ -298,7 +298,7 @@ static struct hash_algo hash_algo[] = {
 #endif
 	},
 #endif
-#if CONFIG_IS_ENABLED(CRC16)
+#if IS_ENABLED(CONFIG_CRC16)
 	{
 		.name		= "crc16-ccitt",
 		.digest_size	= 2,
@@ -309,7 +309,7 @@ static struct hash_algo hash_algo[] = {
 		.hash_finish	= hash_finish_crc16_ccitt,
 	},
 #endif
-#if CONFIG_IS_ENABLED(CRC8) && IS_ENABLED(CONFIG_HASH_CRC8)
+#if IS_ENABLED(CONFIG_CRC8) && IS_ENABLED(CONFIG_HASH_CRC8)
 	{
 		.name		= "crc8",
 		.digest_size	= 1,
@@ -317,7 +317,7 @@ static struct hash_algo hash_algo[] = {
 		.hash_func_ws	= crc8_wd_buf,
 	},
 #endif
-#if CONFIG_IS_ENABLED(CRC32)
+#if IS_ENABLED(CONFIG_CRC32)
 	{
 		.name		= "crc32",
 		.digest_size	= 4,
@@ -331,9 +331,9 @@ static struct hash_algo hash_algo[] = {
 };
 
 /* Try to minimize code size for boards that don't want much hashing */
-#if CONFIG_IS_ENABLED(SHA256) || IS_ENABLED(CONFIG_CMD_SHA1SUM) || \
-	CONFIG_IS_ENABLED(CRC32_VERIFY) || IS_ENABLED(CONFIG_CMD_HASH) || \
-	CONFIG_IS_ENABLED(SHA384) || CONFIG_IS_ENABLED(SHA512) || \
+#if IS_ENABLED(CONFIG_SHA256) || IS_ENABLED(CONFIG_CMD_SHA1SUM) || \
+	IS_ENABLED(CONFIG_CRC32_VERIFY) || IS_ENABLED(CONFIG_CMD_HASH) || \
+	IS_ENABLED(CONFIG_SHA384) || IS_ENABLED(CONFIG_SHA512) || \
 	IS_ENABLED(CONFIG_CMD_MD5SUM)
 #define multi_hash()	1
 #else

@@ -208,7 +208,7 @@ int usb_stop(void)
 #ifdef CONFIG_USB_STORAGE
 	usb_stor_reset();
 #endif
-	if (CONFIG_IS_ENABLED(BOOTSTD)) {
+	if (IS_ENABLED(CONFIG_BOOTSTD)) {
 		int ret;
 
 		ret = bootdev_unhunt(UCLASS_USB);

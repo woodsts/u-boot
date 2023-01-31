@@ -121,7 +121,7 @@ void hw_watchdog_init(void)
 	ulp_watchdog_init(wdog, CONFIG_WATCHDOG_TIMEOUT_MSECS);
 }
 
-#if !CONFIG_IS_ENABLED(SYSRESET)
+#if !IS_ENABLED(CONFIG_SYSRESET)
 void reset_cpu(void)
 {
 	struct wdog_regs *wdog = (struct wdog_regs *)WDOG_BASE_ADDR;

@@ -180,7 +180,7 @@ static int qfw_evt_write_smbios_tables(void)
 	end = write_smbios_table(addr);
 	if (IS_ERR_VALUE(end)) {
 		log_warning("SMBIOS: Failed to write (err=%dE)\n", (int)end);
-	} else {
+\	} else {
 		if (end - addr > size)
 			return -ENOMEM;
 		log_debug("SMBIOS tables copied from QEMU\n");

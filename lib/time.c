@@ -65,7 +65,7 @@ ulong timer_get_boot_us(void)
 extern unsigned long timer_read_counter(void);
 #endif
 
-#if CONFIG_IS_ENABLED(TIMER)
+#if IS_ENABLED(CONFIG_TIMER)
 ulong notrace get_tbclk(void)
 {
 	if (!gd->timer) {

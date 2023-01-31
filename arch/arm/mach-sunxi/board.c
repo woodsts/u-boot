@@ -471,7 +471,7 @@ void board_init_f(ulong dummy)
 	spl_init();
 	preloader_console_init();
 
-#if CONFIG_IS_ENABLED(I2C) && CONFIG_IS_ENABLED(SYS_I2C_LEGACY)
+#if IS_ENABLED(CONFIG_I2C) && IS_ENABLED(CONFIG_SYS_I2C_LEGACY)
 	/* Needed early by sunxi_board_init if PMU is enabled */
 	i2c_init_board();
 	i2c_init(CONFIG_SYS_I2C_SPEED, CONFIG_SYS_I2C_SLAVE);
@@ -480,7 +480,7 @@ void board_init_f(ulong dummy)
 }
 #endif /* CONFIG_XPL_BUILD */
 
-#if !CONFIG_IS_ENABLED(SYSRESET)
+#if !IS_ENABLED(CONFIG_SYSRESET)
 void reset_cpu(void)
 {
 #if defined(CONFIG_SUNXI_GEN_SUN4I) || defined(CONFIG_MACH_SUN8I_R40)
@@ -513,7 +513,7 @@ void reset_cpu(void)
 }
 #endif /* CONFIG_SYSRESET */
 
-#if !CONFIG_IS_ENABLED(SYS_DCACHE_OFF) && defined(CONFIG_CPU_V7A)
+#if !IS_ENABLED(CONFIG_SYS_DCACHE_OFF) && defined(CONFIG_CPU_V7A)
 void enable_caches(void)
 {
 	/* Enable D-cache. I-cache is already enabled in start.S */

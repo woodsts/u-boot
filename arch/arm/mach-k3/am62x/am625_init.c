@@ -117,7 +117,7 @@ static __maybe_unused void rtc_erratumi2327_init(void)
 	writel(K3RTC_KICK1_UNLOCK_VALUE, REG_K3RTC_KICK1);
 }
 
-#if CONFIG_IS_ENABLED(OF_CONTROL)
+#if IS_ENABLED(CONFIG_OF_CONTROL)
 static int get_a53_cpu_clock_index(ofnode node)
 {
 	int count, i;

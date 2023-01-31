@@ -151,7 +151,7 @@ static int print_resetinfo(void)
 }
 #endif
 
-#if defined(CONFIG_DISPLAY_CPUINFO) && CONFIG_IS_ENABLED(CPU)
+#if defined(CONFIG_DISPLAY_CPUINFO) && IS_ENABLED(CONFIG_CPU)
 static int print_cpuinfo(void)
 {
 	struct udevice *dev;
@@ -249,7 +249,7 @@ __weak int dram_init_banksize(void)
 	return 0;
 }
 
-#if CONFIG_IS_ENABLED(SYS_I2C_LEGACY)
+#if IS_ENABLED(CONFIG_SYS_I2C_LEGACY)
 static int init_func_i2c(void)
 {
 	puts("I2C:   ");
@@ -285,7 +285,7 @@ static int setup_mon_len(void)
 
 static int setup_spl_handoff(void)
 {
-#if CONFIG_IS_ENABLED(HANDOFF)
+#if IS_ENABLED(CONFIG_HANDOFF)
 	gd->spl_handoff = bloblist_find(BLOBLISTT_U_BOOT_SPL_HANDOFF,
 					sizeof(struct spl_handoff));
 	debug("Found SPL hand-off info %p\n", gd->spl_handoff);
@@ -424,7 +424,7 @@ static int setup_relocaddr_from_bloblist(void)
 
 static int reserve_video(void)
 {
-	if (CONFIG_IS_ENABLED(VIDEO)) {
+	if (IS_ENABLED(CONFIG_VIDEO)) {
 		ulong addr;
 		int ret;
 
@@ -755,7 +755,7 @@ static int jump_to_copy(void)
 	 * (CPU cache)
 	 */
 	arch_setup_gd(gd->new_gd);
-# if CONFIG_IS_ENABLED(X86_64)
+# if IS_ENABLED(CONFIG_X86_64)
 		board_init_f_r_trampoline64(gd->new_gd, gd->start_addr_sp);
 # else
 		board_init_f_r_trampoline(gd->start_addr_sp);
@@ -793,7 +793,7 @@ static int initf_bootstage(void)
 
 static int initf_dm(void)
 {
-#if defined(CONFIG_DM) && CONFIG_IS_ENABLED(SYS_MALLOC_F)
+#if defined(CONFIG_DM) && IS_ENABLED(CONFIG_SYS_MALLOC_F)
 	int ret;
 
 	bootstage_start(BOOTSTAGE_ID_ACCUM_DM_F, "dm_f");
@@ -905,7 +905,7 @@ static const init_fnc_t init_sequence_f[] = {
 	INIT_FUNC_WATCHDOG_INIT
 	INITCALL_EVENT(EVT_MISC_INIT_F),
 	INIT_FUNC_WATCHDOG_RESET
-#if CONFIG_IS_ENABLED(SYS_I2C_LEGACY)
+#if IS_ENABLED(CONFIG_SYS_I2C_LEGACY)
 	init_func_i2c,
 #endif
 	announce_dram_init,
@@ -1005,7 +1005,7 @@ void board_init_f(ulong boot_flags)
 		hang();
 
 #if !defined(CONFIG_ARM) && !defined(CONFIG_SANDBOX) && \
-		!defined(CONFIG_EFI_APP) && !CONFIG_IS_ENABLED(X86_64) && \
+		!defined(CONFIG_EFI_APP) && !IS_ENABLED(CONFIG_X86_64) && \
 		!defined(CONFIG_ARC)
 	/* NOTREACHED - jump_to_copy() does not return */
 	hang();
@@ -1031,7 +1031,7 @@ void board_init_f(ulong boot_flags)
  * all archs will move to this when generic relocation is implemented.
  */
 static const init_fnc_t init_sequence_f_r[] = {
-#if !CONFIG_IS_ENABLED(X86_64)
+#if !IS_ENABLED(CONFIG_X86_64)
 	init_cache_f_r,
 #endif
 

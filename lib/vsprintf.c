@@ -308,7 +308,7 @@ static __maybe_unused char *string16(char *buf, char *end, u16 *s,
 	return buf;
 }
 
-#if CONFIG_IS_ENABLED(EFI_DEVICE_PATH_TO_TEXT) && !defined(API_BUILD)
+#if IS_ENABLED(CONFIG_EFI_DEVICE_PATH_TO_TEXT) && !defined(API_BUILD)
 static char *device_path_string(char *buf, char *end, void *dp, int field_width,
 				int precision, int flags)
 {
@@ -467,7 +467,7 @@ static char *pointer(const char *fmt, char *buf, char *end, void *ptr,
 
 	switch (*fmt) {
 /* Device paths only exist in the EFI context. */
-#if CONFIG_IS_ENABLED(EFI_DEVICE_PATH_TO_TEXT) && !defined(API_BUILD)
+#if IS_ENABLED(CONFIG_EFI_DEVICE_PATH_TO_TEXT) && !defined(API_BUILD)
 	case 'D':
 		return device_path_string(buf, end, ptr, field_width,
 					  precision, flags);
@@ -502,7 +502,7 @@ static char *pointer(const char *fmt, char *buf, char *end, void *ptr,
 		flags &= ~SPECIAL;
 		break;
 	case 'U':
-		if (CONFIG_IS_ENABLED(LIB_UUID)) {
+		if (IS_ENABLED(CONFIG_LIB_UUID)) {
 			return uuid_string(buf, end, ptr, field_width,
 					   precision, flags, fmt);
 		}
@@ -627,7 +627,7 @@ repeat:
 
 		case 's':
 /* U-Boot uses UTF-16 strings in the EFI context only. */
-#if (CONFIG_IS_ENABLED(EFI_LOADER) || IS_ENABLED(CONFIG_EFI_APP)) && \
+#if (IS_ENABLED(CONFIG_EFI_LOADER) || IS_ENABLED(CONFIG_EFI_APP)) && \
 	!defined(API_BUILD)
 			if (qualifier == 'l') {
 				str = string16(str, end, va_arg(args, u16 *),
@@ -810,7 +810,7 @@ int sprintf(char *buf, const char *fmt, ...)
 	return i;
 }
 
-#if CONFIG_IS_ENABLED(PRINTF)
+#if IS_ENABLED(CONFIG_PRINTF)
 int printf(const char *fmt, ...)
 {
 	va_list args;

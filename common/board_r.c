@@ -191,7 +191,7 @@ static int initr_malloc(void)
 {
 	ulong start;
 
-#if CONFIG_IS_ENABLED(SYS_MALLOC_F)
+#if IS_ENABLED(CONFIG_SYS_MALLOC_F)
 	debug("Pre-reloc malloc() used %#x bytes (%d KB)\n", gd->malloc_ptr,
 	      gd->malloc_ptr / 1024);
 #endif
@@ -208,7 +208,7 @@ static int initr_malloc(void)
 
 static int initr_of_live(void)
 {
-	if (CONFIG_IS_ENABLED(OF_LIVE)) {
+	if (IS_ENABLED(CONFIG_OF_LIVE)) {
 		int ret;
 
 		bootstage_start(BOOTSTAGE_ID_ACCUM_OF_LIVE, "of_live");
@@ -496,7 +496,7 @@ int initr_mem(void)
 
 static int initr_lmb(void)
 {
-	if (CONFIG_IS_ENABLED(LMB))
+	if (IS_ENABLED(CONFIG_LMB))
 		return lmb_init();
 	else
 		return 0;
@@ -511,9 +511,9 @@ static int dm_announce(void)
 		dm_get_stats(&device_count, &uclass_count);
 		printf("Core:  %d devices, %d uclasses", device_count,
 		       uclass_count);
-		if (CONFIG_IS_ENABLED(OF_REAL))
+		if (IS_ENABLED(CONFIG_OF_REAL))
 			printf(", devicetree: %s", fdtdec_get_srcname());
-		if (CONFIG_IS_ENABLED(UPL))
+		if (IS_ENABLED(CONFIG_UPL))
 			printf(", universal payload active");
 		printf("\n");
 		if (IS_ENABLED(CONFIG_OF_HAS_PRIOR_STAGE) &&
@@ -619,7 +619,7 @@ static init_fnc_t init_sequence_r[] = {
 	serial_initialize,
 	initr_announce,
 	dm_announce,
-#if CONFIG_IS_ENABLED(WDT)
+#if IS_ENABLED(CONFIG_WDT)
 	initr_watchdog,
 #endif
 	INIT_FUNC_WATCHDOG_RESET
@@ -752,7 +752,7 @@ void board_init_r(gd_t *new_gd, ulong dest_addr)
 	 * TODO(sjg@chromium.org): Consider doing this for all archs, or
 	 * dropping the new_gd parameter.
 	 */
-	if (CONFIG_IS_ENABLED(X86_64) && !IS_ENABLED(CONFIG_EFI_APP))
+	if (IS_ENABLED(CONFIG_X86_64) && !IS_ENABLED(CONFIG_EFI_APP))
 		arch_setup_gd(new_gd);
 
 #if !defined(CONFIG_X86) && !defined(CONFIG_ARM) && !defined(CONFIG_ARM64)

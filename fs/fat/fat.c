@@ -152,7 +152,7 @@ static void get_name(dir_entry *dirent, char *s_name)
 
 static int flush_dirty_fat_buffer(fsdata *mydata);
 
-#if !CONFIG_IS_ENABLED(FAT_WRITE)
+#if !IS_ENABLED(CONFIG_FAT_WRITE)
 /* Stub for read only operation */
 int flush_dirty_fat_buffer(fsdata *mydata)
 {
@@ -1391,7 +1391,7 @@ int fat_readdir(struct fs_dir_stream *dirs, struct fs_dirent **dentp)
 
 	memset(dent, 0, sizeof(*dent));
 	strcpy(dent->name, dir->itr.name);
-	if (CONFIG_IS_ENABLED(EFI_LOADER)) {
+	if (IS_ENABLED(CONFIG_EFI_LOADER)) {
 		dent->attr = dir->itr.dent->attr;
 		fat2rtc(le16_to_cpu(dir->itr.dent->cdate),
 			le16_to_cpu(dir->itr.dent->ctime), &dent->create_time);

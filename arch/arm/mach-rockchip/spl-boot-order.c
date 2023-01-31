@@ -11,7 +11,7 @@
 #include <asm/global_data.h>
 #include <dm/uclass-internal.h>
 
-#if CONFIG_IS_ENABLED(OF_LIBFDT)
+#if IS_ENABLED(CONFIG_OF_LIBFDT)
 /**
  * spl_node_to_boot_device() - maps from a DT-node to a SPL boot device
  * @node:	of_offset of the node
@@ -99,7 +99,7 @@ __weak const char *board_spl_was_booted_from(void)
 void board_boot_order(u32 *spl_boot_list)
 {
 	/* In case of no fdt (or only plat), use spl_boot_device() */
-	if (!CONFIG_IS_ENABLED(OF_CONTROL) || CONFIG_IS_ENABLED(OF_PLATDATA)) {
+	if (!IS_ENABLED(CONFIG_OF_CONTROL) || IS_ENABLED(CONFIG_OF_PLATDATA)) {
 		spl_boot_list[0] = spl_boot_device();
 		return;
 	}
@@ -163,7 +163,7 @@ void board_boot_order(u32 *spl_boot_list)
 int spl_decode_boot_device(u32 boot_device, char *buf, size_t buflen)
 {
 	struct udevice *dev;
-#if CONFIG_IS_ENABLED(BLK)
+#if IS_ENABLED(CONFIG_BLK)
 	int dev_num;
 #endif
 	int ret;
@@ -223,7 +223,7 @@ int spl_decode_boot_device(u32 boot_device, char *buf, size_t buflen)
 		return -ENODEV;
 	}
 
-#if CONFIG_IS_ENABLED(BLK)
+#if IS_ENABLED(CONFIG_BLK)
 	dev_num = (boot_device == BOOT_DEVICE_MMC1) ? 0 : 1;
 
 	ret = blk_find_device(UCLASS_MMC, dev_num, &dev);

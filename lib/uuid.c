@@ -67,7 +67,7 @@ static const struct {
 	efi_guid_t guid;
 } list_guid[] = {
 #ifndef USE_HOSTCC
-#if CONFIG_IS_ENABLED(PARTITION_TYPE_GUID)
+#if IS_ENABLED(CONFIG_PARTITION_TYPE_GUID)
 	{"system",	PARTITION_SYSTEM_GUID},
 	{"mbr",		LEGACY_MBR_PARTITION_GUID},
 	{"msft",	PARTITION_MSFT_RESERVED_GUID},
@@ -283,7 +283,7 @@ int uuid_str_to_bin(const char *uuid_str, unsigned char *uuid_bin,
 	uint64_t tmp64;
 
 	if (!uuid_str_valid(uuid_str)) {
-#if CONFIG_IS_ENABLED(PARTITION_TYPE_GUID)
+#if IS_ENABLED(CONFIG_PARTITION_TYPE_GUID)
 		if (!uuid_guid_get_bin(uuid_str, uuid_bin))
 			return 0;
 #endif
@@ -445,7 +445,7 @@ void gen_rand_uuid(unsigned char *uuid_bin)
 	struct udevice *devp;
 	u32 randv = 0;
 
-	if (CONFIG_IS_ENABLED(DM_RNG)) {
+	if (IS_ENABLED(CONFIG_DM_RNG)) {
 		ret = uclass_get_device(UCLASS_RNG, 0, &devp);
 		if (!ret) {
 			ret = dm_rng_read(devp, &randv, sizeof(randv));

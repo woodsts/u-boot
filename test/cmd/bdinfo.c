@@ -185,7 +185,7 @@ static int bdinfo_test_all(struct unit_test_state *uts)
 		ut_assertok(test_video_info(uts));
 
 	/* The gd->multi_dtb_fit may not be available, hence, #if below. */
-#if CONFIG_IS_ENABLED(MULTI_DTB_FIT)
+#if IS_ENABLED(CONFIG_MULTI_DTB_FIT)
 	ut_assertok(test_num_l(uts, "multi_dtb_fit", (ulong)gd->multi_dtb_fit));
 #endif
 
@@ -237,7 +237,7 @@ BDINFO_TEST(bdinfo_test_full, UTF_CONSOLE);
 static int bdinfo_test_help(struct unit_test_state *uts)
 {
 	/* Test BDINFO unknown option help text print */
-	if (!CONFIG_IS_ENABLED(GETOPT)) {
+	if (!IS_ENABLED(CONFIG_GETOPT)) {
 		ut_asserteq(0, run_commandf("bdinfo -h"));
 		ut_assertok(bdinfo_test_all(uts));
 	} else {
@@ -258,7 +258,7 @@ static int bdinfo_test_memory(struct unit_test_state *uts)
 {
 	/* Test BDINFO memory layout only print */
 	ut_assertok(run_commandf("bdinfo -m"));
-	if (!CONFIG_IS_ENABLED(GETOPT))
+	if (!IS_ENABLED(CONFIG_GETOPT))
 		ut_assertok(bdinfo_test_all(uts));
 	else
 		ut_assertok(bdinfo_check_mem(uts));
@@ -272,7 +272,7 @@ static int bdinfo_test_eth(struct unit_test_state *uts)
 {
 	/* Test BDINFO ethernet settings only print */
 	ut_assertok(run_commandf("bdinfo -e"));
-	if (!CONFIG_IS_ENABLED(GETOPT))
+	if (!IS_ENABLED(CONFIG_GETOPT))
 		ut_assertok(bdinfo_test_all(uts));
 	else if (IS_ENABLED(CONFIG_CMD_NET))
 		ut_assertok(test_eth(uts));

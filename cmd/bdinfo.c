@@ -152,7 +152,7 @@ static int bdinfo_print_all(struct bd_info *bd)
 	bdinfo_print_num_l("fdt_blob", (ulong)map_to_sysmem(gd->fdt_blob));
 	if (IS_ENABLED(CONFIG_VIDEO))
 		show_video_info();
-#if CONFIG_IS_ENABLED(MULTI_DTB_FIT)
+#if IS_ENABLED(CONFIG_MULTI_DTB_FIT)
 	bdinfo_print_num_l("multi_dtb_fit", (ulong)gd->multi_dtb_fit);
 #endif
 	if (IS_ENABLED(CONFIG_LMB) && gd->fdt_blob) {
@@ -179,7 +179,7 @@ int do_bdinfo(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 	struct getopt_state gs;
 	int opt;
 
-	if (!CONFIG_IS_ENABLED(GETOPT) || argc == 1)
+	if (!IS_ENABLED(CONFIG_GETOPT) || argc == 1)
 		return bdinfo_print_all(bd);
 
 	getopt_init_state(&gs);

@@ -129,7 +129,7 @@ static int bootflow_cmd_label(struct unit_test_state *uts)
 	 * However with CONFIG_DSA_SANDBOX=n we have two fewer (dsa-test@0 and
 	 * dsa-test@1).
 	 */
-	if (CONFIG_IS_ENABLED(DSA_SANDBOX)) {
+	if (IS_ENABLED(CONFIG_DSA_SANDBOX)) {
 		ut_assertok(run_command("bootflow scan -lH 9", 0));
 		ut_assert_nextline("Scanning for bootflows with label '9'");
 	} else {
@@ -874,7 +874,7 @@ static int bootflow_menu_theme(struct unit_test_state *uts)
 	ofnode node;
 	int i;
 
-	if (!CONFIG_IS_ENABLED(BOOTSTD_MENU))
+	if (!IS_ENABLED(CONFIG_BOOTSTD_MENU))
 		return -EAGAIN;
 
 	ut_assertok(scan_mmc4_bootdev(uts));

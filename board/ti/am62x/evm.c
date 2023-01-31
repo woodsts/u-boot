@@ -25,7 +25,7 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
-#if CONFIG_IS_ENABLED(SPLASH_SCREEN)
+#if IS_ENABLED(CONFIG_SPLASH_SCREEN)
 static struct splash_location default_splash_locations[] = {
 	{
 		.name = "sf",

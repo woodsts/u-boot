@@ -11,7 +11,7 @@ void qcom_configure_capsule_updates(void);
 void qcom_configure_capsule_updates(void) {}
 #endif /* EFI_HAVE_CAPSULE_SUPPORT */
 
-#if CONFIG_IS_ENABLED(OF_LIVE)
+#if IS_ENABLED(CONFIG_OF_LIVE)
 /**
  * qcom_of_fixup_nodes() - Fixup Qualcomm DT nodes
  *

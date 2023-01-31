@@ -331,7 +331,7 @@ static void scene_render_background(struct scene_obj *obj, bool box_only)
 	uint inset = theme->menu_inset;
 
 	/* draw a background for the object */
-	if (CONFIG_IS_ENABLED(SYS_WHITE_ON_BLACK)) {
+	if (IS_ENABLED(CONFIG_SYS_WHITE_ON_BLACK)) {
 		fore = VID_DARK_GREY;
 		back = VID_WHITE;
 	} else {
@@ -408,7 +408,7 @@ static int scene_obj_render(struct scene_obj *obj, bool text_mode)
 			struct vidconsole_colour old;
 			enum colour_idx fore, back;
 
-			if (CONFIG_IS_ENABLED(SYS_WHITE_ON_BLACK)) {
+			if (IS_ENABLED(CONFIG_SYS_WHITE_ON_BLACK)) {
 				fore = VID_BLACK;
 				back = VID_WHITE;
 			} else {
