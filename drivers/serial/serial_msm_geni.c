@@ -621,7 +621,7 @@ U_BOOT_DRIVER(geni_se_qup) = {
 #ifdef CONFIG_DEBUG_UART_MSM_GENI
 
 static struct msm_serial_data init_serial_data = {
-	.base = CONFIG_VAL(DEBUG_UART_BASE)
+	.base = CONFIG_DEBUG_UART_BASE
 };
 
 /* Serial dumb device, to reuse driver code */
@@ -639,7 +639,7 @@ static struct udevice init_dev = {
 
 static inline void _debug_uart_init(void)
 {
-	phys_addr_t base = CONFIG_VAL(DEBUG_UART_BASE);
+	phys_addr_t base = CONFIG_DEBUG_UART_BASE;
 
 	geni_serial_init(&init_dev);
 	geni_serial_baud(base, CLK_DIV, CONFIG_BAUDRATE);
@@ -648,7 +648,7 @@ static inline void _debug_uart_init(void)
 
 static inline void _debug_uart_putc(int ch)
 {
-	phys_addr_t base = CONFIG_VAL(DEBUG_UART_BASE);
+	phys_addr_t base = CONFIG_DEBUG_UART_BASE;
 
 	writel(DEF_TX_WM, base + SE_GENI_TX_WATERMARK_REG);
 	qcom_geni_serial_setup_tx(base, 1);
