@@ -162,7 +162,7 @@ static efi_status_t efi_env_set_load_options(efi_handle_t handle,
 	return ret;
 }
 
-#if !CONFIG_IS_ENABLED(GENERATE_ACPI_TABLE)
+#if !IS_ENABLED(CONFIG_GENERATE_ACPI_TABLE)
 
 /**
  * copy_fdt() - Copy the device tree to a new location available to EFI
@@ -250,7 +250,7 @@ static void *get_config_table(const efi_guid_t *guid)
 	return NULL;
 }
 
-#endif /* !CONFIG_IS_ENABLED(GENERATE_ACPI_TABLE) */
+#endif /* !IS_ENABLED(CONFIG_GENERATE_ACPI_TABLE) */
 
 /**
  * efi_install_fdt() - install device tree
@@ -275,7 +275,7 @@ efi_status_t efi_install_fdt(void *fdt)
 	 * The EBBR spec requires that we have either an FDT or an ACPI table
 	 * but not both.
 	 */
-#if CONFIG_IS_ENABLED(GENERATE_ACPI_TABLE)
+#if IS_ENABLED(CONFIG_GENERATE_ACPI_TABLE)
 	if (fdt) {
 		log_warning("WARNING: Can't have ACPI table and device tree - ignoring DT.\n");
 		return EFI_SUCCESS;
@@ -332,7 +332,7 @@ efi_status_t efi_install_fdt(void *fdt)
 
 	efi_try_purge_kaslr_seed(fdt);
 
-	if (CONFIG_IS_ENABLED(EFI_TCG2_PROTOCOL_MEASURE_DTB)) {
+	if (IS_ENABLED(CONFIG_EFI_TCG2_PROTOCOL_MEASURE_DTB)) {
 		ret = efi_tcg2_measure_dtb(fdt);
 		if (ret == EFI_SECURITY_VIOLATION) {
 			log_err("ERROR: failed to measure DTB\n");

@@ -461,7 +461,7 @@ static int dhcp_extended(u8 *e, int message_type, struct in_addr server_ip,
 {
 	u8 *start = e;
 	u8 *cnt;
-#if CONFIG_IS_ENABLED(LIB_UUID)
+#if IS_ENABLED(CONFIG_LIB_UUID)
 	char *uuid;
 #endif
 	int clientarch = -1;
@@ -540,7 +540,7 @@ static int dhcp_extended(u8 *e, int message_type, struct in_addr server_ip,
 	*e++ = 0;	/* major revision */
 	*e++ = 0;	/* minor revision */
 
-#if CONFIG_IS_ENABLED(LIB_UUID)
+#if IS_ENABLED(CONFIG_LIB_UUID)
 	uuid = env_get("pxeuuid");
 
 	if (uuid) {
@@ -1077,7 +1077,7 @@ static void dhcp_handler(uchar *pkt, unsigned dest, struct in_addr sip,
 			    strlen(CONFIG_SYS_BOOTFILE_PREFIX)) == 0) {
 #endif	/* CONFIG_SYS_BOOTFILE_PREFIX */
 			dhcp_packet_process_options(bp);
-			if (CONFIG_IS_ENABLED(EFI_LOADER) &&
+			if (IS_ENABLED(CONFIG_EFI_LOADER) &&
 			    IS_ENABLED(CONFIG_NETDEVICES))
 				efi_net_set_dhcp_ack(pkt, len);
 

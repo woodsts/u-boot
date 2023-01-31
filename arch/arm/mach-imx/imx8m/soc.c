@@ -537,7 +537,7 @@ static int imx8m_check_clock(void *ctx, struct event *event)
 	struct udevice *dev;
 	int ret;
 
-	if (CONFIG_IS_ENABLED(CLK)) {
+	if (IS_ENABLED(CONFIG_CLK)) {
 		ret = uclass_get_device_by_name(UCLASS_CLK,
 						"clock-controller@30380000",
 						&dev);
@@ -588,7 +588,7 @@ int arch_cpu_init(void)
 {
 	struct ocotp_regs *ocotp = (struct ocotp_regs *)OCOTP_BASE_ADDR;
 
-#if !CONFIG_IS_ENABLED(SYS_ICACHE_OFF)
+#if !IS_ENABLED(CONFIG_SYS_ICACHE_OFF)
 	icache_enable();
 #endif
 
@@ -1429,7 +1429,7 @@ set_status:
 #endif
 #endif
 
-#if !CONFIG_IS_ENABLED(SYSRESET)
+#if !IS_ENABLED(CONFIG_SYSRESET)
 void reset_cpu(void)
 {
 	struct watchdog_regs *wdog = (struct watchdog_regs *)WDOG1_BASE_ADDR;

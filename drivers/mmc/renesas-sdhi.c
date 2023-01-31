@@ -23,9 +23,9 @@
 #include <asm/unaligned.h>
 #include "tmio-common.h"
 
-#if CONFIG_IS_ENABLED(MMC_UHS_SUPPORT) || \
-    CONFIG_IS_ENABLED(MMC_HS200_SUPPORT) || \
-    CONFIG_IS_ENABLED(MMC_HS400_SUPPORT)
+#if IS_ENABLED(CONFIG_MMC_UHS_SUPPORT) || \
+    IS_ENABLED(CONFIG_MMC_HS200_SUPPORT) || \
+    IS_ENABLED(CONFIG_MMC_HS400_SUPPORT)
 
 /* SCC registers */
 #define RENESAS_SDHI_SCC_DTCNTL			0x800
@@ -649,9 +649,9 @@ static int renesas_sdhi_set_ios(struct udevice *dev)
 
 	mdelay(10);
 
-#if CONFIG_IS_ENABLED(MMC_UHS_SUPPORT) || \
-    CONFIG_IS_ENABLED(MMC_HS200_SUPPORT) || \
-    CONFIG_IS_ENABLED(MMC_HS400_SUPPORT)
+#if IS_ENABLED(CONFIG_MMC_UHS_SUPPORT) || \
+    IS_ENABLED(CONFIG_MMC_HS200_SUPPORT) || \
+    IS_ENABLED(CONFIG_MMC_HS400_SUPPORT)
 	struct mmc *mmc = mmc_get_mmc_dev(dev);
 	if ((priv->caps & TMIO_SD_CAP_RCAR_UHS) &&
 	    (mmc->selected_mode != UHS_SDR104) &&
@@ -664,7 +664,7 @@ static int renesas_sdhi_set_ios(struct udevice *dev)
 	return ret;
 }
 
-#if CONFIG_IS_ENABLED(MMC_UHS_SUPPORT)
+#if IS_ENABLED(CONFIG_MMC_UHS_SUPPORT)
 static int renesas_sdhi_wait_dat0(struct udevice *dev, int state,
 				  int timeout_us)
 {
@@ -778,9 +778,9 @@ static int renesas_sdhi_send_cmd(struct udevice *dev, struct mmc_cmd *cmd,
 	if (ret)
 		return ret;
 
-#if CONFIG_IS_ENABLED(MMC_UHS_SUPPORT) || \
-    CONFIG_IS_ENABLED(MMC_HS200_SUPPORT) || \
-    CONFIG_IS_ENABLED(MMC_HS400_SUPPORT)
+#if IS_ENABLED(CONFIG_MMC_UHS_SUPPORT) || \
+    IS_ENABLED(CONFIG_MMC_HS200_SUPPORT) || \
+    IS_ENABLED(CONFIG_MMC_HS400_SUPPORT)
 	struct tmio_sd_priv *priv = dev_get_priv(dev);
 
 	renesas_sdhi_check_scc_error(dev);
@@ -814,12 +814,12 @@ static const struct dm_mmc_ops renesas_sdhi_ops = {
 	.send_cmd = renesas_sdhi_send_cmd,
 	.set_ios = renesas_sdhi_set_ios,
 	.get_cd = tmio_sd_get_cd,
-#if CONFIG_IS_ENABLED(MMC_UHS_SUPPORT) || \
-    CONFIG_IS_ENABLED(MMC_HS200_SUPPORT) || \
-    CONFIG_IS_ENABLED(MMC_HS400_SUPPORT)
+#if IS_ENABLED(CONFIG_MMC_UHS_SUPPORT) || \
+    IS_ENABLED(CONFIG_MMC_HS200_SUPPORT) || \
+    IS_ENABLED(CONFIG_MMC_HS400_SUPPORT)
 	.execute_tuning = renesas_sdhi_execute_tuning,
 #endif
-#if CONFIG_IS_ENABLED(MMC_UHS_SUPPORT)
+#if IS_ENABLED(CONFIG_MMC_UHS_SUPPORT)
 	.wait_dat0 = renesas_sdhi_wait_dat0,
 #endif
 	.get_b_max = renesas_sdhi_get_b_max,
@@ -861,9 +861,9 @@ static void renesas_sdhi_filter_caps(struct udevice *dev)
 	if (priv->caps & TMIO_SD_CAP_DMA_INTERNAL)
 		priv->idma_bus_width = TMIO_SD_DMA_MODE_BUS_WIDTH;
 
-#if CONFIG_IS_ENABLED(MMC_UHS_SUPPORT) || \
-    CONFIG_IS_ENABLED(MMC_HS200_SUPPORT) || \
-    CONFIG_IS_ENABLED(MMC_HS400_SUPPORT)
+#if IS_ENABLED(CONFIG_MMC_UHS_SUPPORT) || \
+    IS_ENABLED(CONFIG_MMC_HS200_SUPPORT) || \
+    IS_ENABLED(CONFIG_MMC_HS400_SUPPORT)
 	struct tmio_sd_plat *plat = dev_get_plat(dev);
 
 	/* HS400 is not supported on H3 ES1.x, M3W ES1.[012], V3M, V3H ES1.x, D3 */
@@ -999,9 +999,9 @@ static int renesas_sdhi_probe(struct udevice *dev)
 
 	renesas_sdhi_filter_caps(dev);
 
-#if CONFIG_IS_ENABLED(MMC_UHS_SUPPORT) || \
-    CONFIG_IS_ENABLED(MMC_HS200_SUPPORT) || \
-    CONFIG_IS_ENABLED(MMC_HS400_SUPPORT)
+#if IS_ENABLED(CONFIG_MMC_UHS_SUPPORT) || \
+    IS_ENABLED(CONFIG_MMC_HS200_SUPPORT) || \
+    IS_ENABLED(CONFIG_MMC_HS400_SUPPORT)
 	if (!ret && (priv->caps & TMIO_SD_CAP_RCAR_UHS))
 		renesas_sdhi_reset_tuning(priv);
 #endif

@@ -61,7 +61,7 @@ static int dwc3_generic_probe(struct udevice *dev,
 	dwc3->dev = dev;
 	dwc3->maximum_speed = plat->maximum_speed;
 	dwc3->dr_mode = plat->dr_mode;
-#if CONFIG_IS_ENABLED(OF_CONTROL)
+#if IS_ENABLED(CONFIG_OF_CONTROL)
 	dwc3_of_parse(dwc3);
 
 	/*
@@ -102,7 +102,7 @@ static int dwc3_generic_probe(struct udevice *dev,
 	if (rc && rc != -ENOTSUPP)
 		return rc;
 
-	if (CONFIG_IS_ENABLED(DM_GPIO) &&
+	if (IS_ENABLED(CONFIG_DM_GPIO) &&
 	    device_is_compatible(dev->parent, "xlnx,zynqmp-dwc3")) {
 		priv->ulpi_reset = devm_gpiod_get_optional(dev->parent, "reset",
 								GPIOD_ACTIVE_LOW);
@@ -144,7 +144,7 @@ static int dwc3_generic_remove(struct udevice *dev,
 {
 	struct dwc3 *dwc3 = &priv->dwc3;
 
-	if (CONFIG_IS_ENABLED(DM_GPIO) &&
+	if (IS_ENABLED(CONFIG_DM_GPIO) &&
 	    device_is_compatible(dev->parent, "xlnx,zynqmp-dwc3")) {
 		struct gpio_desc *ulpi_reset = priv->ulpi_reset;
 
@@ -190,7 +190,7 @@ static int dwc3_generic_of_to_plat(struct udevice *dev)
 	return 0;
 }
 
-#if CONFIG_IS_ENABLED(DM_USB_GADGET)
+#if IS_ENABLED(CONFIG_DM_USB_GADGET)
 int dm_usb_gadget_handle_interrupts(struct udevice *dev)
 {
 	struct dwc3_generic_priv *priv = dev_get_priv(dev);
@@ -424,7 +424,7 @@ static int dwc3_glue_bind_common(struct udevice *parent, ofnode node)
 	switch (dr_mode) {
 	case USB_DR_MODE_PERIPHERAL:
 	case USB_DR_MODE_OTG:
-#if CONFIG_IS_ENABLED(DM_USB_GADGET)
+#if IS_ENABLED(CONFIG_DM_USB_GADGET)
 		debug("%s: dr_mode: OTG or Peripheral\n", __func__);
 		driver = "dwc3-generic-peripheral";
 #endif
@@ -510,7 +510,7 @@ static int dwc3_glue_clk_init(struct udevice *dev,
 	if (ret)
 		return ret;
 
-#if CONFIG_IS_ENABLED(CLK)
+#if IS_ENABLED(CONFIG_CLK)
 	ret = clk_enable_bulk(&glue->clks);
 	if (ret) {
 		clk_release_bulk(&glue->clks);

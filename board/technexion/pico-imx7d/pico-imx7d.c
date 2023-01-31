@@ -37,7 +37,7 @@ int dram_init(void)
 	return 0;
 }
 
-#if CONFIG_IS_ENABLED(DM_PMIC)
+#if IS_ENABLED(CONFIG_DM_PMIC)
 int power_init_board(void)
 {
 	struct udevice *dev;

@@ -242,11 +242,11 @@ void part_init(struct blk_desc *dev_desc)
 
 static void print_part_header(const char *type, struct blk_desc *dev_desc)
 {
-#if CONFIG_IS_ENABLED(MAC_PARTITION) || \
-	CONFIG_IS_ENABLED(DOS_PARTITION) || \
-	CONFIG_IS_ENABLED(ISO_PARTITION) || \
-	CONFIG_IS_ENABLED(AMIGA_PARTITION) || \
-	CONFIG_IS_ENABLED(EFI_PARTITION)
+#if IS_ENABLED(CONFIG_MAC_PARTITION) || \
+	IS_ENABLED(CONFIG_DOS_PARTITION) || \
+	IS_ENABLED(CONFIG_ISO_PARTITION) || \
+	IS_ENABLED(CONFIG_AMIGA_PARTITION) || \
+	IS_ENABLED(CONFIG_EFI_PARTITION)
 	puts ("\nPartition Map for ");
 	switch (dev_desc->uclass_id) {
 	case UCLASS_IDE:
@@ -311,11 +311,11 @@ int part_get_info(struct blk_desc *dev_desc, int part,
 	struct part_driver *drv;
 
 	if (blk_enabled()) {
-#if CONFIG_IS_ENABLED(PARTITION_UUIDS)
+#if IS_ENABLED(CONFIG_PARTITION_UUIDS)
 		/* The common case is no UUID support */
 		info->uuid[0] = 0;
 #endif
-#if CONFIG_IS_ENABLED(PARTITION_TYPE_GUID)
+#if IS_ENABLED(CONFIG_PARTITION_TYPE_GUID)
 		info->type_guid[0] = 0;
 #endif
 
@@ -348,10 +348,10 @@ int part_get_info_whole_disk(struct blk_desc *dev_desc,
 	info->bootable = 0;
 	strcpy((char *)info->type, BOOT_PART_TYPE);
 	strcpy((char *)info->name, "Whole Disk");
-#if CONFIG_IS_ENABLED(PARTITION_UUIDS)
+#if IS_ENABLED(CONFIG_PARTITION_UUIDS)
 	info->uuid[0] = 0;
 #endif
-#if CONFIG_IS_ENABLED(PARTITION_TYPE_GUID)
+#if IS_ENABLED(CONFIG_PARTITION_TYPE_GUID)
 	info->type_guid[0] = 0;
 #endif
 

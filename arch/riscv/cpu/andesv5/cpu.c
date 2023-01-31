@@ -30,7 +30,7 @@ int cleanup_before_linux(void)
 void harts_early_init(void)
 {
 	/* Enable I/D-cache in SPL */
-	if (CONFIG_IS_ENABLED(RISCV_MMODE)) {
+	if (IS_ENABLED(CONFIG_RISCV_MMODE)) {
 		unsigned long mcache_ctl_val = csr_read(CSR_MCACHE_CTL);
 
 		mcache_ctl_val |= (MCACHE_CTL_DC_COHEN | MCACHE_CTL_IC_EN |
