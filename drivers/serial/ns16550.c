@@ -610,7 +610,6 @@ static const struct udevice_id ns16550_serial_ids[] = {
 
 #if IS_ENABLED(CONFIG_SERIAL_PRESENT)
 
-/* TODO(sjg@chromium.org): Integrate this into a macro like CONFIG_IS_ENABLED */
 #if !defined(CONFIG_TPL_BUILD) || defined(CONFIG_TPL_DM_SERIAL)
 U_BOOT_DRIVER(ns16550_serial) = {
 	.name	= "ns16550_serial",
