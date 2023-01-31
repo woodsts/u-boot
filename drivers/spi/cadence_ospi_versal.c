@@ -125,7 +125,7 @@ int cadence_qspi_apb_wait_for_dma_cmplt(struct cadence_spi_priv *priv)
 	return 0;
 }
 
-#if !CONFIG_IS_ENABLED(DM_GPIO)
+#ifndef CONFIG_DM_GPIO
 int cadence_qspi_flash_reset(struct udevice *dev)
 {
 	/* CRP WPROT */
