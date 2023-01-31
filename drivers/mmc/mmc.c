@@ -3041,7 +3041,7 @@ static int mmc_complete_init(struct mmc *mmc)
 
 static void __maybe_unused mmc_cyclic_cd_poll(struct cyclic_info *c)
 {
-	struct mmc *m = CONFIG_IS_ENABLED(CYCLIC, (container_of(c, struct mmc, cyclic)), (NULL));
+	struct mmc *m = IS_ENABLED(CONFIG_CYCLIC, (container_of(c, struct mmc, cyclic)), (NULL));
 
 	if (!m->has_init)
 		return;
@@ -3075,9 +3075,9 @@ int mmc_init(struct mmc *mmc)
 	if (err)
 		pr_info("%s: %d, time %lu\n", __func__, err, get_timer(start));
 
-	if (CONFIG_IS_ENABLED(CYCLIC, (!mmc->cyclic.func), (NULL))) {
+	if (IS_ENABLED(CONFIG_CYCLIC, (!mmc->cyclic.func), (NULL))) {
 		/* Register cyclic function for card detect polling */
-		CONFIG_IS_ENABLED(CYCLIC, (cyclic_register(&mmc->cyclic,
+		IS_ENABLED(CONFIG_CYCLIC, (cyclic_register(&mmc->cyclic,
 							   mmc_cyclic_cd_poll,
 							   100 * 1000,
 							   mmc->cfg->name)));
@@ -3090,8 +3090,8 @@ int mmc_deinit(struct mmc *mmc)
 {
 	u32 caps_filtered;
 
-	if (CONFIG_IS_ENABLED(CYCLIC, (mmc->cyclic.func), (NULL)))
-		CONFIG_IS_ENABLED(CYCLIC, (cyclic_unregister(&mmc->cyclic)));
+	if (IS_ENABLED(CONFIG_CYCLIC, (mmc->cyclic.func), (NULL)))
+		IS_ENABLED(CONFIG_CYCLIC, (cyclic_unregister(&mmc->cyclic)));
 
 	if (!IS_ENABLED(CONFIG_MMC_UHS_SUPPORT) &&
 	    !IS_ENABLED(CONFIG_MMC_HS200_SUPPORT) &&

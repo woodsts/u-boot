@@ -679,7 +679,8 @@ static int video_post_probe(struct udevice *dev)
 	/* register cyclic as soon as the first video device is probed */
 	if (IS_ENABLED(CONFIG_CYCLIC) && (gd->flags && GD_FLG_RELOC) &&
 	    !uc_priv->cyc_active) {
-		uint ms = CONFIG_IF_ENABLED_INT(CYCLIC, VIDEO_SYNC_CYCLIC_MS);
+		uint ms = IF_ENABLED_INT(CONFIG_CYCLIC,
+					 CONFIG_VIDEO_SYNC_CYCLIC_MS);
 
 		cyclic_register(&uc_priv->cyc, video_idle, ms * 1000,
 				"video_init");
@@ -746,5 +747,5 @@ UCLASS_DRIVER(video) = {
 	.priv_auto	= sizeof(struct video_uc_priv),
 	.per_device_auto	= sizeof(struct video_priv),
 	.per_device_plat_auto	= sizeof(struct video_uc_plat),
-	CONFIG_IS_ENABLED(CYCLIC, (.destroy = video_destroy, ))
+	IS_ENABLED(CONFIG_CYCLIC, (.destroy = video_destroy, ))
 };

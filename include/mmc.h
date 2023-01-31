@@ -759,7 +759,7 @@ struct mmc {
 
 	enum bus_mode user_speed_mode; /* input speed mode from user */
 
-	CONFIG_IS_ENABLED(CYCLIC, (struct cyclic_info cyclic));
+	IS_ENABLED(CONFIG_CYCLIC, (struct cyclic_info cyclic));
 };
 
 #if IS_ENABLED(CONFIG_DM_MMC)

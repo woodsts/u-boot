@@ -710,7 +710,7 @@ int ut_run_list(struct unit_test_state *uts, const char *category,
 	int ret;
 
 	memset(&uts->cur, '\0', sizeof(struct ut_stats));
-	if (CONFIG_IS_ENABLED(UNIT_TEST_DURATION)) {
+	if (CONFIG_IS_ENABLED(CONFIG_UNIT_TEST_DURATION)) {
 		uts->cur.start = get_timer(0);
 		start_offset = timer_test_get_offset();
 	}
@@ -753,7 +753,7 @@ int ut_run_list(struct unit_test_state *uts, const char *category,
 
 	if (ret == -ENOENT)
 		printf("Test '%s' not found\n", select_name);
-	if (CONFIG_IS_ENABLED(UNIT_TEST_DURATION)) {
+	if (CONFIG_IS_ENABLED(CONFIG_UNIT_TEST_DURATION)) {
 		test_offset = timer_test_get_offset() - start_offset;
 
 		uts->cur.duration_ms = get_timer(uts->cur.start) - test_offset;
