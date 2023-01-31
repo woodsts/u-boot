@@ -1833,13 +1833,20 @@ def scan_src_files(fname_dict, all_uses, fname_uses):
 
 MODE_NORMAL, MODE_SPL, MODE_PROPER = range(3)
 
-def do_scan_source(path, do_update, show_conflicts, do_commit):
+def do_scan_source(path, do_update, do_update_source, show_conflicts,
+                   do_commit):
     """Scan the source tree for Kconfig inconsistencies
 
     Args:
         path (str): Path to source tree
-        do_update (bool): True to write to scripts/kconf_... files
-        show_conflicts (bool): True to show conflicts
+        do_update (bool): True to write to scripts/conf_nospl file
+        do_update_source (bool): True to update source to remove invalid use of
+           CONFIG_IS_ENABLED()
+        show_conflicts (bool): True to show conflicts between the source code
+           and the Kconfig (such as missing options, or options which imply an
+           SPL option that does not exist)
+        do_commit (bool): Create commits to remove use of SPL_TPL_ and
+           CONFIG_IS_ENABLED macros when there is no SPL symbol.
     """
     def is_not_proper(name):
         for prefix in SPL_PREFIXES:
@@ -1977,9 +1984,7 @@ def do_scan_source(path, do_update, show_conflicts, do_commit):
 
             dirname, leaf = os.path.split(fname)
             root, ext = os.path.splitext(leaf)
-            #if dirname != '' or root != 'Makefile':
-                #continue
-            if (dirname.startswith('test') or
+            if (dirname.startswith('test/') or
                 dirname.startswith('lib/efi_selftest')):
                 # Ignore test code since it is mostly only for sandbox
                 pass
@@ -2011,38 +2016,25 @@ def do_scan_source(path, do_update, show_conflicts, do_commit):
         finish_file(last_fname, rest_list)
         return mk_dict, src_dict
 
-    def check_mk_missing(all_uses, spl_not_found, proper_not_found):
+    def check_missing(all_uses, spl_not_found, proper_not_found,
+                      show_conflicts):
         # Make sure we know about all the options in Makefiles
-        print('\nCONFIG options present in Makefiles but not Kconfig:')
         not_found = check_not_found(all_uses, MODE_NORMAL)
-        show_uses(not_found)
+        if show_conflicts:
+            print('\nCONFIG options present in source but not Kconfig:')
+            show_uses(not_found)
 
-        print('\nCONFIG options present in Makefiles but not Kconfig (SPL):')
         not_found = check_not_found(all_uses, MODE_SPL)
-        show_uses(not_found)
         spl_not_found |= set(is_not_proper(key) or key for key in not_found.keys())
+        if show_conflicts:
+            print('\nCONFIG options present in source but not Kconfig (SPL):')
+            show_uses(not_found)
 
-        print('\nCONFIG options used as Proper in Makefiles but without a non-SPL_ variant:')
         not_found = check_not_found(all_uses, MODE_PROPER)
-        show_uses(not_found)
         proper_not_found |= set(key for key in not_found.keys())
-
-    def check_src_missing(all_uses, spl_not_found, proper_not_found):
-        # Make sure we know about all the options in source files
-        print('\nCONFIG options present in source but not Kconfig:')
-        not_found = check_not_found(all_uses, MODE_NORMAL)
-        show_uses(not_found)
-
-        print('\nCONFIG options present in source but not Kconfig (SPL):')
-        not_found = check_not_found(all_uses, MODE_SPL)
-        show_uses(not_found)
-        spl_not_found |= set(is_not_proper(key) or key
-                             for key in not_found.keys())
-
-        print('\nCONFIG options used as Proper in source but without a non-SPL_ variant:')
-        not_found = check_not_found(all_uses, MODE_PROPER)
-        show_uses(not_found)
-        proper_not_found |= set(key for key in not_found.keys())
+        if show_conflicts:
+            print('\nCONFIG options used as Proper in source but without a non-SPL_ variant:')
+            show_uses(not_found)
 
     def show_summary(spl_not_found, proper_not_found):
         print('\nCONFIG options used as SPL but without an SPL_ variant:')
@@ -2053,18 +2045,23 @@ def do_scan_source(path, do_update, show_conflicts, do_commit):
         for item in sorted(proper_not_found):
             print(f'   {item}')
 
-    def write_update(spl_not_found, proper_not_found):
-        with open(os.path.join(path, 'scripts', 'conf_nospl'),
+    def write_update(spl_not_found):
+        with open(os.path.join(path, 'scripts', 'conf_nospl'), 'w',
                   encoding='utf-8') as out:
-            print('# These options should not be enabled in SPL builds\n',
+            print('''# Options which are never enabled in SPL.
+
+Generally, options which have no SPL_ prefix (e.g. CONFIG_FOO) apply to all
+SPL build phases. This allows things like ARCH_ARM to propagate to all builds
+without the hassle of generating a separate SPL version fo each phase. But in
+some cases this is not wanted.
+
+This file lists options which don't have an SPL equivalent, but still should not
+be enabled in SPL builds. It is necessary since kconfig cannot tell (just by
+looking at the Kconfig description) whether it applies to Proper builds only,
+or to all builds.
+''',
                   file=out)
             for item in sorted(spl_not_found):
-                print(item, file=out)
-        with open(os.path.join(path, 'scripts', 'conf_noproper'), 'w',
-                  encoding='utf-8') as out:
-            print('# These options should not be enabled in Proper builds\n',
-                  file=out)
-            for item in sorted(proper_not_found):
                 print(item, file=out)
 
     def check_conflict(kconf, all_uses, show):
@@ -2210,7 +2207,7 @@ def do_scan_source(path, do_update, show_conflicts, do_commit):
 
     conflicts, cfg_dict = check_conflict(kconf, all_uses, show_conflicts)
 
-    if do_update:
+    if do_update_source:
         update_source(conflicts)
     if do_commit:
         create_commits(cfg_dict)
@@ -2218,17 +2215,13 @@ def do_scan_source(path, do_update, show_conflicts, do_commit):
     # Look for CONFIG options that are not found
     spl_not_found = set()
     proper_not_found = set()
-    check_mk_missing(all_uses, spl_not_found, proper_not_found)
-
-    # Scan the source code
-    scan_src_files(src_dict, all_uses, fname_uses)
-    check_src_missing(all_uses, spl_not_found, proper_not_found)
+    check_missing(all_uses, spl_not_found, proper_not_found, show_conflicts)
 
     show_summary(spl_not_found, proper_not_found)
 
     # Write out the updated information
     if do_update:
-        write_update(spl_not_found, proper_not_found)
+        write_update(spl_not_found)
 
 def main():
     try:
@@ -2289,6 +2282,8 @@ doc/develop/moveconfig.rst for documentation.'''
                       help="respond 'yes' to any prompts")
     parser.add_argument('-u', '--update', action='store_true', default=False,
                       help="update scripts/ files (use with --scan-source)")
+    parser.add_argument('-U', '--update-source', action='store_true',
+                      help="update source code (use with --scan-source)")
     parser.add_argument('-v', '--verbose', action='store_true', default=False,
                       help='show any build errors as boards are built')
     parser.add_argument('configs', nargs='*')
@@ -2304,8 +2299,8 @@ doc/develop/moveconfig.rst for documentation.'''
         unittest.main()
 
     if args.scan_source:
-        do_scan_source(os.getcwd(), args.update, args.list_problems,
-                       args.commit)
+        do_scan_source(os.getcwd(), args.update, args.update_source,
+                       args.list_problems, args.commit)
         return
 
     if not any((len(configs), args.force_sync, args.build_db, args.imply,
