@@ -20,7 +20,7 @@ obj-$(CONFIG_OPTEE_LIB) += optee/
 
 obj-$(CONFIG_AES) += aes.o
 obj-$(CONFIG_AES) += aes/
-obj-$(CONFIG_$(PHASE_)BINMAN_FDT) += binman.o
+obj-$(CONFIG_BINMAN_FDT) += binman.o
 
 ifndef API_BUILD
 ifneq ($(CONFIG_CHARSET),)
@@ -58,8 +58,8 @@ obj-$(CONFIG_BITREVERSE) += bitrev.o
 obj-y += list_sort.o
 endif
 
-obj-$(CONFIG_$(PHASE_)TPM) += tpm-common.o
-ifeq ($(CONFIG_$(PHASE_)TPM),y)
+obj-$(CONFIG_TPM) += tpm-common.o
+ifeq ($(CONFIG_TPM),y)
 obj-$(CONFIG_TPM) += tpm_api.o
 obj-$(CONFIG_TPM_V1) += tpm-v1.o
 obj-$(CONFIG_TPM_V2) += tpm-v2.o
@@ -67,39 +67,39 @@ obj-$(CONFIG_EFI_TCG2_PROTOCOL) += tpm_tcg2.o
 obj-$(CONFIG_MEASURED_BOOT) += tpm_tcg2.o
 endif
 
-obj-$(CONFIG_$(PHASE_)CRC8) += crc8.o
-obj-$(CONFIG_$(PHASE_)CRC16) += crc16.o
-obj-$(CONFIG_$(PHASE_)CRC16) += crc16-ccitt.o
+obj-$(CONFIG_CRC8) += crc8.o
+obj-$(CONFIG_CRC16) += crc16.o
+obj-$(CONFIG_CRC16) += crc16-ccitt.o
 
 obj-y += crypto/
 
-obj-$(CONFIG_$(PHASE_)ACPI) += acpi/
+obj-$(CONFIG_ACPI) += acpi/
 obj-$(CONFIG_ECDSA) += ecdsa/
-obj-$(CONFIG_$(XPL_)RSA) += rsa/
+obj-$(CONFIG_RSA) += rsa/
 obj-$(CONFIG_HASH) += hash-checksum.o
 obj-$(CONFIG_BLAKE2) += blake2/blake2b.o
 
-obj-$(CONFIG_$(PHASE_)MD5_LEGACY) += md5.o
-obj-$(CONFIG_$(PHASE_)SHA1_LEGACY) += sha1.o
-obj-$(CONFIG_$(PHASE_)SHA256_LEGACY) += sha256.o
-obj-$(CONFIG_$(PHASE_)SHA512_LEGACY) += sha512.o
+obj-$(CONFIG_MD5_LEGACY) += md5.o
+obj-$(CONFIG_SHA1_LEGACY) += sha1.o
+obj-$(CONFIG_SHA256_LEGACY) += sha256.o
+obj-$(CONFIG_SHA512_LEGACY) += sha512.o
 
 obj-$(CONFIG_CRYPT_PW) += crypt/
-obj-$(CONFIG_$(XPL_)ASN1_DECODER_LEGACY) += asn1_decoder.o
+obj-$(CONFIG_ASN1_DECODER_LEGACY) += asn1_decoder.o
 
-obj-$(CONFIG_$(PHASE_)ZLIB) += zlib/
-obj-$(CONFIG_$(PHASE_)ZSTD) += zstd/
-obj-$(CONFIG_$(PHASE_)GZIP) += gunzip.o
-obj-$(CONFIG_$(PHASE_)LZO) += lzo/
-obj-$(CONFIG_$(PHASE_)LZMA) += lzma/
-obj-$(CONFIG_$(PHASE_)LZ4) += lz4_wrapper.o
+obj-$(CONFIG_ZLIB) += zlib/
+obj-$(CONFIG_ZSTD) += zstd/
+obj-$(CONFIG_GZIP) += gunzip.o
+obj-$(CONFIG_LZO) += lzo/
+obj-$(CONFIG_LZMA) += lzma/
+obj-$(CONFIG_LZ4) += lz4_wrapper.o
 
-obj-$(CONFIG_$(XPL_)LIB_RATIONAL) += rational.o
+obj-$(CONFIG_LIB_RATIONAL) += rational.o
 
 obj-$(CONFIG_LIBAVB) += libavb/
 
-obj-$(CONFIG_$(PHASE_)OF_LIBFDT) += libfdt/
-obj-$(CONFIG_$(PHASE_)OF_REAL) += fdtdec_common.o fdtdec.o
+obj-$(CONFIG_OF_LIBFDT) += libfdt/
+obj-$(CONFIG_OF_REAL) += fdtdec_common.o fdtdec.o
 
 obj-$(CONFIG_MBEDTLS_LIB) += mbedtls/
 
@@ -107,7 +107,7 @@ obj-$(CONFIG_NET_LWIP) += lwip/
 
 ifdef CONFIG_XPL_BUILD
 obj-$(CONFIG_SPL_YMODEM_SUPPORT) += crc16-ccitt.o
-obj-$(CONFIG_$(PHASE_)HASH) += crc16-ccitt.o
+obj-$(CONFIG_HASH) += crc16-ccitt.o
 obj-$(CONFIG_MMC_SPI_CRC_ON) += crc16-ccitt.o
 obj-y += net_utils.o
 endif
@@ -119,15 +119,15 @@ obj-y += display_options.o
 CFLAGS_display_options.o := $(if $(BUILD_TAG),-DBUILD_TAG='"$(BUILD_TAG)"')
 obj-$(CONFIG_BCH) += bch.o
 obj-$(CONFIG_MMC_SPI) += crc7.o
-obj-$(CONFIG_$(PHASE_)CRC32) += crc32.o
+obj-$(CONFIG_CRC32) += crc32.o
 obj-$(CONFIG_CRC32C) += crc32c.o
 obj-y += ctype.o
 obj-y += div64.o
-obj-$(CONFIG_$(PHASE_)OF_LIBFDT) += fdtdec.o fdtdec_common.o
+obj-$(CONFIG_OF_LIBFDT) += fdtdec.o fdtdec_common.o
 obj-y += hang.o
 obj-y += linux_compat.o
 obj-y += linux_string.o
-obj-$(CONFIG_$(PHASE_)LMB) += lmb.o
+obj-$(CONFIG_LMB) += lmb.o
 obj-y += membuff.o
 obj-$(CONFIG_REGEX) += slre.o
 obj-y += string.o
@@ -142,18 +142,18 @@ obj-y += panic.o
 
 ifeq ($(CONFIG_XPL_BUILD),y)
 # SPL U-Boot may use full-printf, tiny-printf or none at all
-ifdef CONFIG_$(PHASE_)USE_TINY_PRINTF
-obj-$(CONFIG_$(PHASE_)SPRINTF) += tiny-printf.o
+ifdef CONFIG_USE_TINY_PRINTF
+obj-$(CONFIG_SPRINTF) += tiny-printf.o
 else
-obj-$(CONFIG_$(PHASE_)SPRINTF) += vsprintf.o
+obj-$(CONFIG_SPRINTF) += vsprintf.o
 endif
-obj-$(CONFIG_$(PHASE_)STRTO) += strto.o
+obj-$(CONFIG_STRTO) += strto.o
 else
 # Main U-Boot always uses the full printf support
 obj-y += vsprintf.o strto.o
 obj-$(CONFIG_SSCANF) += sscanf.o
 endif
-obj-$(CONFIG_$(XPL_)OID_REGISTRY) += oid_registry.o
+obj-$(CONFIG_OID_REGISTRY) += oid_registry.o
 
 obj-y += abuf.o
 obj-y += alist.o
@@ -161,7 +161,7 @@ obj-y += date.o
 obj-y += rtc-lib.o
 obj-$(CONFIG_LIB_ELF) += elf.o
 
-obj-$(CONFIG_$(PHASE_)SEMIHOSTING) += semihosting.o
+obj-$(CONFIG_SEMIHOSTING) += semihosting.o
 
 #
 # Build a fast OID lookup registry from include/linux/oid_registry.h

@@ -11,7 +11,7 @@ obj-$(CONFIG_CEDIT) += cedit.o
 endif
 
 ifdef CONFIG_SANDBOX
-obj-$(CONFIG_$(XPL_)CMDLINE) += bootm.o
+obj-$(CONFIG_CMDLINE) += bootm.o
 endif
 obj-$(CONFIG_MEASURED_BOOT) += measurement.o
 

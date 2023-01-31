@@ -850,7 +850,7 @@ UBOOTINCLUDE    := \
 		-I$(srctree)/lib/mbedtls/port \
 		-I$(srctree)/lib/mbedtls/external/mbedtls \
 		-I$(srctree)/lib/mbedtls/external/mbedtls/include) \
-	$(if $(CONFIG_$(XPL_)SYS_THUMB_BUILD), \
+	$(if $(CONFIG_SYS_THUMB_BUILD), \
 		$(if $(CONFIG_HAS_THUMB2), \
 			$(if $(CONFIG_CPU_V7M), \
 				-I$(srctree)/arch/arm/thumb1/include), \
@@ -887,7 +887,7 @@ libs-y += disk/
 libs-y += drivers/
 libs-$(CONFIG_SYS_FSL_DDR) += drivers/ddr/fsl/
 libs-$(CONFIG_SYS_FSL_MMDC) += drivers/ddr/fsl/
-libs-$(CONFIG_$(XPL_)ALTERA_SDRAM) += drivers/ddr/altera/
+libs-$(CONFIG_ALTERA_SDRAM) += drivers/ddr/altera/
 libs-y += drivers/usb/cdns3/
 libs-y += drivers/usb/dwc3/
 libs-y += drivers/usb/common/
@@ -907,7 +907,7 @@ libs-y += drivers/usb/ulpi/
 ifdef CONFIG_POST
 libs-y += post/
 endif
-libs-$(CONFIG_$(PHASE_)UNIT_TEST) += test/
+libs-$(CONFIG_UNIT_TEST) += test/
 
 libs-y += $(if $(wildcard $(srctree)/board/$(BOARDDIR)/Makefile),board/$(BOARDDIR)/)
 
