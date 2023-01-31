@@ -19,7 +19,7 @@
  * The variables here must be stored in the data section since they are used
  * before the bss section is available.
  */
-#if !CONFIG_IS_ENABLED(XIP)
+#if !IS_ENABLED(CONFIG_XIP)
 u32 hart_lottery __section(".data") = 0;
 
 #ifdef CONFIG_AVAILABLE_HARTS
@@ -33,7 +33,7 @@ u32 available_harts_lock = 1;
 
 static inline bool supports_extension(char ext)
 {
-#if CONFIG_IS_ENABLED(RISCV_MMODE)
+#if IS_ENABLED(CONFIG_RISCV_MMODE)
 	return csr_read(CSR_MISA) & (1 << (ext - 'a'));
 #elif CONFIG_CPU
 	struct udevice *dev;
@@ -85,7 +85,7 @@ static int riscv_cpu_probe(void)
  * there's nothing to do, since we just need to clear any existing IPIs, and
  * that is handled by the sending of an ipi itself.
  */
-#if CONFIG_IS_ENABLED(SMP)
+#if IS_ENABLED(CONFIG_SMP)
 static void dummy_pending_ipi_clear(ulong hart, ulong arg0, ulong arg1)
 {
 }
@@ -105,7 +105,7 @@ int riscv_cpu_setup(void *ctx, struct event *event)
 		csr_write(CSR_FCSR, 0);
 	}
 
-	if (CONFIG_IS_ENABLED(RISCV_MMODE)) {
+	if (IS_ENABLED(CONFIG_RISCV_MMODE)) {
 		/*
 		 * Enable perf counters for cycle, time,
 		 * and instret counters only
@@ -128,7 +128,7 @@ int riscv_cpu_setup(void *ctx, struct event *event)
 #endif
 	}
 
-#if CONFIG_IS_ENABLED(SMP)
+#if IS_ENABLED(CONFIG_SMP)
 	ret = riscv_init_ipi();
 	if (ret)
 		return ret;
