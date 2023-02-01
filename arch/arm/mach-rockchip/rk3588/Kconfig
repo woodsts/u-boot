@@ -423,7 +423,7 @@ config SYS_SOC
 config ROCKCHIP_COMMON_STACK_ADDR
 	default y
 
-config TEXT_BASE
+config PPL_TEXT_BASE
 	default 0x00a00000
 
 source "board/armsom/sige7-rk3588/Kconfig"

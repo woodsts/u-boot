@@ -208,8 +208,8 @@ LDPPFLAGS += \
 ifneq ($(CONFIG_$(PHASE_)MAX_SIZE),0x0)
 LDPPFLAGS += -DIMAGE_MAX_SIZE=$(CONFIG_$(PHASE_)MAX_SIZE)
 endif
-ifneq ($(CONFIG_$(PHASE_)TEXT_BASE),)
-LDPPFLAGS += -DIMAGE_TEXT_BASE=$(CONFIG_$(PHASE_)TEXT_BASE)
+ifneq ($(CONFIG_$(PHASE_)PPL_TEXT_BASE),)
+LDPPFLAGS += -DIMAGE_TEXT_BASE=$(CONFIG_$(PHASE_)PPL_TEXT_BASE)
 endif
 
 MKIMAGEOUTPUT ?= /dev/null
@@ -429,8 +429,8 @@ LDFLAGS_$(SPL_BIN) += $(call ld-option, --no-dynamic-linker)
 LDFLAGS_$(SPL_BIN) += --build-id=none
 
 # Pick the best match (e.g. SPL_TEXT_BASE for SPL, TPL_TEXT_BASE for TPL)
-ifneq ($(CONFIG_$(PHASE_)TEXT_BASE),)
-LDFLAGS_$(SPL_BIN) += -Ttext $(CONFIG_$(PHASE_)TEXT_BASE)
+ifneq ($(CONFIG_$(PHASE_)PPL_TEXT_BASE),)
+LDFLAGS_$(SPL_BIN) += -Ttext $(CONFIG_$(PHASE_)PPL_TEXT_BASE)
 endif
 
 ifdef CONFIG_TARGET_SOCFPGA_ARRIA10

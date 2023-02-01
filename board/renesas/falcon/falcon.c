@@ -89,7 +89,7 @@ int board_early_init_f(void)
 int board_init(void)
 {
 	/* address of boot parameters */
-	gd->bd->bi_boot_params = CONFIG_TEXT_BASE + 0x50000;
+	gd->bd->bi_boot_params = CONFIG_PPL_TEXT_BASE + 0x50000;
 
 	if (current_el() == 3) {
 		init_gic_v3();

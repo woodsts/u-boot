@@ -63,8 +63,8 @@
 #else
 					compression = "none";
 #endif
-					load = <CONFIG_TEXT_BASE>;
-					entry = <CONFIG_TEXT_BASE>;
+					load = <CONFIG_PPL_TEXT_BASE>;
+					entry = <CONFIG_PPL_TEXT_BASE>;
 					u-boot-nodtb {
 #if defined(CONFIG_SPL_GZIP)
 					compress = "gzip";

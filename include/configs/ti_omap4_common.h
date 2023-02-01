@@ -92,7 +92,7 @@
  * Defines for SPL
  * It is known that this will break HS devices. Since the current size of
  * SPL is overlapped with public stack and breaking non HS devices to boot.
- * So moving TEXT_BASE down to non-HS limit.
+ * So moving PPL_TEXT_BASE down to non-HS limit.
  */
 
 #ifdef CONFIG_XPL_BUILD

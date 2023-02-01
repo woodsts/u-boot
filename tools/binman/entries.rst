@@ -1036,7 +1036,7 @@ Here is an example showing ATF, TEE and a device tree all combined::
                 os = "U-Boot";
                 arch = "arm64";
                 compression = "none";
-                load = <CONFIG_TEXT_BASE>;
+                load = <CONFIG_PPL_TEXT_BASE>;
                 u-boot-nodtb {
                 };
             };

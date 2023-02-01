@@ -213,7 +213,7 @@ ulong spl_get_image_text_base(void)
 		return CONFIG_VPL_TEXT_BASE;
 #endif
 	return xpl_next_phase() == PHASE_SPL ? CONFIG_SPL_TEXT_BASE :
-		CONFIG_TEXT_BASE;
+		CONFIG_PPL_TEXT_BASE;
 }
 
 /*
@@ -250,7 +250,7 @@ __weak void spl_board_prepare_for_boot(void)
 
 __weak struct legacy_img_hdr *spl_get_load_buffer(ssize_t offset, size_t size)
 {
-	return map_sysmem(CONFIG_TEXT_BASE + offset, 0);
+	return map_sysmem(CONFIG_PPL_TEXT_BASE + offset, 0);
 }
 
 void spl_set_header_raw_uboot(struct spl_image_info *spl_image)
@@ -277,9 +277,9 @@ void spl_set_header_raw_uboot(struct spl_image_info *spl_image)
 		log_debug("Next load addr %lx\n", spl_image->load_addr);
 	} else {
 		spl_image->entry_point = CONFIG_SYS_UBOOT_START;
-		spl_image->load_addr = CONFIG_TEXT_BASE;
+		spl_image->load_addr = CONFIG_PPL_TEXT_BASE;
 		log_debug("Default load addr %x (u_boot_pos=%lx)\n",
-			  CONFIG_TEXT_BASE, u_boot_pos);
+			  CONFIG_PPL_TEXT_BASE, u_boot_pos);
 	}
 	spl_image->os = IH_OS_U_BOOT;
 	spl_image->name = xpl_name(xpl_next_phase());
