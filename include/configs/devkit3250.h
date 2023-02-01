@@ -78,11 +78,11 @@
  * U-Boot Commands
  */
 
-/* U-Boot will be 0x60000 bytes, loaded and run at CONFIG_TEXT_BASE */
+/* U-Boot will be 0x60000 bytes, loaded and run at CONFIG_PPL_TEXT_BASE */
 #define CFG_SYS_NAND_U_BOOT_SIZE	0x60000
 
-#define CFG_SYS_NAND_U_BOOT_START	CONFIG_TEXT_BASE
-#define CFG_SYS_NAND_U_BOOT_DST	CONFIG_TEXT_BASE
+#define CFG_SYS_NAND_U_BOOT_START	CONFIG_PPL_TEXT_BASE
+#define CFG_SYS_NAND_U_BOOT_DST	CONFIG_PPL_TEXT_BASE
 
 /* See common/spl/spl.c  spl_set_header_raw_uboot() */
 

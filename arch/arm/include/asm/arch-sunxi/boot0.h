@@ -47,7 +47,7 @@
 #ifdef CONFIG_SPL_BUILD
 	.word	CONFIG_SPL_TEXT_BASE
 #else
-	.word   CONFIG_TEXT_BASE
+	.word   CONFIG_PPL_TEXT_BASE
 #endif
 	.word	fel_stash - .
 #else

@@ -10,7 +10,7 @@
 #define __MT8512_H
 
 /* Uboot definition */
-#define CFG_SYS_UBOOT_START			CONFIG_TEXT_BASE
+#define CFG_SYS_UBOOT_START			CONFIG_PPL_TEXT_BASE
 
 #define ENV_BOOT_READ_IMAGE \
 	"boot_rd_img=mmc dev 0" \
