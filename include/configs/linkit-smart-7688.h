@@ -13,7 +13,7 @@
 
 /* SPL */
 
-#define CFG_SYS_UBOOT_START		CONFIG_TEXT_BASE
+#define CFG_SYS_UBOOT_START		CONFIG_PPL_TEXT_BASE
 
 /* Dummy value */
 #define CFG_SYS_UBOOT_BASE		0
