@@ -85,8 +85,7 @@ struct pmic {
 };
 #endif /* CONFIG_IS_ENABLED(POWER_LEGACY) */
 
-/* TODO: Change to CONFIG_IS_ENABLED(DM_PMIC) when SPL_DM_PMIC exists */
-#ifdef CONFIG_DM_PMIC
+#ifdef CONFIG_PPL_DM_PMIC
 /**
  * U-Boot PMIC Framework
  * =====================
