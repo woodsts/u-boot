@@ -325,8 +325,9 @@ static int esdhc_setup_data(struct fsl_esdhc_priv *priv, struct mmc *mmc,
 	    (timeout == 4 || timeout == 8 || timeout == 12))
 		timeout++;
 
-	if (IS_ENABLED(ESDHCI_QUIRK_BROKEN_TIMEOUT_VALUE))
-		timeout = 0xE;
+#ifdef ESDHCI_QUIRK_BROKEN_TIMEOUT_VALUE
+	timeout = 0xE;
+#endif
 
 	esdhc_clrsetbits32(&regs->sysctl, SYSCTL_TIMEOUT_MASK, timeout << 16);
 
