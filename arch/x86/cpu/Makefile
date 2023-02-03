@@ -63,7 +63,7 @@ ifndef CONFIG_$(XPL_)X86_64
 obj-$(CONFIG_$(XPL_)SMP) += mp_init.o
 endif
 obj-y += mtrr.o
-obj-$(CONFIG_PCI) += pci.o
+obj-$(CONFIG_PPL_PCI) += pci.o
 ifndef CONFIG_$(XPL_)X86_64
 obj-$(CONFIG_SMP) += sipi_vector.o
 endif
