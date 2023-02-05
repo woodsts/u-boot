@@ -257,25 +257,6 @@ static const char *parse_config_line(const char *p, const char **endp)
 		r = q - 7;
 	else
 		r = q;
-	/*
-	 * U-Boot also handles
-	 *   CONFIG_IS_ENABLED(...)
-	 *   CONFIG_VAL(...)
-	 */
-	if ((q - p == 10 && !memcmp(p, "IS_ENABLED(", 11)) ||
-	    (q - p == 3 && !memcmp(p, "VAL(", 4))) {
-		p = q + 1;
-		q = p;
-		while (isalnum(*q) || *q == '_')
-			q++;
-		r = q;
-		if (r > p && tmp_buf[0]) {
-			memcpy(tmp_buf + 4, p, r - p);
-			r = tmp_buf + 4 + (r - p);
-			p = tmp_buf;
-		}
-	}
-	/* end U-Boot hack */
 	*endp = r;
 
 	if (r > p)
