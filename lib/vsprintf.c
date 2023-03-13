@@ -390,7 +390,6 @@ static char *ip4_addr_string(char *buf, char *end, u8 *addr, int field_width,
 		      flags & ~SPECIAL);
 }
 
-#ifdef CONFIG_LIB_UUID
 /*
  * This works (roughly) the same way as Linux's.
  *
@@ -436,7 +435,6 @@ static char *uuid_string(char *buf, char *end, u8 *addr, int field_width,
 
 	return string(buf, end, uuid, field_width, precision, flags);
 }
-#endif
 
 /*
  * Show a '%p' thing.  A kernel extension is that the '%p' is followed
@@ -503,11 +501,11 @@ static char *pointer(const char *fmt, char *buf, char *end, void *ptr,
 					       precision, flags);
 		flags &= ~SPECIAL;
 		break;
-#ifdef CONFIG_LIB_UUID
 	case 'U':
-		return uuid_string(buf, end, ptr, field_width, precision,
-				   flags, fmt);
-#endif
+		if (CONFIG_IS_ENABLED(LIB_UUID)) {
+			return uuid_string(buf, end, ptr, field_width,
+					   precision, flags, fmt);
+		}
 	default:
 		break;
 	}
