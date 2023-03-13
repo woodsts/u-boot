@@ -10,6 +10,7 @@ override HOSTCC = $(CC)
 
 # Compile for a hosted environment on the target
 HOST_EXTRACFLAGS  = -I$(srctree)/tools \
+		-include $(srctree)/include/linux/kconfig.h \
 		$(patsubst -I%,-idirafter%, $(filter -I%, $(UBOOTINCLUDE))) \
 		-idirafter $(srctree)/tools/env \
 		-DUSE_HOSTCC \
