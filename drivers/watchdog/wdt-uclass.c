@@ -124,7 +124,7 @@ int wdt_start(struct udevice *dev, u64 timeout_ms, ulong flags)
 		char str[16];
 
 		memset(str, 0, 16);
-		if (IS_ENABLED(CONFIG_WATCHDOG)) {
+		if (CONFIG_IS_ENABLED(WATCHDOG)) {
 			if (priv->running)
 				cyclic_unregister(&priv->cyclic);
 
@@ -138,7 +138,7 @@ int wdt_start(struct udevice *dev, u64 timeout_ms, ulong flags)
 
 		priv->running = true;
 		printf("WDT:   Started %s with%s servicing %s (%ds timeout)\n",
-		       dev->name, IS_ENABLED(CONFIG_WATCHDOG) ? "" : "out",
+		       dev->name, CONFIG_IS_ENABLED(WATCHDOG) ? "" : "out",
 		       str, (u32)lldiv(timeout_ms, 1000));
 	}
 
