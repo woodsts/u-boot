@@ -212,7 +212,7 @@ static int do_part_set(int argc, char *const argv[])
 	return 0;
 }
 
-#ifdef CONFIG_PARTITION_TYPE_GUID
+#if CONFIG_IS_ENABLED(PARTITION_TYPE_GUID)
 static int do_part_type(int argc, char *const argv[])
 {
 	int part;
@@ -277,7 +277,7 @@ static int do_part(struct cmd_tbl *cmdtp, int flag, int argc,
 		return do_part_types(argc - 2, argv + 2);
 	else if (!strcmp(argv[1], "set"))
 		return do_part_set(argc - 2, argv + 2);
-#ifdef CONFIG_PARTITION_TYPE_GUID
+#if CONFIG_IS_ENABLED(PARTITION_TYPE_GUID)
 	else if (!strcmp(argv[1], "type"))
 		return do_part_type(argc - 2, argv + 2);
 #endif
@@ -305,7 +305,7 @@ U_BOOT_CMD(
 	"part number <interface> <dev> <part> <varname>\n"
 	"    - set environment variable to the partition number using the partition name\n"
 	"      part must be specified as partition name\n"
-#ifdef CONFIG_PARTITION_TYPE_GUID
+#if CONFIG_IS_ENABLED(PARTITION_TYPE_GUID)
 	"part type <interface> <dev>:<part>\n"
 	"    - print partition type\n"
 	"part type <interface> <dev>:<part> <varname>\n"
