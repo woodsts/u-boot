@@ -184,7 +184,7 @@ int arch_cpu_init(void)
 	 * UART register PWREMU_MGMT is initialized. Linux UART
 	 * driver doesn't handle this.
 	 */
-#ifndef CONFIG_DM_SERIAL
+#if !CONFIG_IS_ENABLED(DM_SERIAL)
 	ns16550_init((struct ns16550 *)(CFG_SYS_NS16550_COM2),
 		     CFG_SYS_NS16550_CLK / 16 / CONFIG_BAUDRATE);
 #endif

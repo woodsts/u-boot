@@ -86,7 +86,7 @@ void do_board_detect(void)
 }
 #endif
 
-#ifndef CONFIG_DM_SERIAL
+#if !CONFIG_IS_ENABLED(DM_SERIAL)
 struct serial_device *default_serial_console(void)
 {
 	if (board_is_icev2())
