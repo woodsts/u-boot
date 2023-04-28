@@ -350,7 +350,7 @@ __weak unsigned long get_tbclk(void)
 }
 
 
-#ifndef CONFIG_WDT
+#if !CONFIG_IS_ENABLED(WDT)
 #if defined(CONFIG_WATCHDOG)
 #define WATCHDOG_MASK (TCR_WP(63) | TCR_WRC(3) | TCR_WIE)
 void
