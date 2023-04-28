@@ -43,7 +43,7 @@ optee_image_get_load_addr(const struct legacy_img_hdr *hdr)
 	return optee_image_get_entry_point(hdr) - sizeof(struct optee_header);
 }
 
-#if defined(CONFIG_OPTEE_IMAGE)
+#if CONFIG_IS_ENABLED(OPTEE_IMAGE)
 int optee_verify_bootm_image(unsigned long image_addr,
 			     unsigned long image_load_addr,
 			     unsigned long image_len);

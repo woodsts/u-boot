@@ -20,7 +20,7 @@
 	"\n\theader lo=0x%08x hi=0x%08x size=0x%08lx arch=0x%08x" \
 	"\n\tuimage params 0x%08lx-0x%08lx\n"
 
-#if defined(CONFIG_OPTEE_IMAGE)
+#if CONFIG_IS_ENABLED(OPTEE_IMAGE)
 static int optee_verify_image(struct optee_header *hdr, unsigned long image_len)
 {
 	uint32_t tee_file_size;
