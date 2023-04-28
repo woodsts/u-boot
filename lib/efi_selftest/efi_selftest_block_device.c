@@ -476,7 +476,7 @@ static int execute(void)
 		return EFI_ST_FAILURE;
 	}
 
-#ifdef CONFIG_FAT_WRITE
+#if CONFIG_IS_ENABLED(FAT_WRITE)
 	/* Write file */
 	ret = root->open(root, &file, u"u-boot.txt", EFI_FILE_MODE_READ |
 			 EFI_FILE_MODE_WRITE | EFI_FILE_MODE_CREATE, 0);

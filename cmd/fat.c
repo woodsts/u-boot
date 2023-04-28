@@ -94,7 +94,7 @@ U_BOOT_CMD(
 	"    - print information about filesystem from 'dev' on 'interface'"
 );
 
-#ifdef CONFIG_FAT_WRITE
+#if CONFIG_IS_ENABLED(FAT_WRITE)
 static int do_fat_fswrite(struct cmd_tbl *cmdtp, int flag, int argc,
 			  char *const argv[])
 {
