@@ -72,7 +72,7 @@ struct disk_partition {
 #if CONFIG_IS_ENABLED(PARTITION_UUIDS)
 	char	uuid[UUID_STR_LEN + 1];	/* filesystem UUID as string, if exists	*/
 #endif
-#ifdef CONFIG_PARTITION_TYPE_GUID
+#if CONFIG_IS_ENABLED(PARTITION_TYPE_GUID)
 	char	type_guid[UUID_STR_LEN + 1];	/* type GUID as string, if exists	*/
 #endif
 #if CONFIG_IS_ENABLED(DOS_PARTITION)

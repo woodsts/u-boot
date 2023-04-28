@@ -316,7 +316,7 @@ int part_get_info(struct blk_desc *dev_desc, int part,
 		/* The common case is no UUID support */
 		info->uuid[0] = 0;
 #endif
-#ifdef CONFIG_PARTITION_TYPE_GUID
+#if CONFIG_IS_ENABLED(PARTITION_TYPE_GUID)
 		info->type_guid[0] = 0;
 #endif
 
@@ -352,7 +352,7 @@ int part_get_info_whole_disk(struct blk_desc *dev_desc,
 #if CONFIG_IS_ENABLED(PARTITION_UUIDS)
 	info->uuid[0] = 0;
 #endif
-#ifdef CONFIG_PARTITION_TYPE_GUID
+#if CONFIG_IS_ENABLED(PARTITION_TYPE_GUID)
 	info->type_guid[0] = 0;
 #endif
 

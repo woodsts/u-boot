@@ -506,7 +506,7 @@ static int set_gpt_info(struct blk_desc *dev_desc,
 			strncpy((char *)parts[i].uuid, p, max_str_part);
 			free(val);
 		}
-#ifdef CONFIG_PARTITION_TYPE_GUID
+#if CONFIG_IS_ENABLED(PARTITION_TYPE_GUID)
 		/* guid */
 		val = extract_val(tok, "type");
 		if (val) {

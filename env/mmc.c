@@ -73,7 +73,7 @@ static inline int mmc_offset_try_partition(const char *str, int copy, s64 *val)
 
 		if (str && !strncmp((const char *)info.name, str, sizeof(info.name)))
 			break;
-#ifdef CONFIG_PARTITION_TYPE_GUID
+#if CONFIG_IS_ENABLED(PARTITION_TYPE_GUID)
 		if (!str) {
 			const efi_guid_t env_guid = PARTITION_U_BOOT_ENVIRONMENT;
 			efi_guid_t type_guid;
@@ -125,7 +125,7 @@ static inline s64 mmc_offset(struct mmc *mmc, int copy)
 	}
 
 	/* try the GPT partition with "U-Boot ENV" TYPE GUID */
-	if (IS_ENABLED(CONFIG_PARTITION_TYPE_GUID) && hwpart == 0) {
+	if (CONFIG_IS_ENABLED(PARTITION_TYPE_GUID) && hwpart == 0) {
 		err = mmc_offset_try_partition(NULL, copy, &val);
 		if (!err)
 			return val;

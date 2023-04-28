@@ -91,7 +91,7 @@ static const struct {
 	const char *string;
 	efi_guid_t guid;
 } list_guid[] = {
-#ifdef CONFIG_PARTITION_TYPE_GUID
+#if CONFIG_IS_ENABLED(PARTITION_TYPE_GUID)
 	{"system",	PARTITION_SYSTEM_GUID},
 	{"mbr",		LEGACY_MBR_PARTITION_GUID},
 	{"msft",	PARTITION_MSFT_RESERVED_GUID},
@@ -318,7 +318,7 @@ int uuid_str_to_bin(const char *uuid_str, unsigned char *uuid_bin,
 	uint64_t tmp64;
 
 	if (!uuid_str_valid(uuid_str)) {
-#ifdef CONFIG_PARTITION_TYPE_GUID
+#if CONFIG_IS_ENABLED(PARTITION_TYPE_GUID)
 		if (!uuid_guid_get_bin(uuid_str, uuid_bin))
 			return 0;
 #endif

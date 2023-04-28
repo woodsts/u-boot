@@ -242,7 +242,7 @@ void part_print_efi(struct blk_desc *dev_desc)
 			print_efiname(&gpt_pte[i]));
 		printf("\tattrs:\t0x%016llx\n", gpt_pte[i].attributes.raw);
 		uuid = (unsigned char *)gpt_pte[i].partition_type_guid.b;
-		if (IS_ENABLED(CONFIG_PARTITION_TYPE_GUID))
+		if (CONFIG_IS_ENABLED(PARTITION_TYPE_GUID))
 			printf("\ttype:\t%pUl\n\t\t(%pUs)\n", uuid, uuid);
 		else
 			printf("\ttype:\t%pUl\n", uuid);
@@ -293,7 +293,7 @@ int part_get_info_efi(struct blk_desc *dev_desc, int part,
 	uuid_bin_to_str(gpt_pte[part - 1].unique_partition_guid.b, info->uuid,
 			UUID_STR_FORMAT_GUID);
 #endif
-#ifdef CONFIG_PARTITION_TYPE_GUID
+#if CONFIG_IS_ENABLED(PARTITION_TYPE_GUID)
 	uuid_bin_to_str(gpt_pte[part - 1].partition_type_guid.b,
 			info->type_guid, UUID_STR_FORMAT_GUID);
 #endif
@@ -420,7 +420,7 @@ int gpt_fill_pte(struct blk_desc *dev_desc,
 	char *str_uuid;
 	unsigned char *bin_uuid;
 #endif
-#ifdef CONFIG_PARTITION_TYPE_GUID
+#if CONFIG_IS_ENABLED(PARTITION_TYPE_GUID)
 	char *str_type_guid;
 	unsigned char *bin_type_guid;
 #endif
@@ -467,7 +467,7 @@ int gpt_fill_pte(struct blk_desc *dev_desc,
 		else
 			gpt_e[i].ending_lba = cpu_to_le64(offset - 1);
 
-#ifdef CONFIG_PARTITION_TYPE_GUID
+#if CONFIG_IS_ENABLED(PARTITION_TYPE_GUID)
 		str_type_guid = partitions[i].type_guid;
 		bin_type_guid = gpt_e[i].partition_type_guid.b;
 		if (strlen(str_type_guid)) {
