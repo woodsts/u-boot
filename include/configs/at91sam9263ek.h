@@ -44,7 +44,7 @@
 		"cp.b ${fileaddr} ${monitor_base} ${filesize};" \
 		"protect on ${monitor_base} +${filesize}\0"
 
-#ifndef CONFIG_SKIP_LOWLEVEL_INIT
+#if !CONFIG_IS_ENABLED(SKIP_LOWLEVEL_INIT)
 #define MASTER_PLL_MUL		171
 #define MASTER_PLL_DIV		14
 #define MASTER_PLL_OUT		3
