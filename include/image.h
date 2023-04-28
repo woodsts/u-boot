@@ -1681,7 +1681,7 @@ static inline int fit_image_check_target_arch(const void *fdt, int node)
  * device
  */
 #if defined(USE_HOSTCC)
-# if defined(CONFIG_FIT_CIPHER)
+# if CONFIG_IS_ENABLED(FIT_CIPHER)
 #  define IMAGE_ENABLE_ENCRYPT	1
 #  define IMAGE_ENABLE_DECRYPT	1
 #  include <openssl/evp.h>
