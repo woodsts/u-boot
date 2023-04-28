@@ -54,7 +54,7 @@ static struct table_info table_list[] = {
 #ifdef CONFIG_GENERATE_MP_TABLE
 	{ "mp", write_mp_table, },
 #endif
-#ifdef CONFIG_GENERATE_ACPI_TABLE
+#if CONFIG_IS_ENABLED(GENERATE_ACPI_TABLE)
 	{ "acpi", write_acpi_tables, BLOBLISTT_ACPI_TABLES, 0x10000, 0x1000},
 #endif
 #ifdef CONFIG_GENERATE_SMBIOS_TABLE
@@ -142,7 +142,7 @@ int write_tables(void)
 		void *ptr = (void *)CONFIG_ROM_TABLE_ADDR;
 
 		/* Write an RSDP pointing to the tables */
-		if (IS_ENABLED(CONFIG_GENERATE_ACPI_TABLE)) {
+		if (CONFIG_IS_ENABLED(GENERATE_ACPI_TABLE)) {
 			struct acpi_ctx *ctx = gd_acpi_ctx();
 
 			acpi_write_rsdp(ptr, ctx->rsdt, ctx->xsdt);

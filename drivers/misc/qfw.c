@@ -19,7 +19,7 @@
 #include <misc.h>
 #include <tables_csum.h>
 
-#if defined(CONFIG_GENERATE_ACPI_TABLE) && !defined(CONFIG_SANDBOX)
+#if CONFIG_IS_ENABLED(GENERATE_ACPI_TABLE) && !defined(CONFIG_SANDBOX)
 /*
  * This function allocates memory for ACPI tables
  *

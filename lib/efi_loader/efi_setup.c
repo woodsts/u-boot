@@ -321,7 +321,7 @@ efi_status_t efi_init_obj_list(void)
 	if (ret != EFI_SUCCESS)
 		goto out;
 #endif
-#ifdef CONFIG_GENERATE_ACPI_TABLE
+#if CONFIG_IS_ENABLED(GENERATE_ACPI_TABLE)
 	ret = efi_acpi_register();
 	if (ret != EFI_SUCCESS)
 		goto out;
