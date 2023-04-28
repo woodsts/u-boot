@@ -123,7 +123,7 @@
 #define gadget_is_dwc3(g)        0
 #endif
 
-#ifdef CONFIG_USB_CDNS3_GADGET
+#if CONFIG_IS_ENABLED(USB_CDNS3_GADGET)
 #define gadget_is_cdns3(g)        (!strcmp("cdns3-gadget", (g)->name))
 #else
 #define gadget_is_cdns3(g)        0

@@ -10,7 +10,7 @@
 #ifndef __LINUX_CDNS3_GADGET_EXPORT
 #define __LINUX_CDNS3_GADGET_EXPORT
 
-#ifdef CONFIG_USB_CDNS3_GADGET
+#if CONFIG_IS_ENABLED(USB_CDNS3_GADGET)
 
 int cdns3_gadget_init(struct cdns3 *cdns);
 void cdns3_gadget_exit(struct cdns3 *cdns);
