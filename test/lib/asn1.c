@@ -329,7 +329,7 @@ static int lib_asn1_pkcs7(struct unit_test_state *uts)
 LIB_TEST(lib_asn1_pkcs7, 0);
 #endif /* CONFIG_PKCS7_MESSAGE_PARSER */
 
-#ifdef CONFIG_RSA_PUBLIC_KEY_PARSER
+#if CONFIG_IS_ENABLED(RSA_PUBLIC_KEY_PARSER)
 #include <crypto/internal/rsa.h>
 
 /*
