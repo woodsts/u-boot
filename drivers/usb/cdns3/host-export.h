@@ -9,7 +9,7 @@
 #ifndef __LINUX_CDNS3_HOST_EXPORT
 #define __LINUX_CDNS3_HOST_EXPORT
 
-#ifdef CONFIG_USB_CDNS3_HOST
+#if CONFIG_IS_ENABLED(USB_CDNS3_HOST)
 
 int cdns3_host_init(struct cdns3 *cdns);
 void cdns3_host_exit(struct cdns3 *cdns);
