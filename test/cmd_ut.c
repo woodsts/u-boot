@@ -227,7 +227,7 @@ static char ut_help_text[] =
 #ifdef CONFIG_UT_TIME
 	"\ntime - very basic test of time functions"
 #endif
-#if defined(CONFIG_UT_UNICODE) && \
+#if CONFIG_IS_ENABLED(UT_UNICODE) && \
 	!defined(CONFIG_SPL_BUILD) && !defined(API_BUILD)
 	"\nunicode - Unicode functions"
 #endif
