@@ -1308,7 +1308,7 @@ static int fecmxc_probe(struct udevice *dev)
 	if (ret)
 		return ret;
 
-#ifdef CONFIG_DM_REGULATOR
+#if CONFIG_IS_ENABLED(DM_REGULATOR)
 	if (priv->phy_supply) {
 		ret = regulator_set_enable(priv->phy_supply, true);
 		if (ret) {
@@ -1413,7 +1413,7 @@ static int fecmxc_remove(struct udevice *dev)
 	mdio_unregister(priv->bus);
 	mdio_free(priv->bus);
 
-#ifdef CONFIG_DM_REGULATOR
+#if CONFIG_IS_ENABLED(DM_REGULATOR)
 	if (priv->phy_supply)
 		regulator_set_enable(priv->phy_supply, false);
 #endif
@@ -1434,7 +1434,7 @@ static int fecmxc_of_to_plat(struct udevice *dev)
 	if (pdata->phy_interface == PHY_INTERFACE_MODE_NA)
 		return -EINVAL;
 
-#ifdef CONFIG_DM_REGULATOR
+#if CONFIG_IS_ENABLED(DM_REGULATOR)
 	device_get_supply_regulator(dev, "phy-supply", &priv->phy_supply);
 #endif
 

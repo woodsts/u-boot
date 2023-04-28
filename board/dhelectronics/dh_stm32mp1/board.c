@@ -437,7 +437,7 @@ static void sysconf_init(void)
 {
 #ifndef CONFIG_TFABOOT
 	u8 *syscfg;
-#ifdef CONFIG_DM_REGULATOR
+#if CONFIG_IS_ENABLED(DM_REGULATOR)
 	struct udevice *pwr_dev;
 	struct udevice *pwr_reg;
 	struct udevice *dev;
@@ -460,7 +460,7 @@ static void sysconf_init(void)
 	bootr |= (bootr & SYSCFG_BOOTR_BOOT_MASK) << SYSCFG_BOOTR_BOOTPD_SHIFT;
 	writel(bootr, syscfg + SYSCFG_BOOTR);
 
-#ifdef CONFIG_DM_REGULATOR
+#if CONFIG_IS_ENABLED(DM_REGULATOR)
 	/* High Speed Low Voltage Pad mode Enable for SPI, SDMMC, ETH, QSPI
 	 * and TRACE. Needed above ~50MHz and conditioned by AFMUX selection.
 	 * The customer will have to disable this for low frequencies
@@ -527,7 +527,7 @@ static void sysconf_init(void)
 #endif
 }
 
-#ifdef CONFIG_DM_REGULATOR
+#if CONFIG_IS_ENABLED(DM_REGULATOR)
 #define STPMIC_NVM_BUCKS_VOUT_SHR			0xfc
 #define STPMIC_NVM_BUCKS_VOUT_SHR_BUCK_1V2		0
 #define STPMIC_NVM_BUCKS_VOUT_SHR_BUCK_1V8		1

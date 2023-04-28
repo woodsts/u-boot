@@ -191,7 +191,7 @@ int board_init(void)
 {
 	int ret;
 
-#ifdef CONFIG_DM_REGULATOR
+#if CONFIG_IS_ENABLED(DM_REGULATOR)
 	ret = regulators_enable_boot_on(false);
 	if (ret)
 		debug("%s: Cannot enable boot on regulator\n", __func__);

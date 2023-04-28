@@ -40,7 +40,7 @@ struct dwc2_priv {
 #if CONFIG_IS_ENABLED(DM_USB)
 	uint8_t aligned_buffer[DWC2_DATA_BUF_SIZE] __aligned(ARCH_DMA_MINALIGN);
 	uint8_t status_buffer[DWC2_STATUS_BUF_SIZE] __aligned(ARCH_DMA_MINALIGN);
-#ifdef CONFIG_DM_REGULATOR
+#if CONFIG_IS_ENABLED(DM_REGULATOR)
 	struct udevice *vbus_supply;
 #endif
 	struct phy phy;
@@ -181,7 +181,7 @@ static void dwc_otg_core_reset(struct udevice *dev,
 	mdelay(100);
 }
 
-#if CONFIG_IS_ENABLED(DM_USB) && defined(CONFIG_DM_REGULATOR)
+#if CONFIG_IS_ENABLED(DM_USB) && CONFIG_IS_ENABLED(DM_REGULATOR)
 static int dwc_vbus_supply_init(struct udevice *dev)
 {
 	struct dwc2_priv *priv = dev_get_priv(dev);

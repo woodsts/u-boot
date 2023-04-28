@@ -131,7 +131,7 @@ static void omap_ehci_soft_phy_reset(int port)
 struct ehci_omap_priv_data {
 	struct ehci_ctrl ctrl;
 	struct omap_ehci *ehci;
-#ifdef CONFIG_DM_REGULATOR
+#if CONFIG_IS_ENABLED(DM_REGULATOR)
 	struct udevice *vbus_supply;
 #endif
 	enum usb_init_type init_type;

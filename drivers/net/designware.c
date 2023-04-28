@@ -704,7 +704,7 @@ int designware_eth_probe(struct udevice *dev)
 	}
 #endif
 
-#if defined(CONFIG_DM_REGULATOR)
+#if CONFIG_IS_ENABLED(DM_REGULATOR)
 	struct udevice *phy_supply;
 
 	ret = device_get_supply_regulator(dev, "phy-supply",

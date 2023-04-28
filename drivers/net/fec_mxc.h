@@ -255,7 +255,7 @@ struct fec_priv {
 	int phy_id;
 	int (*mii_postcall)(int);
 #endif
-#ifdef CONFIG_DM_REGULATOR
+#if CONFIG_IS_ENABLED(DM_REGULATOR)
 	struct udevice *phy_supply;
 #endif
 #if CONFIG_IS_ENABLED(DM_GPIO)
