@@ -153,7 +153,7 @@ int board_early_init_f(void)
 	return 0;
 }
 
-#ifdef CONFIG_DM_PMIC
+#if CONFIG_IS_ENABLED(DM_PMIC)
 int power_init_board(void)
 {
 	struct udevice *dev;

@@ -60,7 +60,7 @@ DECLARE_GLOBAL_DATA_PTR;
 	PAD_CTL_PUS_47K_UP  | PAD_CTL_SPEED_LOW |		\
 	PAD_CTL_DSE_80ohm   | PAD_CTL_SRE_FAST  | PAD_CTL_HYS)
 
-#ifdef CONFIG_DM_PMIC
+#if CONFIG_IS_ENABLED(DM_PMIC)
 int power_init_board(void)
 {
 	struct udevice *dev;

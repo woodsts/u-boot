@@ -43,7 +43,7 @@ static iomux_v3_cfg_t const wdog_pads[] = {
 	MX7D_PAD_GPIO1_IO00__WDOG1_WDOG_B | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
 
-#ifdef CONFIG_DM_PMIC
+#if CONFIG_IS_ENABLED(DM_PMIC)
 int power_init_board(void)
 {
 	struct udevice *dev;

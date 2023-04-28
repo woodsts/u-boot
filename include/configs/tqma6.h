@@ -30,7 +30,7 @@
 /* I2C Configs */
 #define CFG_I2C_MULTI_BUS
 
-#if !defined(CONFIG_DM_PMIC)
+#if !CONFIG_IS_ENABLED(DM_PMIC)
 #define CFG_POWER_PFUZE100_I2C_ADDR	0x08
 #define TQMA6_PFUZE100_I2C_BUS		2
 #endif
