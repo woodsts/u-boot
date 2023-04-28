@@ -615,7 +615,7 @@ static struct clk_synth cdce913_data = {
 #endif
 
 #if defined(CONFIG_OF_BOARD_SETUP) && defined(CONFIG_OF_CONTROL) && \
-	defined(CONFIG_DM_ETH) && defined(CONFIG_DRIVER_TI_CPSW)
+	CONFIG_IS_ENABLED(DM_ETH) && defined(CONFIG_DRIVER_TI_CPSW)
 
 #define MAX_CPSW_SLAVES	2
 

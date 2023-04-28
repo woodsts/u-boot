@@ -33,7 +33,7 @@
 #include <spi.h>
 
 #include <net.h>
-#ifndef CONFIG_DM_ETH
+#if !CONFIG_IS_ENABLED(DM_ETH)
 #include <netdev.h>
 #endif
 

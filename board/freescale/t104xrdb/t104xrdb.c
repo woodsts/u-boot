@@ -136,7 +136,7 @@ int ft_board_setup(void *blob, struct bd_info *bd)
 #endif
 
 #ifdef CONFIG_SYS_DPAA_FMAN
-#ifndef CONFIG_DM_ETH
+#if !CONFIG_IS_ENABLED(DM_ETH)
 	fdt_fixup_fman_ethernet(blob);
 #endif
 #endif

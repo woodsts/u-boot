@@ -100,7 +100,7 @@ int board_init(void)
 	ppa_init();
 #endif
 
-#if !defined(CONFIG_SYS_EARLY_PCI_INIT) && defined(CONFIG_DM_ETH)
+#if !defined(CONFIG_SYS_EARLY_PCI_INIT) && CONFIG_IS_ENABLED(DM_ETH)
 	pci_init();
 #endif
 
@@ -185,7 +185,7 @@ int ft_board_setup(void *blob, struct bd_info *bd)
 	ft_cpu_setup(blob, bd);
 
 #ifdef CONFIG_SYS_DPAA_FMAN
-#ifndef CONFIG_DM_ETH
+#if !CONFIG_IS_ENABLED(DM_ETH)
 	fdt_fixup_fman_ethernet(blob);
 #endif
 #endif

@@ -1161,7 +1161,7 @@ int arch_early_init_r(void)
 	fsl_rgmii_init();
 #endif
 #ifdef CONFIG_FMAN_ENET
-#ifndef CONFIG_DM_ETH
+#if !CONFIG_IS_ENABLED(DM_ETH)
 	fman_enet_init();
 #endif
 #endif

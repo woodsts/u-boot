@@ -218,7 +218,7 @@ void reset_cpu(void)
 int board_eth_init(struct bd_info *bis)
 {
 	int rc = 0;
-#ifndef CONFIG_DM_ETH
+#if !CONFIG_IS_ENABLED(DM_ETH)
 #ifdef CONFIG_SMC911X
 	rc = smc911x_initialize(0, CFG_SMC911X_BASE);
 #endif

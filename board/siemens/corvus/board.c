@@ -27,7 +27,7 @@
 #if defined(CONFIG_RESET_PHY_R) && defined(CONFIG_MACB)
 #include <net.h>
 #endif
-#ifndef CONFIG_DM_ETH
+#if !CONFIG_IS_ENABLED(DM_ETH)
 #include <netdev.h>
 #endif
 #include <spi.h>
@@ -292,7 +292,7 @@ int dram_init(void)
 	return 0;
 }
 
-#ifndef CONFIG_DM_ETH
+#if !CONFIG_IS_ENABLED(DM_ETH)
 int board_eth_init(struct bd_info *bis)
 {
 	int rc = 0;

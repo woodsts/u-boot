@@ -893,7 +893,7 @@ int cpu_init_r(void)
 #endif
 
 #ifdef CONFIG_FMAN_ENET
-#ifndef CONFIG_DM_ETH
+#if !CONFIG_IS_ENABLED(DM_ETH)
 	fman_enet_init();
 #endif
 #endif

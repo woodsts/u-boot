@@ -318,7 +318,7 @@ int board_init(void)
 }
 
 /* Added for BLANCHE(R-CarV2H board) */
-#ifndef CONFIG_DM_ETH
+#if !CONFIG_IS_ENABLED(DM_ETH)
 int board_eth_init(struct bd_info *bis)
 {
 	int rc = 0;

@@ -22,7 +22,7 @@
 
 #define errf(fmt, args...) do { printf("ERROR @ %s(): ", __func__); printf(fmt, ##args); } while (0)
 
-#if defined(CONFIG_CMD_NET) && !defined(CONFIG_DM_ETH)
+#if defined(CONFIG_CMD_NET) && !CONFIG_IS_ENABLED(DM_ETH)
 
 static int dev_valid_net(void *cookie)
 {

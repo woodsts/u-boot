@@ -10,7 +10,7 @@
 #include <image.h>
 #include <init.h>
 #include <net.h>
-#if defined(CONFIG_FTMAC100) && !defined(CONFIG_DM_ETH)
+#if defined(CONFIG_FTMAC100) && !CONFIG_IS_ENABLED(DM_ETH)
 #include <netdev.h>
 #endif
 #include <asm/global_data.h>
@@ -43,7 +43,7 @@ int dram_init_banksize(void)
 	return fdtdec_setup_memory_banksize();
 }
 
-#if defined(CONFIG_FTMAC100) && !defined(CONFIG_DM_ETH)
+#if defined(CONFIG_FTMAC100) && !CONFIG_IS_ENABLED(DM_ETH)
 int board_eth_init(struct bd_info *bd)
 {
 	return ftmac100_initialize(bd);

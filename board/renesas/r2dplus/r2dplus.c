@@ -46,7 +46,7 @@ void ide_set_reset(int idereset)
 	}
 }
 
-#ifndef CONFIG_DM_ETH
+#if !CONFIG_IS_ENABLED(DM_ETH)
 int board_eth_init(struct bd_info *bis)
 {
 	return pci_eth_init(bis);

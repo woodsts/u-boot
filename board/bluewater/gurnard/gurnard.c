@@ -15,7 +15,7 @@
 #include <env.h>
 #include <init.h>
 #include <net.h>
-#ifndef CONFIG_DM_ETH
+#if !CONFIG_IS_ENABLED(DM_ETH)
 #include <netdev.h>
 #endif
 #include <asm/global_data.h>
@@ -398,7 +398,7 @@ int board_late_init(void)
 	return 0;
 }
 
-#ifndef CONFIG_DM_ETH
+#if !CONFIG_IS_ENABLED(DM_ETH)
 int board_eth_init(struct bd_info *bis)
 {
 	return macb_eth_initialize(0, (void *)ATMEL_BASE_EMAC, 0);

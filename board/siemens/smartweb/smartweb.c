@@ -33,7 +33,7 @@
 #include <asm/gpio.h>
 #include <watchdog.h>
 # include <net.h>
-#ifndef CONFIG_DM_ETH
+#if !CONFIG_IS_ENABLED(DM_ETH)
 # include <netdev.h>
 #endif
 #include <g_dnl.h>
@@ -182,7 +182,7 @@ int dram_init(void)
 	return 0;
 }
 
-#ifndef CONFIG_DM_ETH
+#if !CONFIG_IS_ENABLED(DM_ETH)
 #ifdef CONFIG_MACB
 int board_eth_init(struct bd_info *bis)
 {
