@@ -115,7 +115,7 @@ static const char *m2_connector_mode_name[] = {
 
 static enum m2_connector_mode connector_mode;
 
-#if defined(CONFIG_OF_LIBFDT) && defined(CONFIG_OF_BOARD_SETUP)
+#if CONFIG_IS_ENABLED(OF_LIBFDT) && defined(CONFIG_OF_BOARD_SETUP)
 static void *connector_overlay;
 static u32 connector_overlay_size;
 #endif
@@ -231,7 +231,7 @@ void set_board_info_env(void)
 
 static void m2_overlay_prepare(void)
 {
-#if defined(CONFIG_OF_LIBFDT) && defined(CONFIG_OF_BOARD_SETUP)
+#if CONFIG_IS_ENABLED(OF_LIBFDT) && defined(CONFIG_OF_BOARD_SETUP)
 	const char *overlay_path;
 	void *overlay;
 	u64 loadaddr;
@@ -434,7 +434,7 @@ int board_late_init(void)
 	return 0;
 }
 
-#if defined(CONFIG_OF_LIBFDT) && defined(CONFIG_OF_BOARD_SETUP)
+#if CONFIG_IS_ENABLED(OF_LIBFDT) && defined(CONFIG_OF_BOARD_SETUP)
 static void m2_fdt_fixup(void *blob)
 {
 	void *overlay_copy = NULL;

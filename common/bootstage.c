@@ -262,7 +262,7 @@ static int h_compare_record(const void *r1, const void *r2)
 	return rec1->time_us > rec2->time_us ? 1 : -1;
 }
 
-#ifdef CONFIG_OF_LIBFDT
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 /**
  * Add all bootstage timings to a device tree.
  *

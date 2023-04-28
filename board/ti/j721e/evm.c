@@ -139,7 +139,7 @@ void spl_perform_fixups(struct spl_image_info *spl_image)
 }
 #endif
 
-#if defined(CONFIG_OF_LIBFDT) && defined(CONFIG_OF_BOARD_SETUP)
+#if CONFIG_IS_ENABLED(OF_LIBFDT) && defined(CONFIG_OF_BOARD_SETUP)
 int ft_board_setup(void *blob, struct bd_info *bd)
 {
 	detect_enable_hyperflash(blob);

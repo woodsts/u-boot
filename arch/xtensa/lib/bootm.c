@@ -114,7 +114,7 @@ static struct bp_tag *setup_serial_tag(struct bp_tag *params)
 	return bp_tag_next(params);
 }
 
-#ifdef CONFIG_OF_LIBFDT
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 
 static struct bp_tag *setup_fdt_tag(struct bp_tag *params, void *fdt_start)
 {
@@ -163,7 +163,7 @@ int do_bootm_linux(int flag, int argc, char *argv[], struct bootm_headers *image
 	if (initrd_start)
 		params = setup_ramdisk_tag(params, initrd_start, initrd_end);
 
-#ifdef CONFIG_OF_LIBFDT
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 	if (images->ft_addr)
 		params = setup_fdt_tag(params, images->ft_addr);
 #endif

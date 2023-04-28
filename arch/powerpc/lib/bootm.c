@@ -26,7 +26,7 @@
 #include <bootm.h>
 #include <vxworks.h>
 
-#if defined(CONFIG_OF_LIBFDT)
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 #include <linux/libfdt.h>
 #include <fdt_support.h>
 #endif
@@ -49,7 +49,7 @@ static void boot_jump_linux(struct bootm_headers *images)
 {
 	void	(*kernel)(struct bd_info *, ulong r4, ulong r5, ulong r6,
 			      ulong r7, ulong r8, ulong r9);
-#ifdef CONFIG_OF_LIBFDT
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 	char *of_flat_tree = images->ft_addr;
 #endif
 
@@ -71,7 +71,7 @@ static void boot_jump_linux(struct bootm_headers *images)
 	unlock_ram_in_cache();
 #endif
 
-#if defined(CONFIG_OF_LIBFDT)
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 	if (of_flat_tree) {	/* device tree; boot new style */
 		/*
 		 * Linux Kernel Parameters (passing device tree):
@@ -275,7 +275,7 @@ static void set_clocks_in_mhz (struct bd_info *kbd)
 #if defined(CONFIG_BOOTM_VXWORKS)
 void boot_prep_vxworks(struct bootm_headers *images)
 {
-#if defined(CONFIG_OF_LIBFDT)
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 	int off;
 	u64 base, size;
 

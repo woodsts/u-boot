@@ -145,7 +145,7 @@ static char booti_help_text[] =
 	"\ttypes are supported. In order to boot from any of these compressed\n"
 	"\timages, user have to set kernel_comp_addr_r and kernel_comp_size environment\n"
 	"\tvariables beforehand.\n"
-#if defined(CONFIG_OF_LIBFDT)
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 	"\tSince booting a Linux kernel requires a flat device-tree, a\n"
 	"\tthird argument providing the address of the device-tree blob\n"
 	"\tis required. To boot a kernel with a device-tree blob but\n"

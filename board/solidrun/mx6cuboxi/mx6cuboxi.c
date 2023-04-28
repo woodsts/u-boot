@@ -436,7 +436,7 @@ static int find_ethernet_phy(void)
 	return phy_addr;
 }
 
-#if defined(CONFIG_OF_LIBFDT) && defined(CONFIG_OF_BOARD_SETUP)
+#if CONFIG_IS_ENABLED(OF_LIBFDT) && defined(CONFIG_OF_BOARD_SETUP)
 /*
  * Configure the correct ethernet PHYs nodes in device-tree:
  * - AR8035 at addresses 0 or 4: Cubox

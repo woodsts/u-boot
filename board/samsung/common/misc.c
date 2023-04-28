@@ -94,7 +94,7 @@ void set_board_info(void)
 	snprintf(info, ARRAY_SIZE(info), "%x", get_board_rev());
 	env_set("board_rev", info);
 #endif
-#ifdef CONFIG_OF_LIBFDT
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 	const char *bdtype = "";
 	const char *bdname = CONFIG_SYS_BOARD;
 

@@ -52,7 +52,7 @@ void bootm_announce_and_cleanup(void)
 	dm_remove_devices_flags(DM_REMOVE_ACTIVE_ALL);
 }
 
-#if defined(CONFIG_OF_LIBFDT) && !defined(CONFIG_OF_NO_KERNEL)
+#if CONFIG_IS_ENABLED(OF_LIBFDT) && !defined(CONFIG_OF_NO_KERNEL)
 int arch_fixup_memory_node(void *blob)
 {
 	struct bd_info	*bd = gd->bd;

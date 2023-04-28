@@ -178,7 +178,7 @@ int g_dnl_bind_fixup(struct usb_device_descriptor *dev, const char *name)
 }
 #endif
 
-#if defined(CONFIG_OF_LIBFDT)
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 int ft_common_board_setup(void *blob, struct bd_info *bd)
 {
 	if (tdx_serial) {

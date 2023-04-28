@@ -49,7 +49,7 @@ static struct cmd_tbl cmd_bootm_sub[] = {
 #ifdef CONFIG_SYS_BOOT_RAMDISK_HIGH
 	U_BOOT_CMD_MKENT(ramdisk, 0, 1, (void *)BOOTM_STATE_RAMDISK, "", ""),
 #endif
-#ifdef CONFIG_OF_LIBFDT
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 	U_BOOT_CMD_MKENT(fdt, 0, 1, (void *)BOOTM_STATE_FDT, "", ""),
 #endif
 	U_BOOT_CMD_MKENT(cmdline, 0, 1, (void *)BOOTM_STATE_OS_CMDLINE, "", ""),
@@ -187,7 +187,7 @@ static char bootm_help_text[] =
 	"[addr [arg ...]]\n    - boot application image stored in memory\n"
 	"\tpassing arguments 'arg ...'; when booting a Linux kernel,\n"
 	"\t'arg' can be the address of an initrd image\n"
-#if defined(CONFIG_OF_LIBFDT)
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 	"\tWhen booting a Linux kernel which requires a flat device-tree\n"
 	"\ta third argument is required which is the address of the\n"
 	"\tdevice-tree blob. To boot that kernel without an initrd image,\n"
@@ -213,7 +213,7 @@ static char bootm_help_text[] =
 #if defined(CONFIG_SYS_BOOT_RAMDISK_HIGH)
 	"\tramdisk - relocate initrd, set env initrd_start/initrd_end\n"
 #endif
-#if defined(CONFIG_OF_LIBFDT)
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 	"\tfdt     - relocate flat device tree\n"
 #endif
 	"\tcmdline - OS specific command line processing/setup\n"

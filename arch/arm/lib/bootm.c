@@ -403,7 +403,7 @@ int do_bootm_linux(int flag, int argc, char *const argv[],
 #if defined(CONFIG_BOOTM_VXWORKS)
 void boot_prep_vxworks(struct bootm_headers *images)
 {
-#if defined(CONFIG_OF_LIBFDT)
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 	int off;
 
 	if (images->ft_addr) {

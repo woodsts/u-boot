@@ -95,7 +95,7 @@ static char bootz_help_text[] =
 	"\tThe argument 'initrd' is optional and specifies the address\n"
 	"\tof the initrd in memory. The optional argument ':size' allows\n"
 	"\tspecifying the size of RAW initrd.\n"
-#if defined(CONFIG_OF_LIBFDT)
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 	"\tWhen booting a Linux kernel which requires a flat device-tree\n"
 	"\ta third argument is required which is the address of the\n"
 	"\tdevice-tree blob. To boot that kernel without an initrd image,\n"

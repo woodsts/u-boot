@@ -352,7 +352,7 @@ void board_fit_image_post_process(const void *fit, int node, void **p_image,
 }
 #endif
 
-#if defined(CONFIG_OF_LIBFDT)
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 int fdt_fixup_msmc_ram(void *blob, char *parent_path, char *node_name)
 {
 	u64 msmc_start = 0, msmc_end = 0, msmc_size, reg[2];

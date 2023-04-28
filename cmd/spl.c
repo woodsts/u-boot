@@ -18,7 +18,7 @@ DECLARE_GLOBAL_DATA_PTR;
 static const char **subcmd_list[] = {
 
 	[SPL_EXPORT_FDT] = (const char * []) {
-#ifdef CONFIG_OF_LIBFDT
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 		"start",
 		"loados",
 	#ifdef CONFIG_SYS_BOOT_RAMDISK_HIGH
@@ -115,7 +115,7 @@ static int spl_export(struct cmd_tbl *cmdtp, int flag, int argc,
 		if (call_bootm(argc, argv, subcmd_list[(long)c->cmd]))
 			return -1;
 		switch ((long)c->cmd) {
-#ifdef CONFIG_OF_LIBFDT
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 		case SPL_EXPORT_FDT:
 			printf("Argument image is now in RAM: 0x%p\n",
 				(void *)images.ft_addr);

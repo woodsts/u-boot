@@ -339,9 +339,9 @@ int board_ehci_power(int port, int on)
 /*
  * Device Tree Support
  */
-#if defined(CONFIG_OF_BOARD_SETUP) && defined(CONFIG_OF_LIBFDT)
+#if defined(CONFIG_OF_BOARD_SETUP) && CONFIG_IS_ENABLED(OF_LIBFDT)
 void tqma6_bb_ft_board_setup(void *blob, struct bd_info *bd)
 {
 	/* TBD */
 }
-#endif /* defined(CONFIG_OF_BOARD_SETUP) && defined(CONFIG_OF_LIBFDT) */
+#endif /* defined(CONFIG_OF_BOARD_SETUP) && CONFIG_IS_ENABLED(OF_LIBFDT) */

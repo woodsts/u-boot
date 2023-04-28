@@ -285,7 +285,7 @@ int checkboard(void)
 /*
  * Device Tree Support
  */
-#if defined(CONFIG_OF_BOARD_SETUP) && defined(CONFIG_OF_LIBFDT)
+#if defined(CONFIG_OF_BOARD_SETUP) && CONFIG_IS_ENABLED(OF_LIBFDT)
 #define MODELSTRLEN 32u
 int ft_board_setup(void *blob, struct bd_info *bd)
 {
@@ -303,4 +303,4 @@ int ft_board_setup(void *blob, struct bd_info *bd)
 
 	return 0;
 }
-#endif /* defined(CONFIG_OF_BOARD_SETUP) && defined(CONFIG_OF_LIBFDT) */
+#endif /* defined(CONFIG_OF_BOARD_SETUP) && CONFIG_IS_ENABLED(OF_LIBFDT) */

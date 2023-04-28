@@ -7,7 +7,7 @@
 #ifndef __FDT_SUPPORT_H
 #define __FDT_SUPPORT_H
 
-#if (defined(CONFIG_OF_LIBFDT) || defined(CONFIG_OF_CONTROL)) && \
+#if (CONFIG_IS_ENABLED(OF_LIBFDT) || defined(CONFIG_OF_CONTROL)) && \
 	!defined(USE_HOSTCC)
 
 #include <asm/u-boot.h>

@@ -13,7 +13,7 @@
 #include <asm/global_data.h>
 #include <linux/delay.h>
 
-#if defined(CONFIG_OF_LIBFDT)
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 #include <linux/libfdt.h>
 #include <fdt_support.h>
 #endif
@@ -27,7 +27,7 @@ DECLARE_GLOBAL_DATA_PTR;
 static struct pci_controller pci_hose[MAX_BUSES];
 static int pci_num_buses;
 
-#if defined(CONFIG_OF_LIBFDT)
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 void ft_pci_setup(void *blob, struct bd_info *bd)
 {
 	int nodeoffset;

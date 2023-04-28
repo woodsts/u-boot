@@ -19,7 +19,7 @@ static inline void tegra_gpu_config(void)
 
 #endif /* CONFIG_TEGRA_GPU */
 
-#if defined(CONFIG_OF_LIBFDT)
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 
 int tegra_gpu_enable_node(void *blob, const char *gpupath);
 

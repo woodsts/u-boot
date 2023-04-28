@@ -35,7 +35,7 @@ __weak int fdt_update_ethernet_dt(void *blob)
 int arch_fixup_fdt(void *blob)
 {
 	__maybe_unused int ret = 0;
-#if defined(CONFIG_ARMV7_NONSEC) || defined(CONFIG_OF_LIBFDT)
+#if defined(CONFIG_ARMV7_NONSEC) || CONFIG_IS_ENABLED(OF_LIBFDT)
 	struct bd_info *bd = gd->bd;
 	int bank;
 	u64 start[CONFIG_NR_DRAM_BANKS];
@@ -51,7 +51,7 @@ int arch_fixup_fdt(void *blob)
 #endif
 	}
 
-#ifdef CONFIG_OF_LIBFDT
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 	ret = fdt_fixup_memory_banks(blob, start, size, CONFIG_NR_DRAM_BANKS);
 	if (ret)
 		return ret;

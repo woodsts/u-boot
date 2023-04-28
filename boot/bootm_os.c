@@ -255,7 +255,7 @@ static int do_bootm_plan9(int flag, int argc, char *const argv[],
 
 static void do_bootvx_fdt(struct bootm_headers *images)
 {
-#if defined(CONFIG_OF_LIBFDT)
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 	int ret;
 	char *bootline;
 	ulong of_size = images->ft_len;
@@ -298,7 +298,7 @@ static void do_bootvx_fdt(struct bootm_headers *images)
 
 	bootstage_mark(BOOTSTAGE_ID_RUN_OS);
 
-#if defined(CONFIG_OF_LIBFDT)
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 	printf("## Starting vxWorks at 0x%08lx, device tree at 0x%08lx ...\n",
 	       (ulong)images->ep, (ulong)*of_flat_tree);
 #else

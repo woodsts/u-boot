@@ -56,7 +56,7 @@ static inline int optee_verify_bootm_image(unsigned long image_addr,
 }
 #endif
 
-#if defined(CONFIG_OPTEE_LIB) && defined(CONFIG_OF_LIBFDT)
+#if defined(CONFIG_OPTEE_LIB) && CONFIG_IS_ENABLED(OF_LIBFDT)
 int optee_copy_fdt_nodes(void *new_blob);
 #else
 static inline int optee_copy_fdt_nodes(void *new_blob)

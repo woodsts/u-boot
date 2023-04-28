@@ -64,7 +64,7 @@ error:
 }
 #endif
 
-#if defined(CONFIG_OF_LIBFDT)
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 static int optee_copy_firmware_node(ofnode node, void *fdt_blob)
 {
 	int offs, ret, len;

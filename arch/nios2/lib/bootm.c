@@ -24,7 +24,7 @@ int do_bootm_linux(int flag, int argc, char *const argv[],
 	ulong initrd_start = images->rd_start;
 	ulong initrd_end = images->rd_end;
 	char *of_flat_tree = NULL;
-#if defined(CONFIG_OF_LIBFDT)
+#if CONFIG_IS_ENABLED(OF_LIBFDT)
 	/* did generic code already find a device tree? */
 	if (images->ft_len)
 		of_flat_tree = images->ft_addr;
