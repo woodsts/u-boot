@@ -26,7 +26,7 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
-#if defined(CONFIG_EFI_HAVE_CAPSULE_SUPPORT) && defined(CONFIG_EFI_PARTITION)
+#if defined(CONFIG_EFI_HAVE_CAPSULE_SUPPORT) && CONFIG_IS_ENABLED(EFI_PARTITION)
 
 #define DFU_ALT_BUF_LEN			SZ_1K
 
@@ -173,7 +173,7 @@ static void gpt_capsule_update_setup(void)
 
 __weak int rk_board_late_init(void)
 {
-#if defined(CONFIG_EFI_HAVE_CAPSULE_SUPPORT) && defined(CONFIG_EFI_PARTITION)
+#if defined(CONFIG_EFI_HAVE_CAPSULE_SUPPORT) && CONFIG_IS_ENABLED(EFI_PARTITION)
 	gpt_capsule_update_setup();
 #endif
 

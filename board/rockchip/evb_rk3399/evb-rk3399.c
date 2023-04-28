@@ -44,7 +44,7 @@ out:
 	return 0;
 }
 
-#if defined(CONFIG_EFI_HAVE_CAPSULE_SUPPORT) && defined(CONFIG_EFI_PARTITION)
+#if defined(CONFIG_EFI_HAVE_CAPSULE_SUPPORT) && CONFIG_IS_ENABLED(EFI_PARTITION)
 static bool board_is_rockpi_4b(void)
 {
 	return CONFIG_IS_ENABLED(TARGET_EVB_RK3399) &&
