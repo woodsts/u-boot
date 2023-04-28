@@ -68,7 +68,7 @@ static inline bool supports_extension(char ext)
 
 static int riscv_cpu_probe(void)
 {
-#ifdef CONFIG_CPU
+#if CONFIG_IS_ENABLED(CPU)
 	int ret;
 
 	/* probe cpus so that RISC-V timer can be bound */

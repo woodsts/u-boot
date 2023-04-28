@@ -14,7 +14,7 @@
 #include <sysinfo.h>
 #include <tables_csum.h>
 #include <version.h>
-#ifdef CONFIG_CPU
+#if CONFIG_IS_ENABLED(CPU)
 #include <cpu.h>
 #include <dm/uclass-internal.h>
 #endif
@@ -366,7 +366,7 @@ static void smbios_write_type4_dm(struct smbios_type4 *t,
 	const char *vendor = "Unknown";
 	const char *name = "Unknown";
 
-#ifdef CONFIG_CPU
+#if CONFIG_IS_ENABLED(CPU)
 	char processor_name[49];
 	char vendor_name[49];
 	struct udevice *cpu = NULL;
