@@ -20,7 +20,7 @@
 #include <asm/arch-fsl-layerscape/fsl_icid.h>
 #include <i2c.h>
 #include <asm/arch/soc.h>
-#ifdef CONFIG_FSL_LS_PPA
+#if CONFIG_IS_ENABLED(FSL_LS_PPA)
 #include <asm/arch/ppa.h>
 #endif
 #include <fsl_immap.h>
@@ -74,7 +74,7 @@ u32 get_lpuart_clk(void)
 
 int board_init(void)
 {
-#ifdef CONFIG_FSL_LS_PPA
+#if CONFIG_IS_ENABLED(FSL_LS_PPA)
 	ppa_init();
 #endif
 

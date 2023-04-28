@@ -402,7 +402,7 @@ int board_init(void)
 	if (adjust_vdd(0))
 		printf("Warning: Adjusting core voltage failed.\n");
 
-#ifdef CONFIG_FSL_LS_PPA
+#if CONFIG_IS_ENABLED(FSL_LS_PPA)
 	ppa_init();
 #endif
 

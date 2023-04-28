@@ -533,7 +533,7 @@ int board_init(void)
 	config_serdes_mux();
 #endif
 
-#ifdef CONFIG_FSL_LS_PPA
+#if CONFIG_IS_ENABLED(FSL_LS_PPA)
 	ppa_init();
 #endif
 

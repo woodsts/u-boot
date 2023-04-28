@@ -288,7 +288,7 @@ int board_init(void)
 	QIXIS_WRITE(rst_ctl, QIXIS_RST_CTL_RESET_EN);
 #endif
 
-#ifdef CONFIG_FSL_LS_PPA
+#if CONFIG_IS_ENABLED(FSL_LS_PPA)
 	ppa_init();
 #endif
 

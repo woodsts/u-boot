@@ -211,7 +211,7 @@ int board_init(void)
 	out_le32(SMMU_NSCR0, val);
 #endif
 
-#ifdef CONFIG_FSL_LS_PPA
+#if CONFIG_IS_ENABLED(FSL_LS_PPA)
 	ppa_init();
 #endif
 

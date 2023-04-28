@@ -9,7 +9,7 @@
 
 #ifdef CONFIG_CHAIN_OF_TRUST
 #ifndef CONFIG_SPL_BUILD
-#ifdef CONFIG_FSL_LS_PPA
+#if CONFIG_IS_ENABLED(FSL_LS_PPA)
 /* Define the key hash here if SRK used for signing PPA image is
  * different from SRK hash put in SFP used for U-Boot.
  * Example

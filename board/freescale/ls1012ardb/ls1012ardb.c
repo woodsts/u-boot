@@ -15,7 +15,7 @@
 #include <asm/io.h>
 #include <asm/arch/clock.h>
 #include <asm/arch/fsl_serdes.h>
-#ifdef CONFIG_FSL_LS_PPA
+#if CONFIG_IS_ENABLED(FSL_LS_PPA)
 #include <asm/arch/ppa.h>
 #endif
 #include <asm/arch/mmu.h>
@@ -173,7 +173,7 @@ int board_init(void)
 	erratum_a010315();
 #endif
 
-#ifdef CONFIG_FSL_LS_PPA
+#if CONFIG_IS_ENABLED(FSL_LS_PPA)
 	ppa_init();
 #endif
 	return 0;
