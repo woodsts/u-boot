@@ -17,7 +17,7 @@ extern void ft_qe_setup(void *blob);
 
 DECLARE_GLOBAL_DATA_PTR;
 
-#if defined(CONFIG_BOOTCOUNT_LIMIT) && \
+#if CONFIG_IS_ENABLED(BOOTCOUNT_LIMIT) && \
 	(defined(CONFIG_QE) && !defined(CONFIG_ARCH_MPC831X))
 #include <linux/immap_qe.h>
 
@@ -116,7 +116,7 @@ void ft_cpu_setup(void *blob, struct bd_info *bd)
 
 	fdt_fixup_memory(blob, (u64)gd->ram_base, (u64)gd->ram_size);
 
-#if defined(CONFIG_BOOTCOUNT_LIMIT) && \
+#if CONFIG_IS_ENABLED(BOOTCOUNT_LIMIT) && \
 	(defined(CONFIG_QE) && !defined(CONFIG_ARCH_MPC831X))
 	fdt_fixup_muram (blob);
 #endif
