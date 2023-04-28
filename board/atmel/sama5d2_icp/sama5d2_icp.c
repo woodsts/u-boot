@@ -72,7 +72,7 @@ int dram_init(void)
 
 int misc_init_r(void)
 {
-#ifdef CONFIG_I2C_EEPROM
+#if CONFIG_IS_ENABLED(I2C_EEPROM)
 	at91_set_ethaddr(MAC24AA_MAC_OFFSET);
 #endif
 	return 0;
