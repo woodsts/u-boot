@@ -208,7 +208,7 @@ void enable_caches(void)
 }
 #endif
 
-#if defined(CONFIG_USB_GADGET)
+#if CONFIG_IS_ENABLED(USB_GADGET)
 #include <usb.h>
 
 #if defined(CONFIG_USB_GADGET_DWC2_OTG)

@@ -216,7 +216,7 @@ static void check_hw_revision(void)
 }
 
 
-#ifdef CONFIG_USB_GADGET
+#if CONFIG_IS_ENABLED(USB_GADGET)
 static int s5pc210_phy_control(int on)
 {
 	struct udevice *dev;

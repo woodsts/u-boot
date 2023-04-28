@@ -18,7 +18,7 @@
 #include "bootstd_common.h"
 
 /* Allow reseting the USB-started flag */
-#if defined(CONFIG_USB_HOST) || defined(CONFIG_USB_GADGET)
+#if defined(CONFIG_USB_HOST) || CONFIG_IS_ENABLED(USB_GADGET)
 extern char usb_started;
 #else
 char usb_started;

@@ -672,7 +672,7 @@ void sunxi_board_init(void)
 }
 #endif /* CONFIG_SPL_BUILD */
 
-#ifdef CONFIG_USB_GADGET
+#if CONFIG_IS_ENABLED(USB_GADGET)
 int g_dnl_board_usb_cable_connected(void)
 {
 	struct udevice *dev;

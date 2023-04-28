@@ -190,7 +190,7 @@ int exynos_power_init(void)
 	return 0;
 }
 
-#ifdef CONFIG_USB_GADGET
+#if CONFIG_IS_ENABLED(USB_GADGET)
 static int s5pc210_phy_control(int on)
 {
 #if !CONFIG_IS_ENABLED(DM_I2C) /* TODO(maintainer): Convert to driver model */

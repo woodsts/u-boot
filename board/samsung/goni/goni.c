@@ -122,7 +122,7 @@ int board_mmc_init(struct bd_info *bis)
 }
 #endif
 
-#ifdef CONFIG_USB_GADGET
+#if CONFIG_IS_ENABLED(USB_GADGET)
 static int s5pc1xx_phy_control(int on)
 {
 	struct udevice *dev;

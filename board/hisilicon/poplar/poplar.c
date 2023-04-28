@@ -160,7 +160,7 @@ static void usb2_phy_init(void)
 	udelay(200);
 }
 
-#if defined(CONFIG_USB_GADGET) && defined(CONFIG_USB_GADGET_DWC2_OTG)
+#if CONFIG_IS_ENABLED(USB_GADGET) && defined(CONFIG_USB_GADGET_DWC2_OTG)
 #include <env.h>
 #include <usb.h>
 #include <usb/dwc2_udc.h>

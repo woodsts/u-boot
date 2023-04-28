@@ -444,7 +444,7 @@ int exynos_power_init(void)
 	return 0;
 }
 
-#ifdef CONFIG_USB_GADGET
+#if CONFIG_IS_ENABLED(USB_GADGET)
 static int s5pc210_phy_control(int on)
 {
 	struct udevice *dev;
@@ -471,7 +471,7 @@ struct dwc2_plat_otg_data s5pc210_otg_data = {
 };
 #endif
 
-#if defined(CONFIG_USB_GADGET) || defined(CONFIG_CMD_USB)
+#if CONFIG_IS_ENABLED(USB_GADGET) || defined(CONFIG_CMD_USB)
 
 static void set_usb3503_ref_clk(void)
 {

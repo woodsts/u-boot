@@ -58,7 +58,7 @@ int dram_init_banksize(void)
 	return 0;
 }
 
-#ifdef CONFIG_USB_GADGET
+#if CONFIG_IS_ENABLED(USB_GADGET)
 struct dwc2_plat_otg_data socfpga_otg_data = {
 	.usb_gusbcfg	= 0x1417,
 };

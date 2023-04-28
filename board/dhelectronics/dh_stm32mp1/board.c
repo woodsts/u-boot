@@ -334,7 +334,7 @@ static void board_key_check(void)
 #endif
 }
 
-#if defined(CONFIG_USB_GADGET) && defined(CONFIG_USB_GADGET_DWC2_OTG)
+#if CONFIG_IS_ENABLED(USB_GADGET) && defined(CONFIG_USB_GADGET_DWC2_OTG)
 
 #include <usb/dwc2_udc.h>
 int g_dnl_board_usb_cable_connected(void)
