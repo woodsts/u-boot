@@ -11,7 +11,7 @@ ENTRY(_start)
 
 SECTIONS
 {
-#ifndef CONFIG_CMDLINE
+#if !CONFIG_IS_ENABLED(CMDLINE)
 	/DISCARD/ : { *(__u_boot_list_2_cmd_*) }
 #endif
 

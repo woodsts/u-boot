@@ -10,7 +10,7 @@
 static int do_help(struct cmd_tbl *cmdtp, int flag, int argc,
 		   char *const argv[])
 {
-#ifdef CONFIG_CMDLINE
+#if CONFIG_IS_ENABLED(CMDLINE)
 	struct cmd_tbl *start = ll_entry_start(struct cmd_tbl, cmd);
 	const int len = ll_entry_count(struct cmd_tbl, cmd);
 	return _do_help(start, len, cmdtp, flag, argc, argv);
@@ -28,7 +28,7 @@ U_BOOT_CMD(
 	"	- print detailed usage of 'command'"
 );
 
-#ifdef CONFIG_CMDLINE
+#if CONFIG_IS_ENABLED(CMDLINE)
 /* This does not use the U_BOOT_CMD macro as ? can't be used in symbol names */
 ll_entry_declare(struct cmd_tbl, question_mark, cmd) = {
 	"?",	CONFIG_SYS_MAXARGS, cmd_always_repeatable,	do_help,

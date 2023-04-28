@@ -144,7 +144,7 @@ int sandbox_main_loop_init(void)
 
 		cli_init();
 
-#ifdef CONFIG_CMDLINE
+#if CONFIG_IS_ENABLED(CMDLINE)
 		if (state->cmd)
 			retval = run_command_list(state->cmd, -1, 0);
 

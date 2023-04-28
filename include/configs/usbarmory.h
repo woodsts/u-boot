@@ -47,7 +47,7 @@
 	"console=ttymxc0,115200\0"				\
 	BOOTENV
 
-#ifndef CONFIG_CMDLINE
+#if !CONFIG_IS_ENABLED(CMDLINE)
 #define USBARMORY_FIT_PATH	"/boot/usbarmory.itb"
 #define USBARMORY_FIT_ADDR	"0x70800000"
 #endif

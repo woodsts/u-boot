@@ -24,7 +24,7 @@
 #include <dm/ofnode.h>
 #include <linux/errno.h>
 
-#ifdef CONFIG_CMDLINE
+#if CONFIG_IS_ENABLED(CMDLINE)
 /*
  * Run a command using the selected parser.
  *
@@ -117,7 +117,7 @@ int run_command_list(const char *cmd, int len, int flag)
 	 * doing a malloc() which is actually required only in a case that
 	 * is pretty rare.
 	 */
-#ifdef CONFIG_CMDLINE
+#if CONFIG_IS_ENABLED(CMDLINE)
 	rcode = cli_simple_run_command_list(buff, flag);
 #else
 	rcode = board_run_command(buff);
@@ -211,7 +211,7 @@ bool cli_process_fdt(const char **cmdp)
  */
 void cli_secure_boot_cmd(const char *cmd)
 {
-#ifdef CONFIG_CMDLINE
+#if CONFIG_IS_ENABLED(CMDLINE)
 	struct cmd_tbl *cmdtp;
 #endif
 	int rc;
@@ -225,7 +225,7 @@ void cli_secure_boot_cmd(const char *cmd)
 	disable_ctrlc(1);
 
 	/* Find the command directly. */
-#ifdef CONFIG_CMDLINE
+#if CONFIG_IS_ENABLED(CMDLINE)
 	cmdtp = find_cmd(cmd);
 	if (!cmdtp) {
 		printf("## Error: \"%s\" not defined\n", cmd);
@@ -258,7 +258,7 @@ void cli_loop(void)
 	parse_file_outer();
 	/* This point is never reached */
 	for (;;);
-#elif defined(CONFIG_CMDLINE)
+#elif CONFIG_IS_ENABLED(CMDLINE)
 	cli_simple_loop();
 #else
 	printf("## U-Boot command line is disabled. Please enable CONFIG_CMDLINE\n");

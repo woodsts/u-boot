@@ -422,7 +422,7 @@ int checkboard(void)
 	return 0;
 }
 
-#ifndef CONFIG_CMDLINE
+#if !CONFIG_IS_ENABLED(CMDLINE)
 static char *ext2_argv[] = {
 	"ext2load",
 	"mmc",

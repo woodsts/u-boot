@@ -93,7 +93,7 @@ int _do_help(struct cmd_tbl *cmd_start, int cmd_items, struct cmd_tbl *cmdtp,
 struct cmd_tbl *find_cmd_tbl(const char *cmd, struct cmd_tbl *table,
 			     int table_len)
 {
-#ifdef CONFIG_CMDLINE
+#if CONFIG_IS_ENABLED(CMDLINE)
 	struct cmd_tbl *cmdtp;
 	struct cmd_tbl *cmdtp_temp = table;	/* Init value */
 	const char *p;
@@ -190,7 +190,7 @@ int complete_subcmdv(struct cmd_tbl *cmdtp, int count, int argc,
 		     char *const argv[], char last_char,
 		     int maxv, char *cmdv[])
 {
-#ifdef CONFIG_CMDLINE
+#if CONFIG_IS_ENABLED(CMDLINE)
 	const struct cmd_tbl *cmdend = cmdtp + count;
 	const char *p;
 	int len, clen;
@@ -266,7 +266,7 @@ int complete_subcmdv(struct cmd_tbl *cmdtp, int count, int argc,
 static int complete_cmdv(int argc, char *const argv[], char last_char,
 			 int maxv, char *cmdv[])
 {
-#ifdef CONFIG_CMDLINE
+#if CONFIG_IS_ENABLED(CMDLINE)
 	return complete_subcmdv(ll_entry_start(struct cmd_tbl, cmd),
 				ll_entry_count(struct cmd_tbl, cmd), argc, argv,
 				last_char, maxv, cmdv);
