@@ -51,7 +51,7 @@ do_imgextract(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 	const void	*fit_data;
 	size_t		fit_len;
 #endif
-#ifdef CONFIG_GZIP
+#if CONFIG_IS_ENABLED(GZIP)
 	uint		unc_len = CFG_SYS_XIMG_LEN;
 #endif
 	uint8_t		comp;
@@ -207,7 +207,7 @@ do_imgextract(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 				memmove((char *)dest, (char *)data, len);
 			}
 			break;
-#ifdef CONFIG_GZIP
+#if CONFIG_IS_ENABLED(GZIP)
 		case IH_COMP_GZIP:
 			printf("   Uncompressing part %d ... ", part);
 			if (gunzip((void *) dest, unc_len,

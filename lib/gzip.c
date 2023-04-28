@@ -56,7 +56,7 @@ int zzip(void *dst, unsigned long *lenp, unsigned char *src,
 	if (!srclen)
 		return 0;
 
-#ifndef CONFIG_GZIP
+#if !CONFIG_IS_ENABLED(GZIP)
 	window = MAX_WBITS;
 #else
 	window = 2 * MAX_WBITS;

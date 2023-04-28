@@ -294,7 +294,7 @@ static int do_fpga_loadmk(struct cmd_tbl *cmdtp, int flag, int argc,
 
 		comp = image_get_comp(hdr);
 		if (comp == IH_COMP_GZIP) {
-#if defined(CONFIG_GZIP)
+#if CONFIG_IS_ENABLED(GZIP)
 			ulong image_buf = image_get_data(hdr);
 			ulong image_size = ~0UL;
 
