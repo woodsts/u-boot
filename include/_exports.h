@@ -51,7 +51,7 @@
 	EXPORT_FUNC(dummy, void, i2c_read, void)
 #endif
 
-#if !defined(CONFIG_CMD_SPI) || defined(CONFIG_DM_SPI)
+#if !defined(CONFIG_CMD_SPI) || CONFIG_IS_ENABLED(DM_SPI)
 	EXPORT_FUNC(dummy, void, spi_setup_slave, void)
 	EXPORT_FUNC(dummy, void, spi_free_slave, void)
 #else

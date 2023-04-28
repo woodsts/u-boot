@@ -137,7 +137,7 @@ int board_mmc_init(struct bd_info *bis)
 }
 #endif
 
-#ifndef CONFIG_DM_SPI
+#if !CONFIG_IS_ENABLED(DM_SPI)
 static iomux_v3_cfg_t const tqma6_ecspi1_pads[] = {
 	/* SS1 */
 	NEW_PAD_CTRL(MX6_PAD_EIM_D19__GPIO3_IO19, SPI_PAD_CTRL),
@@ -213,7 +213,7 @@ int board_init(void)
 	/* address of boot parameters */
 	gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
 
-#ifndef CONFIG_DM_SPI
+#if !CONFIG_IS_ENABLED(DM_SPI)
 	tqma6_iomuxc_spi();
 #endif
 #if CONFIG_IS_ENABLED(SYS_I2C_LEGACY)
