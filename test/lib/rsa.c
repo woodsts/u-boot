@@ -14,7 +14,7 @@
 #include <test/ut.h>
 #include <u-boot/rsa.h>
 
-#ifdef CONFIG_RSA_VERIFY_WITH_PKEY
+#if CONFIG_IS_ENABLED(RSA_VERIFY_WITH_PKEY)
 /*
  * openssl genrsa 2048 -out private.pem
  * openssl rsa -in private.pem -pubout -outform der -out public.der
