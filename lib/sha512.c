@@ -259,7 +259,7 @@ static void sha512_base_do_finalize(sha512_context *sctx)
 	sha512_block_fn(sctx, sctx->buf, 1);
 }
 
-#if defined(CONFIG_SHA384)
+#if CONFIG_IS_ENABLED(SHA384)
 void sha384_starts(sha512_context * ctx)
 {
 	ctx->state[0] = SHA384_H0;
