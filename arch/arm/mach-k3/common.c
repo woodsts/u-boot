@@ -443,7 +443,7 @@ int ft_system_setup(void *blob, struct bd_info *bd)
 
 #endif
 
-#ifndef CONFIG_SYSRESET
+#if !CONFIG_IS_ENABLED(SYSRESET)
 void reset_cpu(void)
 {
 }

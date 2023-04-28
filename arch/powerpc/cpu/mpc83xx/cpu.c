@@ -124,7 +124,7 @@ int checkcpu(void)
 }
 #endif
 
-#ifndef CONFIG_SYSRESET
+#if !CONFIG_IS_ENABLED(SYSRESET)
 int do_reset(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 {
 	ulong msr;

@@ -231,7 +231,7 @@ U_BOOT_DRIVER(stpmic1_nvm) = {
 };
 #endif /* CONFIG_SPL_BUILD */
 
-#ifdef CONFIG_SYSRESET
+#if CONFIG_IS_ENABLED(SYSRESET)
 static int stpmic1_sysreset_request(struct udevice *dev, enum sysreset_t type)
 {
 	struct udevice *pmic_dev = dev->parent;
