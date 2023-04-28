@@ -30,7 +30,7 @@
 #define BOOT_TARGET_DEVICES_MMC(func)
 #endif
 
-#ifdef CONFIG_SATA
+#if CONFIG_IS_ENABLED(SATA)
 #define BOOT_TARGET_DEVICES_SATA(func) func(SATA, sata, 0)
 #else
 #define BOOT_TARGET_DEVICES_SATA(func)

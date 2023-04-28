@@ -193,7 +193,7 @@ static inline int splash_init_usb(void)
 }
 #endif
 
-#ifdef CONFIG_SATA
+#if CONFIG_IS_ENABLED(SATA)
 static int splash_init_sata(void)
 {
 	return sata_probe(0);

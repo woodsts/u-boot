@@ -298,7 +298,7 @@ void arch_preboot_os(void)
 	}
 #endif
 
-#if defined(CONFIG_SATA)
+#if CONFIG_IS_ENABLED(SATA)
 	if (!is_mx6sdl()) {
 		sata_remove(0);
 #if defined(CONFIG_MX6)

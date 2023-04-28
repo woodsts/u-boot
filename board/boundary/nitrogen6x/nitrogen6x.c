@@ -859,7 +859,7 @@ int board_init(void)
 		p += stride;
 	}
 
-#ifdef CONFIG_SATA
+#if CONFIG_IS_ENABLED(SATA)
 	setup_sata();
 #endif
 

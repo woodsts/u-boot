@@ -524,7 +524,7 @@ __maybe_unused static unsigned int dp_size(struct udevice *dev)
 			return dp_size(dev->parent) +
 				sizeof(struct efi_device_path_sd_mmc_path);
 #endif
-#if defined(CONFIG_AHCI) || defined(CONFIG_SATA)
+#if defined(CONFIG_AHCI) || CONFIG_IS_ENABLED(SATA)
 		case UCLASS_AHCI:
 			return dp_size(dev->parent) +
 				sizeof(struct efi_device_path_sata);
@@ -724,7 +724,7 @@ __maybe_unused static void *dp_fill(void *buf, struct udevice *dev)
 			return &sddp[1];
 			}
 #endif
-#if defined(CONFIG_AHCI) || defined(CONFIG_SATA)
+#if defined(CONFIG_AHCI) || CONFIG_IS_ENABLED(SATA)
 		case UCLASS_AHCI: {
 			struct efi_device_path_sata *dp =
 				dp_fill(buf, dev->parent);

@@ -599,7 +599,7 @@ int board_init(void)
 	(void) pmic_init();
 #endif
 
-#ifdef CONFIG_SATA
+#if CONFIG_IS_ENABLED(SATA)
 	setup_sata();
 #endif
 
