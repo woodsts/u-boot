@@ -6,7 +6,7 @@
 #ifndef POWERPC_ASM_MPC85XX_GPIO_H_
 #define POWERPC_ASM_MPC85XX_GPIO_H_
 
-#ifndef CONFIG_DM_GPIO
+#if !CONFIG_IS_ENABLED(DM_GPIO)
 # include <asm/immap_85xx.h>
 
 /*

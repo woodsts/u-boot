@@ -29,7 +29,7 @@ struct cortina_gpio_bank {
 	void __iomem *base;
 };
 
-#ifdef CONFIG_DM_GPIO
+#if CONFIG_IS_ENABLED(DM_GPIO)
 static int ca_gpio_direction_input(struct udevice *dev, unsigned int offset)
 {
 	struct cortina_gpio_bank *priv = dev_get_priv(dev);

@@ -33,7 +33,7 @@ enum gpio_cmd {
 #endif
 };
 
-#if defined(CONFIG_DM_GPIO) && !defined(gpio_status)
+#if CONFIG_IS_ENABLED(DM_GPIO) && !defined(gpio_status)
 
 /* A few flags used by show_gpio() */
 enum {
@@ -142,7 +142,7 @@ static int do_gpio(struct cmd_tbl *cmdtp, int flag, int argc,
 	const char *str_var = NULL;
 #endif
 	int ret;
-#ifdef CONFIG_DM_GPIO
+#if CONFIG_IS_ENABLED(DM_GPIO)
 	bool all = false;
 #endif
 
@@ -152,7 +152,7 @@ static int do_gpio(struct cmd_tbl *cmdtp, int flag, int argc,
 	str_cmd = argv[1];
 	argc -= 2;
 	argv += 2;
-#ifdef CONFIG_DM_GPIO
+#if CONFIG_IS_ENABLED(DM_GPIO)
 	if (argc > 0 && !strncmp(str_cmd, "status", 2) && !strcmp(*argv, "-a")) {
 		all = true;
 		argc--;
@@ -175,7 +175,7 @@ static int do_gpio(struct cmd_tbl *cmdtp, int flag, int argc,
 #ifdef gpio_status
 		gpio_status();
 		return 0;
-#elif defined(CONFIG_DM_GPIO)
+#elif CONFIG_IS_ENABLED(DM_GPIO)
 		return cmd_process_error(cmdtp, do_gpio_status(all, str_gpio));
 #else
 		goto show_usage;
@@ -208,7 +208,7 @@ static int do_gpio(struct cmd_tbl *cmdtp, int flag, int argc,
 		goto show_usage;
 	}
 
-#if defined(CONFIG_DM_GPIO)
+#if CONFIG_IS_ENABLED(DM_GPIO)
 	/*
 	 * TODO(sjg@chromium.org): For now we must fit into the existing GPIO
 	 * framework, so we look up the name here and convert it to a GPIO number.

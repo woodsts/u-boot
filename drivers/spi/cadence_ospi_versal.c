@@ -127,7 +127,7 @@ int cadence_qspi_apb_wait_for_dma_cmplt(struct cadence_spi_priv *priv)
 	return 0;
 }
 
-#if defined(CONFIG_DM_GPIO)
+#if CONFIG_IS_ENABLED(DM_GPIO)
 int cadence_qspi_versal_flash_reset(struct udevice *dev)
 {
 #ifndef CONFIG_ARCH_VERSAL_NET
