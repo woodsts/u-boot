@@ -152,7 +152,7 @@ static struct mmc *__init_mmc_device(int dev, bool force_init,
 	if (mmc_init(mmc))
 		return NULL;
 
-#ifdef CONFIG_BLOCK_CACHE
+#if CONFIG_IS_ENABLED(BLOCK_CACHE)
 	struct blk_desc *bd = mmc_get_blk_desc(mmc);
 	blkcache_invalidate(bd->uclass_id, bd->devnum);
 #endif
