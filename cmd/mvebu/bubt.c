@@ -590,7 +590,7 @@ static int is_nand_active(void)
 /********************************************************************
  *     USB services
  ********************************************************************/
-#if defined(CONFIG_USB_STORAGE) && CONFIG_IS_ENABLED(BLK)
+#if CONFIG_IS_ENABLED(USB_STORAGE) && CONFIG_IS_ENABLED(BLK)
 static size_t usb_read_file(const char *file_name)
 {
 	loff_t act_read = 0;
@@ -630,7 +630,7 @@ static int is_usb_active(void)
 	return 1;
 }
 
-#else /* defined(CONFIG_USB_STORAGE) && defined (CONFIG_BLK) */
+#else /* CONFIG_IS_ENABLED(USB_STORAGE) && defined (CONFIG_BLK) */
 static size_t usb_read_file(const char *file_name)
 {
 	return 0;
@@ -640,7 +640,7 @@ static int is_usb_active(void)
 {
 	return 0;
 }
-#endif /* defined(CONFIG_USB_STORAGE) && defined (CONFIG_BLK) */
+#endif /* CONFIG_IS_ENABLED(USB_STORAGE) && defined (CONFIG_BLK) */
 
 /********************************************************************
  *     Network services

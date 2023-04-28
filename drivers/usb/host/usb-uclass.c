@@ -206,7 +206,7 @@ int usb_stop(void)
 		}
 	}
 
-#ifdef CONFIG_USB_STORAGE
+#if CONFIG_IS_ENABLED(USB_STORAGE)
 	usb_stor_reset();
 #endif
 	uc_priv->companion_device_count = 0;

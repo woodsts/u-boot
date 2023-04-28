@@ -36,7 +36,7 @@
 #define DISTRO_BOOT_DEV_SATA(func)
 #endif
 
-#ifdef CONFIG_USB_STORAGE
+#if CONFIG_IS_ENABLED(USB_STORAGE)
 #define DISTRO_BOOT_DEV_USB(func) func(USB, usb, 0)
 #else
 #define DISTRO_BOOT_DEV_USB(func)

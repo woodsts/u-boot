@@ -23,7 +23,7 @@
 #include <part.h>
 #include <usb.h>
 
-#ifdef CONFIG_USB_STORAGE
+#if CONFIG_IS_ENABLED(USB_STORAGE)
 static int usb_stor_curr_dev = -1; /* current device */
 #endif
 #if defined(CONFIG_USB_HOST_ETHER) && !CONFIG_IS_ENABLED(DM_ETH)
@@ -555,7 +555,7 @@ static int usb_test(struct usb_device *dev, int port, char* arg)
 /******************************************************************************
  * usb boot command intepreter. Derived from diskboot
  */
-#ifdef CONFIG_USB_STORAGE
+#if CONFIG_IS_ENABLED(USB_STORAGE)
 static int do_usbboot(struct cmd_tbl *cmdtp, int flag, int argc,
 		      char *const argv[])
 {
@@ -705,7 +705,7 @@ static int do_usb(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 		i = dectoul(argv[3], NULL);
 		return usb_test(udev, i, argv[4]);
 	}
-#ifdef CONFIG_USB_STORAGE
+#if CONFIG_IS_ENABLED(USB_STORAGE)
 	if (strncmp(argv[1], "stor", 4) == 0)
 		return usb_stor_info();
 
@@ -726,7 +726,7 @@ U_BOOT_CMD(
 	"usb test [dev] [port] [mode] - set USB 2.0 test mode\n"
 	"    (specify port 0 to indicate the device's upstream port)\n"
 	"    Available modes: J, K, S[E0_NAK], P[acket], F[orce_Enable]\n"
-#ifdef CONFIG_USB_STORAGE
+#if CONFIG_IS_ENABLED(USB_STORAGE)
 	"usb storage - show details of USB storage devices\n"
 	"usb dev [dev] - show or set current USB storage device\n"
 	"usb part [dev] - print partition table of one or all USB storage"
@@ -739,7 +739,7 @@ U_BOOT_CMD(
 );
 
 
-#ifdef CONFIG_USB_STORAGE
+#if CONFIG_IS_ENABLED(USB_STORAGE)
 U_BOOT_CMD(
 	usbboot,	3,	1,	do_usbboot,
 	"boot from USB device",

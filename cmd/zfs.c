@@ -20,7 +20,7 @@
 #include <linux/stat.h>
 #include <malloc.h>
 
-#if defined(CONFIG_CMD_USB) && defined(CONFIG_USB_STORAGE)
+#if defined(CONFIG_CMD_USB) && CONFIG_IS_ENABLED(USB_STORAGE)
 #include <usb.h>
 #endif
 

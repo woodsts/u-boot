@@ -222,7 +222,7 @@
 #define BOOT_TARGET_DEVICES_SCSI(func)
 #endif
 
-#ifdef CONFIG_USB_STORAGE
+#if CONFIG_IS_ENABLED(USB_STORAGE)
 #define BOOT_TARGET_DEVICES_USB(func) func(USB, usb, 0)
 #else
 #define BOOT_TARGET_DEVICES_USB(func)

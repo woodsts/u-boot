@@ -226,7 +226,7 @@ int board_usb_init(int index, enum usb_init_type init);
  */
 int board_usb_cleanup(int index, enum usb_init_type init);
 
-#ifdef CONFIG_USB_STORAGE
+#if CONFIG_IS_ENABLED(USB_STORAGE)
 
 #define USB_MAX_STOR_DEV 7
 int usb_stor_scan(int mode);

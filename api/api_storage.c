@@ -11,7 +11,7 @@
 #include <part.h>
 #include <scsi.h>
 
-#if defined(CONFIG_CMD_USB) && defined(CONFIG_USB_STORAGE)
+#if defined(CONFIG_CMD_USB) && CONFIG_IS_ENABLED(USB_STORAGE)
 #include <usb.h>
 #endif
 
@@ -74,7 +74,7 @@ void dev_stor_init(void)
 	specs[ENUM_SCSI].type = DEV_TYP_STOR | DT_STOR_SCSI;
 	specs[ENUM_SCSI].name = "scsi";
 #endif
-#if defined(CONFIG_CMD_USB) && defined(CONFIG_USB_STORAGE)
+#if defined(CONFIG_CMD_USB) && CONFIG_IS_ENABLED(USB_STORAGE)
 	specs[ENUM_USB].max_dev = USB_MAX_STOR_DEV;
 	specs[ENUM_USB].enum_started = 0;
 	specs[ENUM_USB].enum_ended = 0;
