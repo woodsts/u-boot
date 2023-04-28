@@ -718,7 +718,7 @@ repeat:
 		}
 		str = number(str, end, num, base, field_width, precision,
 			     flags);
-		if (IS_ENABLED(CONFIG_ERRNO_STR) && (flags & ERRSTR)) {
+		if (CONFIG_IS_ENABLED(ERRNO_STR) && (flags & ERRSTR)) {
 			const char *p;
 
 			ADDCH(str, ':');
