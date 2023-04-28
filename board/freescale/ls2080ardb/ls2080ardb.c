@@ -48,7 +48,7 @@ enum {
 	MUX_TYPE_DSPI,
 };
 
-#ifdef CONFIG_VID
+#if CONFIG_IS_ENABLED(VID)
 u16 soc_get_fuse_vid(int vid_index)
 {
 	static const u16 vdd[32] = {

@@ -279,7 +279,7 @@ static int init_func_i2c(void)
 }
 #endif
 
-#if defined(CONFIG_VID)
+#if CONFIG_IS_ENABLED(VID)
 __weak int init_func_vid(void)
 {
 	return 0;
@@ -894,7 +894,7 @@ static const init_fnc_t init_sequence_f[] = {
 #if CONFIG_IS_ENABLED(SYS_I2C_LEGACY)
 	init_func_i2c,
 #endif
-#if defined(CONFIG_VID) && !defined(CONFIG_SPL)
+#if CONFIG_IS_ENABLED(VID) && !defined(CONFIG_SPL)
 	init_func_vid,
 #endif
 	announce_dram_init,

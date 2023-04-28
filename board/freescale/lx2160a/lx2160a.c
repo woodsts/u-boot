@@ -216,7 +216,7 @@ int esdhc_status_fixup(void *blob, const char *compat)
 	return 0;
 }
 
-#if defined(CONFIG_VID)
+#if CONFIG_IS_ENABLED(VID)
 int i2c_multiplexer_select_vid_channel(u8 channel)
 {
 	return select_i2c_ch_pca9547(channel, 0);
@@ -565,7 +565,7 @@ int misc_init_r(void)
 }
 #endif
 
-#ifdef CONFIG_VID
+#if CONFIG_IS_ENABLED(VID)
 u16 soc_get_fuse_vid(int vid_index)
 {
 	static const u16 vdd[32] = {

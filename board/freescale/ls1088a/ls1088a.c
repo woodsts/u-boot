@@ -180,7 +180,7 @@ unsigned long long get_qixis_addr(void)
 }
 #endif
 
-#if defined(CONFIG_VID)
+#if CONFIG_IS_ENABLED(VID)
 int init_func_vid(void)
 {
 	if (adjust_vdd(0) < 0)

@@ -14,7 +14,7 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
-#if defined(CONFIG_VID) && (!defined(CONFIG_SPL) || defined(CONFIG_SPL_BUILD))
+#if CONFIG_IS_ENABLED(VID) && (!defined(CONFIG_SPL) || defined(CONFIG_SPL_BUILD))
 static void fsl_ddr_setup_0v9_volt(memctl_options_t *popts)
 {
 	int vdd;
@@ -103,7 +103,7 @@ found:
 	popts->addr_hash = 1;
 
 	popts->ddr_cdr1 = DDR_CDR1_DHC_EN | DDR_CDR1_ODT(DDR_CDR_ODT_60ohm);
-#if defined(CONFIG_VID) && (!defined(CONFIG_SPL) || defined(CONFIG_SPL_BUILD))
+#if CONFIG_IS_ENABLED(VID) && (!defined(CONFIG_SPL) || defined(CONFIG_SPL_BUILD))
 	fsl_ddr_setup_0v9_volt(popts);
 #endif
 

@@ -287,7 +287,7 @@ int set_cpu_clk_info(void);
 int update_flash_size(int flash_size);
 int arch_early_init_r(void);
 int misc_init_r(void);
-#if defined(CONFIG_VID)
+#if CONFIG_IS_ENABLED(VID)
 int init_func_vid(void);
 #endif
 
