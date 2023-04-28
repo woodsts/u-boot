@@ -81,7 +81,7 @@ int __maybe_unused psu_uboot_init(void)
 # if defined(CONFIG_DEBUG_UART_BOARD_INIT)
 void board_debug_uart_init(void)
 {
-#  if defined(CONFIG_ZYNQMP_PSU_INIT_ENABLED)
+#  if CONFIG_IS_ENABLED(ZYNQMP_PSU_INIT_ENABLED)
 	psu_uboot_init();
 #  endif
 }
@@ -91,7 +91,7 @@ void board_debug_uart_init(void)
 int board_early_init_f(void)
 {
 	int ret = 0;
-#  if defined(CONFIG_ZYNQMP_PSU_INIT_ENABLED) && !defined(CONFIG_DEBUG_UART_BOARD_INIT)
+#  if CONFIG_IS_ENABLED(ZYNQMP_PSU_INIT_ENABLED) && !defined(CONFIG_DEBUG_UART_BOARD_INIT)
 	ret = psu_uboot_init();
 #  endif
 	return ret;
