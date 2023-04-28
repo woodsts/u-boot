@@ -1671,7 +1671,7 @@ static int msdc_drv_probe(struct udevice *dev)
 	host->timeout_ns = 100000000;
 	host->timeout_clks = 3 * (1 << SCLK_CYCLES_SHIFT);
 
-#ifdef CONFIG_PINCTRL
+#if CONFIG_IS_ENABLED(PINCTRL)
 	pinctrl_select_state(dev, "default");
 #endif
 

@@ -81,7 +81,7 @@ static void qe_cfg_iopin(qepio83xx_t *par_io, u8 port, u8 pin, int dir,
 	}
 }
 
-#if !defined(CONFIG_PINCTRL)
+#if !CONFIG_IS_ENABLED(PINCTRL)
 /** qe_config_iopin configure one io pin setting
  *
  * @port:	io pin port

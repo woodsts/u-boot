@@ -93,7 +93,7 @@ static int mtk_snfi_mac_trigger(struct mtk_snfi_priv *priv,
 	int ret;
 	u32 val;
 
-#ifdef CONFIG_PINCTRL
+#if CONFIG_IS_ENABLED(PINCTRL)
 	pinctrl_select_state(bus, "snfi");
 #endif
 
@@ -118,7 +118,7 @@ static int mtk_snfi_mac_trigger(struct mtk_snfi_priv *priv,
 	writel(0, priv->base + SNFI_MAC_CTL);
 
 cleanup:
-#ifdef CONFIG_PINCTRL
+#if CONFIG_IS_ENABLED(PINCTRL)
 	pinctrl_select_state(bus, "default");
 #endif
 
