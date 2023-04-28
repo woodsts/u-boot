@@ -11,7 +11,7 @@
 #define HWCONFIG_BUFFER_SIZE 256
 
 /* we don't have secure memory unless we have a BL31 */
-#ifndef CONFIG_ARMV8_SEC_FIRMWARE_SUPPORT
+#if !CONFIG_IS_ENABLED(ARMV8_SEC_FIRMWARE_SUPPORT)
 #undef CFG_SYS_MEM_RESERVE_SECURE
 #endif
 
