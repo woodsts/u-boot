@@ -8,7 +8,7 @@
 #include <log.h>
 #include <rand.h>
 
-#ifdef CONFIG_SHA_HW_ACCEL
+#if CONFIG_IS_ENABLED(SHA_HW_ACCEL)
 #include <u-boot/sha256.h>
 #include <u-boot/sha1.h>
 #include <linux/errno.h>
