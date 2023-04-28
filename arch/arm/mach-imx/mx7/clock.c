@@ -65,7 +65,7 @@ u32 imx_get_fecclk(void)
 	return get_root_clk(ENET_AXI_CLK_ROOT);
 }
 
-#ifdef CONFIG_MXC_OCOTP
+#if CONFIG_IS_ENABLED(MXC_OCOTP)
 void enable_ocotp_clk(unsigned char enable)
 {
 	clock_enable(CCGR_OCOTP, enable);

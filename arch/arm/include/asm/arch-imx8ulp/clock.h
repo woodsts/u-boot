@@ -34,7 +34,7 @@ u32 imx_get_i2cclk(unsigned int i2c_num);
 #endif
 void enable_usboh3_clk(unsigned char enable);
 int enable_usb_pll(ulong usb_phy_base);
-#ifdef CONFIG_MXC_OCOTP
+#if CONFIG_IS_ENABLED(MXC_OCOTP)
 void enable_ocotp_clk(unsigned char enable);
 #endif
 void init_clk_usdhc(u32 index);

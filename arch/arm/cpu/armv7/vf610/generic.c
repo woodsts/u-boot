@@ -28,7 +28,7 @@ DECLARE_GLOBAL_DATA_PTR;
 
 static char soc_type[] = "xx0";
 
-#ifdef CONFIG_MXC_OCOTP
+#if CONFIG_IS_ENABLED(MXC_OCOTP)
 void enable_ocotp_clk(unsigned char enable)
 {
 	struct ccm_reg *ccm = (struct ccm_reg *)CCM_BASE_ADDR;

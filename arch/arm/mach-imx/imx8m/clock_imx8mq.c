@@ -317,7 +317,7 @@ void hab_caam_clock_enable(unsigned char enable)
 }
 #endif
 
-#ifdef CONFIG_MXC_OCOTP
+#if CONFIG_IS_ENABLED(MXC_OCOTP)
 void enable_ocotp_clk(unsigned char enable)
 {
 	clock_enable(CCGR_OCOTP, !!enable);

@@ -171,7 +171,7 @@ void init_clk_usdhc(u32 index)
 	}
 }
 
-#ifdef CONFIG_MXC_OCOTP
+#if CONFIG_IS_ENABLED(MXC_OCOTP)
 
 #define OCOTP_CTRL_PCC1_SLOT		(38)
 #define OCOTP_CTRL_HIGH4K_PCC1_SLOT	(39)

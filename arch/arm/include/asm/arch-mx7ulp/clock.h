@@ -29,7 +29,7 @@ u32 get_lpuart_clk(void);
 int enable_i2c_clk(unsigned char enable, unsigned i2c_num);
 u32 imx_get_i2cclk(unsigned i2c_num);
 #endif
-#ifdef CONFIG_MXC_OCOTP
+#if CONFIG_IS_ENABLED(MXC_OCOTP)
 void enable_ocotp_clk(unsigned char enable);
 #endif
 #ifdef CONFIG_USB_EHCI_HCD

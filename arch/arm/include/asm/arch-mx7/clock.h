@@ -352,7 +352,7 @@ int set_clk_enet(enum enet_freq type);
 #endif
 int set_clk_qspi(void);
 int set_clk_nand(void);
-#ifdef CONFIG_MXC_OCOTP
+#if CONFIG_IS_ENABLED(MXC_OCOTP)
 void enable_ocotp_clk(unsigned char enable);
 #endif
 void enable_usboh3_clk(unsigned char enable);
