@@ -57,7 +57,7 @@ static struct table_info table_list[] = {
 #if CONFIG_IS_ENABLED(GENERATE_ACPI_TABLE)
 	{ "acpi", write_acpi_tables, BLOBLISTT_ACPI_TABLES, 0x10000, 0x1000},
 #endif
-#ifdef CONFIG_GENERATE_SMBIOS_TABLE
+#if CONFIG_IS_ENABLED(GENERATE_SMBIOS_TABLE)
 	{ "smbios", write_smbios_table, BLOBLISTT_SMBIOS_TABLES, 0x1000, 0x100},
 #endif
 };
@@ -148,7 +148,7 @@ int write_tables(void)
 			acpi_write_rsdp(ptr, ctx->rsdt, ctx->xsdt);
 			ptr += ALIGN(sizeof(struct acpi_rsdp), 16);
 		}
-		if (IS_ENABLED(CONFIG_GENERATE_SMBIOS_TABLE)) {
+		if (CONFIG_IS_ENABLED(GENERATE_SMBIOS_TABLE)) {
 			void *smbios;
 
 			smbios = bloblist_find(BLOBLISTT_SMBIOS_TABLES, 0);

@@ -326,7 +326,7 @@ efi_status_t efi_init_obj_list(void)
 	if (ret != EFI_SUCCESS)
 		goto out;
 #endif
-#ifdef CONFIG_GENERATE_SMBIOS_TABLE
+#if CONFIG_IS_ENABLED(GENERATE_SMBIOS_TABLE)
 	ret = efi_smbios_register();
 	if (ret != EFI_SUCCESS)
 		goto out;
