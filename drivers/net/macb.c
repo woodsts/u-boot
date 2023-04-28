@@ -134,7 +134,7 @@ struct macb_device {
 	struct phy_device	*phydev;
 #endif
 
-#ifdef CONFIG_CLK
+#if CONFIG_IS_ENABLED(CLK)
 	unsigned long		pclk_rate;
 #endif
 	phy_interface_t		phy_interface;
@@ -614,7 +614,7 @@ static int macb_sama7g5_clk_init(struct udevice *dev, ulong rate)
 
 int __weak macb_linkspd_cb(struct udevice *dev, unsigned int speed)
 {
-#ifdef CONFIG_CLK
+#if CONFIG_IS_ENABLED(CLK)
 	struct macb_device *macb = dev_get_priv(dev);
 	struct clk tx_clk;
 	ulong rate;
@@ -993,7 +993,7 @@ static int _macb_write_hwaddr(struct macb_device *macb, unsigned char *enetaddr)
 static u32 macb_mdc_clk_div(int id, struct macb_device *macb)
 {
 	u32 config;
-#if defined(CONFIG_CLK)
+#if CONFIG_IS_ENABLED(CLK)
 	unsigned long macb_hz = macb->pclk_rate;
 #else
 	unsigned long macb_hz = get_macb_pclk_rate(id);
@@ -1015,7 +1015,7 @@ static u32 gem_mdc_clk_div(int id, struct macb_device *macb)
 {
 	u32 config;
 
-#if defined(CONFIG_CLK)
+#if CONFIG_IS_ENABLED(CLK)
 	unsigned long macb_hz = macb->pclk_rate;
 #else
 	unsigned long macb_hz = get_macb_pclk_rate(id);
@@ -1149,7 +1149,7 @@ static const struct eth_ops macb_eth_ops = {
 	.write_hwaddr	= macb_write_hwaddr,
 };
 
-#ifdef CONFIG_CLK
+#if CONFIG_IS_ENABLED(CLK)
 static int macb_enable_clk(struct udevice *dev)
 {
 	struct macb_device *macb = dev_get_priv(dev);
@@ -1224,7 +1224,7 @@ static int macb_eth_probe(struct udevice *dev)
 		macb->config = &default_gem_config;
 	}
 
-#ifdef CONFIG_CLK
+#if CONFIG_IS_ENABLED(CLK)
 	ret = macb_enable_clk(dev);
 	if (ret)
 		return ret;

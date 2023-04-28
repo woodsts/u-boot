@@ -385,7 +385,7 @@ static int qcom_eqos_rgmii_reset(struct udevice *dev, void *rgmii_regs)
 
 static int eqos_start_clks_qcom(struct udevice *dev)
 {
-	if (IS_ENABLED(CONFIG_CLK)) {
+	if (CONFIG_IS_ENABLED(CLK)) {
 		struct clk_bulk clocks;
 		int ret;
 
@@ -404,7 +404,7 @@ static int eqos_start_clks_qcom(struct udevice *dev)
 
 static int eqos_stop_clks_qcom(struct udevice *dev)
 {
-	if (IS_ENABLED(CONFIG_CLK)) {
+	if (CONFIG_IS_ENABLED(CLK)) {
 		struct clk_bulk clocks;
 		int ret;
 

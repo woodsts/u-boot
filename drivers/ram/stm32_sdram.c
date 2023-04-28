@@ -371,7 +371,7 @@ static int stm32_fmc_probe(struct udevice *dev)
 	params->base = (struct stm32_fmc_regs *)addr;
 	params->family = dev_get_driver_data(dev);
 
-#ifdef CONFIG_CLK
+#if CONFIG_IS_ENABLED(CLK)
 	struct clk clk;
 
 	ret = clk_get_by_index(dev, 0, &clk);

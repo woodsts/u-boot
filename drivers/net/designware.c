@@ -673,7 +673,7 @@ int designware_eth_probe(struct udevice *dev)
 	ulong ioaddr;
 	int ret, err;
 	struct reset_ctl_bulk reset_bulk;
-#ifdef CONFIG_CLK
+#if CONFIG_IS_ENABLED(CLK)
 	int i, clock_nb;
 
 	priv->clock_count = 0;
@@ -768,7 +768,7 @@ int designware_eth_probe(struct udevice *dev)
 	mdio_free(priv->bus);
 mdio_err:
 
-#ifdef CONFIG_CLK
+#if CONFIG_IS_ENABLED(CLK)
 clk_err:
 	ret = clk_release_all(priv->clocks, priv->clock_count);
 	if (ret)
@@ -786,7 +786,7 @@ static int designware_eth_remove(struct udevice *dev)
 	mdio_unregister(priv->bus);
 	mdio_free(priv->bus);
 
-#ifdef CONFIG_CLK
+#if CONFIG_IS_ENABLED(CLK)
 	return clk_release_all(priv->clocks, priv->clock_count);
 #else
 	return 0;

@@ -233,7 +233,7 @@ static int eqos_mdio_write(struct mii_dev *bus, int mdio_addr, int mdio_devad,
 
 static int eqos_start_clks_tegra186(struct udevice *dev)
 {
-#ifdef CONFIG_CLK
+#if CONFIG_IS_ENABLED(CLK)
 	struct eqos_priv *eqos = dev_get_priv(dev);
 	int ret;
 
@@ -279,7 +279,7 @@ static int eqos_start_clks_tegra186(struct udevice *dev)
 	debug("%s: OK\n", __func__);
 	return 0;
 
-#ifdef CONFIG_CLK
+#if CONFIG_IS_ENABLED(CLK)
 err_disable_clk_ptp_ref:
 	clk_disable(&eqos->clk_ptp_ref);
 err_disable_clk_rx:
@@ -296,7 +296,7 @@ err:
 
 static int eqos_start_clks_stm32(struct udevice *dev)
 {
-#ifdef CONFIG_CLK
+#if CONFIG_IS_ENABLED(CLK)
 	struct eqos_priv *eqos = dev_get_priv(dev);
 	int ret;
 
@@ -333,7 +333,7 @@ static int eqos_start_clks_stm32(struct udevice *dev)
 	debug("%s: OK\n", __func__);
 	return 0;
 
-#ifdef CONFIG_CLK
+#if CONFIG_IS_ENABLED(CLK)
 err_disable_clk_tx:
 	clk_disable(&eqos->clk_tx);
 err_disable_clk_rx:
@@ -348,7 +348,7 @@ err:
 
 static int eqos_stop_clks_tegra186(struct udevice *dev)
 {
-#ifdef CONFIG_CLK
+#if CONFIG_IS_ENABLED(CLK)
 	struct eqos_priv *eqos = dev_get_priv(dev);
 
 	debug("%s(dev=%p):\n", __func__, dev);
@@ -366,7 +366,7 @@ static int eqos_stop_clks_tegra186(struct udevice *dev)
 
 static int eqos_stop_clks_stm32(struct udevice *dev)
 {
-#ifdef CONFIG_CLK
+#if CONFIG_IS_ENABLED(CLK)
 	struct eqos_priv *eqos = dev_get_priv(dev);
 
 	debug("%s(dev=%p):\n", __func__, dev);
@@ -483,7 +483,7 @@ static int eqos_disable_calibration_tegra186(struct udevice *dev)
 
 static ulong eqos_get_tick_clk_rate_tegra186(struct udevice *dev)
 {
-#ifdef CONFIG_CLK
+#if CONFIG_IS_ENABLED(CLK)
 	struct eqos_priv *eqos = dev_get_priv(dev);
 
 	return clk_get_rate(&eqos->clk_slave_bus);
@@ -494,7 +494,7 @@ static ulong eqos_get_tick_clk_rate_tegra186(struct udevice *dev)
 
 static ulong eqos_get_tick_clk_rate_stm32(struct udevice *dev)
 {
-#ifdef CONFIG_CLK
+#if CONFIG_IS_ENABLED(CLK)
 	struct eqos_priv *eqos = dev_get_priv(dev);
 
 	return clk_get_rate(&eqos->clk_master_bus);
@@ -567,7 +567,7 @@ static int eqos_set_mii_speed_10(struct udevice *dev)
 
 static int eqos_set_tx_clk_speed_tegra186(struct udevice *dev)
 {
-#ifdef CONFIG_CLK
+#if CONFIG_IS_ENABLED(CLK)
 	struct eqos_priv *eqos = dev_get_priv(dev);
 	ulong rate;
 	int ret;
@@ -1483,7 +1483,7 @@ static int eqos_remove_resources_tegra186(struct udevice *dev)
 
 	debug("%s(dev=%p):\n", __func__, dev);
 
-#ifdef CONFIG_CLK
+#if CONFIG_IS_ENABLED(CLK)
 	clk_free(&eqos->clk_tx);
 	clk_free(&eqos->clk_ptp_ref);
 	clk_free(&eqos->clk_rx);
@@ -1503,7 +1503,7 @@ static int eqos_remove_resources_stm32(struct udevice *dev)
 
 	debug("%s(dev=%p):\n", __func__, dev);
 
-#ifdef CONFIG_CLK
+#if CONFIG_IS_ENABLED(CLK)
 	clk_free(&eqos->clk_tx);
 	clk_free(&eqos->clk_rx);
 	clk_free(&eqos->clk_master_bus);

@@ -5,7 +5,7 @@
 #include <common.h>
 #include <command.h>
 #include <clk.h>
-#if defined(CONFIG_DM) && defined(CONFIG_CLK)
+#if defined(CONFIG_DM) && CONFIG_IS_ENABLED(CLK)
 #include <dm.h>
 #include <dm/device.h>
 #include <dm/root.h>
@@ -13,7 +13,7 @@
 #include <linux/clk-provider.h>
 #endif
 
-#if defined(CONFIG_DM) && defined(CONFIG_CLK)
+#if defined(CONFIG_DM) && CONFIG_IS_ENABLED(CLK)
 static void show_clks(struct udevice *dev, int depth, int last_flag)
 {
 	int i, is_last;

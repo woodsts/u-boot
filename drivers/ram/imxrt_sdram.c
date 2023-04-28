@@ -408,7 +408,7 @@ static int imxrt_semc_probe(struct udevice *dev)
 
 	params->base = (struct imxrt_semc_regs *)addr;
 
-#ifdef CONFIG_CLK
+#if CONFIG_IS_ENABLED(CLK)
 	struct clk clk;
 
 	ret = clk_get_by_index(dev, 0, &clk);
