@@ -119,13 +119,13 @@
 /* Extra Environment */
 #ifndef CONFIG_SPL_BUILD
 
-#ifdef CONFIG_CMD_DHCP
+#if CONFIG_IS_ENABLED(CMD_DHCP)
 #define BOOT_TARGET_DEVICES_DHCP(func) func(DHCP, dhcp, na)
 #else
 #define BOOT_TARGET_DEVICES_DHCP(func)
 #endif
 
-#if defined(CONFIG_CMD_PXE) && defined(CONFIG_CMD_DHCP)
+#if defined(CONFIG_CMD_PXE) && CONFIG_IS_ENABLED(CMD_DHCP)
 #define BOOT_TARGET_DEVICES_PXE(func) func(PXE, pxe, na)
 #else
 #define BOOT_TARGET_DEVICES_PXE(func)

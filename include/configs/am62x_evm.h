@@ -27,7 +27,7 @@
 #define DISTRO_BOOT_DEV_PXE(func)
 #endif
 
-#ifdef CONFIG_CMD_DHCP
+#if CONFIG_IS_ENABLED(CMD_DHCP)
 #define DISTRO_BOOT_DEV_DHCP(func) func(DHCP, dhcp, na)
 #else
 #define DISTRO_BOOT_DEV_DHCP(func)

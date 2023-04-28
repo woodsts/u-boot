@@ -56,13 +56,13 @@
 #define BOOT_TARGET_DEVICES_NVME(func)
 #endif
 
-#if defined(CONFIG_CMD_DHCP) && defined(CONFIG_CMD_PXE)
+#if CONFIG_IS_ENABLED(CMD_DHCP) && defined(CONFIG_CMD_PXE)
 #define BOOT_TARGET_DEVICES_PXE(func) func(PXE, pxe, na)
 #else
 #define BOOT_TARGET_DEVICES_PXE(func)
 #endif
 
-#ifdef CONFIG_CMD_DHCP
+#if CONFIG_IS_ENABLED(CMD_DHCP)
 #define BOOT_TARGET_DEVICES_DHCP(func) func(DHCP, dhcp, na)
 #else
 #define BOOT_TARGET_DEVICES_DHCP(func)

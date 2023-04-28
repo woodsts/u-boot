@@ -63,7 +63,7 @@ char net_root_path[CONFIG_BOOTP_MAX_ROOT_PATH_LEN] = {0,}; /* Our bootpath */
 
 static ulong time_taken_max;
 
-#if defined(CONFIG_CMD_DHCP)
+#if CONFIG_IS_ENABLED(CMD_DHCP)
 static dhcp_state_t dhcp_state = INIT;
 static u32 dhcp_leasetime;
 static struct in_addr dhcp_server_ip;
@@ -159,7 +159,7 @@ static void store_bootp_params(struct bootp_hdr *bp)
 	memcpy(net_server_ethaddr,
 	       ((struct ethernet_hdr *)net_rx_packet)->et_src, 6);
 	if (
-#if defined(CONFIG_CMD_DHCP)
+#if CONFIG_IS_ENABLED(CMD_DHCP)
 	    !(dhcp_option_overload & OVERLOAD_FILE) &&
 #endif
 	    (strlen(bp->bp_file) > 0) &&
@@ -199,7 +199,7 @@ static int truncate_sz(const char *name, int maxlen, int curlen)
 	return curlen;
 }
 
-#if !defined(CONFIG_CMD_DHCP)
+#if !CONFIG_IS_ENABLED(CMD_DHCP)
 
 static void bootp_process_vendor_field(u8 *ext)
 {
@@ -455,7 +455,7 @@ static u8 *add_vci(u8 *e)
 /*
  *	Initialize BOOTP extension fields in the request.
  */
-#if defined(CONFIG_CMD_DHCP)
+#if CONFIG_IS_ENABLED(CMD_DHCP)
 static int dhcp_extended(u8 *e, int message_type, struct in_addr server_ip,
 			struct in_addr requested_ip)
 {
@@ -632,7 +632,7 @@ static int bootp_extended(u8 *e)
 	*e++ = 83;
 	*e++ = 99;
 
-#if defined(CONFIG_CMD_DHCP)
+#if CONFIG_IS_ENABLED(CMD_DHCP)
 	*e++ = 53;		/* DHCP Message Type */
 	*e++ = 1;
 	*e++ = DHCP_DISCOVER;
@@ -730,7 +730,7 @@ void bootp_request(void)
 	char *ep;  /* Environment pointer */
 
 	bootstage_mark_name(BOOTSTAGE_ID_BOOTP_START, "bootp_start");
-#if defined(CONFIG_CMD_DHCP)
+#if CONFIG_IS_ENABLED(CMD_DHCP)
 	dhcp_state = INIT;
 #endif
 
@@ -792,7 +792,7 @@ void bootp_request(void)
 	copy_filename(bp->bp_file, net_boot_file_name, sizeof(bp->bp_file));
 
 	/* Request additional information from the BOOTP/DHCP server */
-#if defined(CONFIG_CMD_DHCP)
+#if CONFIG_IS_ENABLED(CMD_DHCP)
 	extlen = dhcp_extended((u8 *)bp->bp_vend, DHCP_DISCOVER, zero_ip,
 			       zero_ip);
 #else
@@ -822,7 +822,7 @@ void bootp_request(void)
 	net_set_udp_header(iphdr, bcast_ip, PORT_BOOTPS, PORT_BOOTPC, iplen);
 	net_set_timeout_handler(bootp_timeout, bootp_timeout_handler);
 
-#if defined(CONFIG_CMD_DHCP)
+#if CONFIG_IS_ENABLED(CMD_DHCP)
 	dhcp_state = SELECTING;
 	net_set_udp_handler(dhcp_handler);
 #else
@@ -831,7 +831,7 @@ void bootp_request(void)
 	net_send_packet(net_tx_packet, pktlen);
 }
 
-#if defined(CONFIG_CMD_DHCP)
+#if CONFIG_IS_ENABLED(CMD_DHCP)
 static void dhcp_process_options(uchar *popt, uchar *end)
 {
 	int oplen, size;

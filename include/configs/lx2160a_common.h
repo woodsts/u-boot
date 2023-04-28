@@ -210,7 +210,7 @@
 #define BOOT_TARGET_DEVICES_SCSI(func)
 #endif
 
-#ifdef CONFIG_CMD_DHCP
+#if CONFIG_IS_ENABLED(CMD_DHCP)
 #define BOOT_TARGET_DEVICES_DHCP(func) func(DHCP, dhcp, na)
 #else
 #define BOOT_TARGET_DEVICES_DHCP(func)

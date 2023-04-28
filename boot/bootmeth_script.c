@@ -158,7 +158,7 @@ static int script_read_bootflow(struct udevice *dev, struct bootflow *bflow)
 	if (ret)
 		return log_msg_ret("std", ret);
 
-	if (IS_ENABLED(CONFIG_CMD_DHCP) &&
+	if (CONFIG_IS_ENABLED(CMD_DHCP) &&
 	    device_get_uclass_id(media) == UCLASS_ETH) {
 		/* we only support reading from one device, so ignore 'dev' */
 		ret = script_read_bootflow_net(bflow);

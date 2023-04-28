@@ -111,7 +111,7 @@ U_BOOT_CMD(
 );
 #endif
 
-#if defined(CONFIG_CMD_DHCP)
+#if CONFIG_IS_ENABLED(CMD_DHCP)
 static int do_dhcp(struct cmd_tbl *cmdtp, int flag, int argc,
 		   char *const argv[])
 {

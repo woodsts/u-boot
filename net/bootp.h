@@ -18,7 +18,7 @@
 /*
  *	BOOTP header.
  */
-#if defined(CONFIG_CMD_DHCP)
+#if CONFIG_IS_ENABLED(CMD_DHCP)
 /* Minimum DHCP Options size per RFC2131 - results in 576 byte pkt */
 #define OPT_FIELD_SIZE 312
 #if defined(CONFIG_BOOTP_VENDOREX)

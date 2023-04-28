@@ -357,7 +357,7 @@ static int distro_efi_read_bootflow(struct udevice *dev, struct bootflow *bflow)
 	const struct udevice *media = dev_get_parent(bflow->dev);
 	int ret;
 
-	if (IS_ENABLED(CONFIG_CMD_DHCP) &&
+	if (CONFIG_IS_ENABLED(CMD_DHCP) &&
 	    device_get_uclass_id(media) == UCLASS_ETH) {
 		/* we only support reading from one device, so ignore 'dev' */
 		ret = distro_efi_read_bootflow_net(bflow);

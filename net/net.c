@@ -503,7 +503,7 @@ restart:
 			fastboot_start_server();
 			break;
 #endif
-#if defined(CONFIG_CMD_DHCP)
+#if CONFIG_IS_ENABLED(CMD_DHCP)
 		case DHCP:
 			bootp_reset();
 			net_ip.s_addr = 0;
