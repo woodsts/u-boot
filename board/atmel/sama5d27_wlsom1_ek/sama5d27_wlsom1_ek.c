@@ -75,7 +75,7 @@ int board_init(void)
 #ifdef CONFIG_MISC_INIT_R
 int misc_init_r(void)
 {
-#ifdef CONFIG_SPI_FLASH_SFDP_SUPPORT
+#if CONFIG_IS_ENABLED(SPI_FLASH_SFDP_SUPPORT)
 	at91_spi_nor_set_ethaddr();
 #endif
 	return 0;
