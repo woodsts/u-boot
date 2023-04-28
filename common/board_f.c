@@ -554,7 +554,7 @@ static int reserve_fdt(void)
 
 static int reserve_bootstage(void)
 {
-#ifdef CONFIG_BOOTSTAGE
+#if CONFIG_IS_ENABLED(BOOTSTAGE)
 	int size = bootstage_get_size();
 
 	gd->start_addr_sp = reserve_stack_aligned(size);
@@ -647,7 +647,7 @@ static int reloc_fdt(void)
 
 static int reloc_bootstage(void)
 {
-#ifdef CONFIG_BOOTSTAGE
+#if CONFIG_IS_ENABLED(BOOTSTAGE)
 	if (gd->flags & GD_FLG_SKIP_RELOC)
 		return 0;
 	if (gd->new_bootstage) {

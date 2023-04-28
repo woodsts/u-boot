@@ -369,7 +369,7 @@ struct global_data {
 	 */
 	ulong video_bottom;
 #endif
-#ifdef CONFIG_BOOTSTAGE
+#if CONFIG_IS_ENABLED(BOOTSTAGE)
 	/**
 	 * @bootstage: boot stage information
 	 */
