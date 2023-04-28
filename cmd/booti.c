@@ -118,7 +118,7 @@ int do_booti(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 	bootm_disable_interrupts();
 
 	images.os.os = IH_OS_LINUX;
-#ifdef CONFIG_RISCV_SMODE
+#if CONFIG_IS_ENABLED(RISCV_SMODE)
 	images.os.arch = IH_ARCH_RISCV;
 #elif CONFIG_ARM64
 	images.os.arch = IH_ARCH_ARM64;
