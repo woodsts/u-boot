@@ -54,7 +54,7 @@ int cmd_ut_category(const char *name, const char *prefix,
 static struct cmd_tbl cmd_ut_sub[] = {
 	U_BOOT_CMD_MKENT(all, CONFIG_SYS_MAXARGS, 1, do_ut_all, "", ""),
 	U_BOOT_CMD_MKENT(info, 1, 1, do_ut_info, "", ""),
-#ifdef CONFIG_BOOTSTD
+#if CONFIG_IS_ENABLED(BOOTSTD)
 	U_BOOT_CMD_MKENT(bootstd, CONFIG_SYS_MAXARGS, 1, do_ut_bootstd,
 			 "", ""),
 #endif
@@ -179,7 +179,7 @@ static char ut_help_text[] =
 #ifdef CONFIG_SANDBOX
 	"\nbloblist - bloblist implementation"
 #endif
-#ifdef CONFIG_BOOTSTD
+#if CONFIG_IS_ENABLED(BOOTSTD)
 	"\nbootstd - standard boot implementation"
 #endif
 #ifdef CONFIG_SANDBOX

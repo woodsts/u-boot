@@ -60,7 +60,7 @@
 #define NET6_CALLBACKS
 #endif
 
-#ifdef CONFIG_BOOTSTD
+#if CONFIG_IS_ENABLED(BOOTSTD)
 #define BOOTSTD_CALLBACK	"bootmeths:bootmeths,"
 #else
 #define BOOTSTD_CALLBACK
