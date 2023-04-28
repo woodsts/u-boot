@@ -379,7 +379,7 @@ struct global_data {
 	 */
 	struct bootstage_data *new_bootstage;
 #endif
-#ifdef CONFIG_LOG
+#if CONFIG_IS_ENABLED(LOG)
 	/**
 	 * @log_drop_count: number of dropped log messages
 	 *

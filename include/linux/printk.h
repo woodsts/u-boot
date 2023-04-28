@@ -70,7 +70,7 @@
 	CONFIG_LOGLEVEL > 7 ? log_debug(fmt, ##__VA_ARGS__) : 0;	\
 })
 
-#ifdef CONFIG_LOG
+#if CONFIG_IS_ENABLED(LOG)
 #define pr_cont(fmt, ...)						\
 ({									\
 	gd->logl_prev < CONFIG_LOGLEVEL ?				\
