@@ -14,7 +14,7 @@
 #include <log.h>
 #include <stdio_dev.h>
 #include <input.h>
-#ifdef CONFIG_DM_KEYBOARD
+#if CONFIG_IS_ENABLED(DM_KEYBOARD)
 #include <keyboard.h>
 #endif
 #include <linux/input.h>
@@ -258,7 +258,7 @@ int input_getc(struct input_config *config)
 static struct input_key_xlate *process_modifier(struct input_config *config,
 						int key, int release)
 {
-#ifdef CONFIG_DM_KEYBOARD
+#if CONFIG_IS_ENABLED(DM_KEYBOARD)
 	struct udevice *dev = config->dev;
 	struct keyboard_ops *ops = keyboard_get_ops(dev);
 #endif
@@ -304,7 +304,7 @@ static struct input_key_xlate *process_modifier(struct input_config *config,
 			config->leds = leds;
 			config->leds_changed = flip;
 
-#ifdef CONFIG_DM_KEYBOARD
+#if CONFIG_IS_ENABLED(DM_KEYBOARD)
 			if (ops->update_leds) {
 				if (ops->update_leds(dev, config->leds))
 					debug("Update keyboard's LED failed\n");
