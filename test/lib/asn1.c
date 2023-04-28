@@ -12,7 +12,7 @@
 #include <test/test.h>
 #include <test/ut.h>
 
-#ifdef CONFIG_PKCS7_MESSAGE_PARSER
+#if CONFIG_IS_ENABLED(PKCS7_MESSAGE_PARSER)
 #include <crypto/pkcs7_parser.h>
 #else
 #ifdef CONFIG_X509_CERTIFICATE_PARSER
@@ -140,7 +140,7 @@ static int lib_asn1_x509(struct unit_test_state *uts)
 LIB_TEST(lib_asn1_x509, 0);
 #endif /* CONFIG_X509_CERTIFICATE_PARSER */
 
-#ifdef CONFIG_PKCS7_MESSAGE_PARSER
+#if CONFIG_IS_ENABLED(PKCS7_MESSAGE_PARSER)
 /*
  * sbsign --key priv.pem --cert cert.pem --detach --out Image.pk Image
  */
