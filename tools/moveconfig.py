@@ -1689,7 +1689,7 @@ def scan_src_files(fnames):
 
     >>> RE_C_CONFIGS.search('CONFIG_FRED').groups()
     ('FRED',)
-    >>> RE_CONFIG_IS.search('CONFIG_IS_ENABLED(MARY)').groups()
+    >>> RE_CONFIG_IS.search('IS_ENABLED(CONFIG_MARY)').groups()
     ('MARY',)
     >>> RE_CONFIG_IS.search('#if CONFIG_IS_ENABLED(OF_PLATDATA)').groups()
     ('OF_PLATDATA',)
