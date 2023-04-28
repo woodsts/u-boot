@@ -5,7 +5,7 @@
 #ifndef _ASM_PPC_ATOMIC_H_
 #define _ASM_PPC_ATOMIC_H_
 
-#ifdef CONFIG_SMP
+#if CONFIG_IS_ENABLED(SMP)
 typedef struct { volatile int counter; } atomic_t;
 #else
 typedef struct { int counter; } atomic_t;

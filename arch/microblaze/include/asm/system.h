@@ -119,7 +119,7 @@ extern void *switch_thread (struct thread_struct *last,
 #define set_mb(var, value)	do { var = value; mb(); } while (0)
 #define set_wmb(var, value)	do { var = value; wmb (); } while (0)
 
-#ifdef CONFIG_SMP
+#if CONFIG_IS_ENABLED(SMP)
 #define smp_mb()	mb ()
 #define smp_rmb()	rmb ()
 #define smp_wmb()	wmb ()

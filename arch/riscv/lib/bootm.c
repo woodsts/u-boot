@@ -80,7 +80,7 @@ static void boot_jump_linux(struct bootm_headers *images, int flag)
 {
 	void (*kernel)(ulong hart, void *dtb);
 	int fake = (flag & BOOTM_STATE_OS_FAKE_GO);
-#ifdef CONFIG_SMP
+#if CONFIG_IS_ENABLED(SMP)
 	int ret;
 #endif
 
@@ -95,7 +95,7 @@ static void boot_jump_linux(struct bootm_headers *images, int flag)
 
 	if (!fake) {
 		if (CONFIG_IS_ENABLED(OF_LIBFDT) && images->ft_len) {
-#ifdef CONFIG_SMP
+#if CONFIG_IS_ENABLED(SMP)
 			ret = smp_call_function(images->ep,
 						(ulong)images->ft_addr, 0, 0);
 			if (ret)

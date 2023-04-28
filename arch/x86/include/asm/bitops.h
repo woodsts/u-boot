@@ -18,7 +18,7 @@
 #include <asm-generic/bitops/__fls.h>
 #include <asm-generic/bitops/fls64.h>
 
-#ifdef CONFIG_SMP
+#if CONFIG_IS_ENABLED(SMP)
 #define LOCK_PREFIX "lock ; "
 #else
 #define LOCK_PREFIX ""

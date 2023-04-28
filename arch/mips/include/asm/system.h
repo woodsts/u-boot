@@ -115,7 +115,7 @@ do {									\
 		: "$1", "memory");					\
 } while(0)
 
-#ifdef CONFIG_SMP
+#if CONFIG_IS_ENABLED(SMP)
 
 extern void __global_sti(void);
 extern void __global_cli(void);
@@ -170,7 +170,7 @@ __asm__ __volatile__(					\
 
 #endif /* CONFIG_CPU_HAS_WB  */
 
-#ifdef CONFIG_SMP
+#if CONFIG_IS_ENABLED(SMP)
 #define smp_mb()	mb()
 #define smp_rmb()	rmb()
 #define smp_wmb()	wmb()

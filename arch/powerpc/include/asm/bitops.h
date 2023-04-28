@@ -13,7 +13,7 @@
  * SMP ordering, but in fact a lot of drivers expect them to imply
  * both, since they do on x86 cpus.
  */
-#ifdef CONFIG_SMP
+#if CONFIG_IS_ENABLED(SMP)
 #define SMP_WMB		"eieio\n"
 #define SMP_MB		"\nsync"
 #else

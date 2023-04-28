@@ -97,7 +97,7 @@ static inline unsigned long tas(volatile int *m)
 #define ctrl_barrier()	__asm__ __volatile__ ("nop;nop;nop;nop;nop;nop;nop;nop")
 #define read_barrier_depends()	do { } while(0)
 
-#ifdef CONFIG_SMP
+#if CONFIG_IS_ENABLED(SMP)
 #define smp_mb()	mb()
 #define smp_rmb()	rmb()
 #define smp_wmb()	wmb()

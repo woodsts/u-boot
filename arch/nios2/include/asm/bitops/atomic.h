@@ -4,7 +4,7 @@
 #include <asm/types.h>
 #include <asm/system.h>
 
-#ifdef CONFIG_SMP
+#if CONFIG_IS_ENABLED(SMP)
 #include <asm/spinlock.h>
 #include <asm/cache.h>		/* we use L1_CACHE_BYTES */
 
