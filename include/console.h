@@ -159,7 +159,7 @@ void console_puts_select_stderr(bool serial_only, const char *s);
 /*
  * CONSOLE multiplexing.
  */
-#ifdef CONFIG_CONSOLE_MUX
+#if CONFIG_IS_ENABLED(CONSOLE_MUX)
 #include <iomux.h>
 #endif
 
