@@ -57,7 +57,7 @@ static enum env_location env_locations[] = {
 #ifdef CONFIG_ENV_IS_IN_EEPROM
 	ENVL_EEPROM,
 #endif
-#ifdef CONFIG_ENV_IS_IN_EXT4
+#if CONFIG_IS_ENABLED(ENV_IS_IN_EXT4)
 	ENVL_EXT4,
 #endif
 #ifdef CONFIG_ENV_IS_IN_FAT
