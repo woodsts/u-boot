@@ -135,7 +135,7 @@ U_BOOT_DRIVER(dwc3_layerscape_peripheral) = {
 #endif
 
 #if defined(CONFIG_SPL_USB_HOST_SUPPORT) || \
-	!defined(CONFIG_SPL_BUILD) && defined(CONFIG_USB_HOST)
+	!defined(CONFIG_SPL_BUILD) && CONFIG_IS_ENABLED(USB_HOST)
 static int dwc3_layerscape_host_probe(struct udevice *dev)
 {
 	struct xhci_hcor *hcor;

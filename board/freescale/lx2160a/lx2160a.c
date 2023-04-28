@@ -814,7 +814,7 @@ int ft_board_setup(void *blob, struct bd_info *bd)
 
 	fdt_fixup_memory_banks(blob, base, size, total_memory_banks);
 
-#ifdef CONFIG_USB_HOST
+#if CONFIG_IS_ENABLED(USB_HOST)
 	fsl_fdt_fixup_dr_usb(blob, bd);
 #endif
 
