@@ -41,7 +41,7 @@
 #define STDOUT_VIDEO ""
 #endif
 
-#ifdef CONFIG_CROS_EC_KEYB
+#if CONFIG_IS_ENABLED(CROS_EC_KEYB)
 #define STDOUT_CROS_EC	",cros-ec-keyb"
 #else
 #define STDOUT_CROS_EC	""
