@@ -365,7 +365,7 @@ static int aristainetos_bootmode_settings(void)
 	return 0;
 }
 
-#if defined(CONFIG_DM_PMIC_DA9063)
+#if CONFIG_IS_ENABLED(DM_PMIC_DA9063)
 /*
  * On the aristainetos2c boards the PMIC needs to be initialized,
  * because the Ethernet PHY uses a different regulator that is not
