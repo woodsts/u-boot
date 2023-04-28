@@ -64,7 +64,7 @@
 #endif
 /*---------------------------------------------------------------------*/
 
-#ifdef CONFIG_DM_RTC
+#if CONFIG_IS_ENABLED(DM_RTC)
 #define DEV_TYPE struct udevice
 #else
 /* Local udevice */
@@ -87,7 +87,7 @@ static int s35392a_rtc_read(DEV_TYPE *dev, u8 reg, u8 *buf, int len)
 {
 	int ret;
 
-#ifdef CONFIG_DM_RTC
+#if CONFIG_IS_ENABLED(DM_RTC)
 	ret = dm_i2c_read(dev, reg, buf, len);
 #else
 	(void)dev;
@@ -101,7 +101,7 @@ static int s35392a_rtc_write(DEV_TYPE *dev, u8 reg, u8 *buf, int len)
 {
 	int ret;
 
-#ifdef CONFIG_DM_RTC
+#if CONFIG_IS_ENABLED(DM_RTC)
 	ret = dm_i2c_write(dev, reg, buf, len);
 #else
 	(void)dev;
@@ -311,7 +311,7 @@ initialize:
 	return 0;
 }
 
-#ifndef CONFIG_DM_RTC
+#if !CONFIG_IS_ENABLED(DM_RTC)
 
 int rtc_get(struct rtc_time *tm)
 {
@@ -337,7 +337,7 @@ void rtc_init(void)
 
 static int s35392a_probe(struct udevice *dev)
 {
-#if defined(CONFIG_DM_RTC)
+#if CONFIG_IS_ENABLED(DM_RTC)
 	/* 3-bit "command", or register, is encoded within the device address.
 	 */
 	i2c_set_chip_offset_len(dev, 0);

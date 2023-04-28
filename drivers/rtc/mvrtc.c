@@ -56,7 +56,7 @@ static int __mv_rtc_get(struct mvrtc_registers *regs, struct rtc_time *t)
 	return 0;
 }
 
-#ifndef CONFIG_DM_RTC
+#if !CONFIG_IS_ENABLED(DM_RTC)
 int rtc_get(struct rtc_time *t)
 {
 	struct mvrtc_registers *regs;
@@ -95,7 +95,7 @@ static int __mv_rtc_set(struct mvrtc_registers *regs, const struct rtc_time *t)
 	return 0;
 }
 
-#ifndef CONFIG_DM_RTC
+#if !CONFIG_IS_ENABLED(DM_RTC)
 int rtc_set(struct rtc_time *t)
 {
 	struct mvrtc_registers *regs;
@@ -120,7 +120,7 @@ static void __mv_rtc_reset(struct mvrtc_registers *regs)
 		printf("Error: RTC did not increment.\n");
 }
 
-#ifndef CONFIG_DM_RTC
+#if !CONFIG_IS_ENABLED(DM_RTC)
 void rtc_reset(void)
 {
 	struct mvrtc_registers *regs;
@@ -130,7 +130,7 @@ void rtc_reset(void)
 }
 #endif /* !CONFIG_DM_RTC */
 
-#ifdef CONFIG_DM_RTC
+#if CONFIG_IS_ENABLED(DM_RTC)
 static int mv_rtc_get(struct udevice *dev, struct rtc_time *tm)
 {
 	struct mvrtc_pdata *pdata = dev_get_plat(dev);

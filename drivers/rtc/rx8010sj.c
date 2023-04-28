@@ -76,7 +76,7 @@
 
 #define RX8010_ALARM_AE  BIT(7)
 
-#ifdef CONFIG_DM_RTC
+#if CONFIG_IS_ENABLED(DM_RTC)
 
 #define DEV_TYPE struct udevice
 
@@ -96,7 +96,7 @@ static int rx8010sj_rtc_read8(DEV_TYPE *dev, unsigned int reg)
 	u8 val;
 	int ret;
 
-#ifdef CONFIG_DM_RTC
+#if CONFIG_IS_ENABLED(DM_RTC)
 	ret = dm_i2c_read(dev, reg, &val, sizeof(val));
 #else
 	ret = i2c_read(dev->chip, reg, 1, &val, 1);
@@ -110,7 +110,7 @@ static int rx8010sj_rtc_write8(DEV_TYPE *dev, unsigned int reg, int val)
 	int ret;
 	u8 lval = val;
 
-#ifdef CONFIG_DM_RTC
+#if CONFIG_IS_ENABLED(DM_RTC)
 	ret = dm_i2c_write(dev, reg, &lval, 1);
 #else
 	ret = i2c_write(dev->chip, reg, 1, &lval, 1);
@@ -308,7 +308,7 @@ static int rx8010sj_rtc_reset(DEV_TYPE *dev)
 	return 0;
 }
 
-#ifndef CONFIG_DM_RTC
+#if !CONFIG_IS_ENABLED(DM_RTC)
 
 int rtc_get(struct rtc_time *tm)
 {

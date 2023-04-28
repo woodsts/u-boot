@@ -73,7 +73,7 @@ static void sntp_handler(uchar *pkt, unsigned dest, struct in_addr sip,
 	memcpy(&seconds, &rpktp->transmit_timestamp, sizeof(ulong));
 
 	rtc_to_tm(ntohl(seconds) - 2208988800UL + net_ntp_time_offset, &tm);
-#ifdef CONFIG_DM_RTC
+#if CONFIG_IS_ENABLED(DM_RTC)
 	struct udevice *dev;
 	int ret;
 

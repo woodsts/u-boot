@@ -112,7 +112,7 @@ static void m41t62_set_rtc_buf(const struct rtc_time *tm, u8 *buf)
 	buf[M41T62_REG_YEAR] = bin2bcd(tm->tm_year % 100);
 }
 
-#ifdef CONFIG_DM_RTC
+#if CONFIG_IS_ENABLED(DM_RTC)
 static int m41t62_rtc_get(struct udevice *dev, struct rtc_time *tm)
 {
 	u8 buf[M41T62_DATETIME_REG_SIZE];

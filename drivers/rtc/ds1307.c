@@ -68,7 +68,7 @@ enum ds_type {
 #define MCP7941X_BIT_ST		0x80
 #define MCP7941X_BIT_VBATEN	0x08
 
-#ifndef CONFIG_DM_RTC
+#if !CONFIG_IS_ENABLED(DM_RTC)
 
 /*---------------------------------------------------------------------*/
 #undef DEBUG_RTC
@@ -223,7 +223,7 @@ static void rtc_write (uchar reg, uchar val)
 
 #endif /* !CONFIG_DM_RTC */
 
-#ifdef CONFIG_DM_RTC
+#if CONFIG_IS_ENABLED(DM_RTC)
 static int ds1307_rtc_set(struct udevice *dev, const struct rtc_time *tm)
 {
 	int ret;

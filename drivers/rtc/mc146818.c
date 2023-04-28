@@ -195,7 +195,7 @@ static void mc146818_init(void)
 	mc146818_read8(RTC_CONFIG_C);
 }
 
-#ifdef CONFIG_DM_RTC
+#if CONFIG_IS_ENABLED(DM_RTC)
 
 static int rtc_mc146818_get(struct udevice *dev, struct rtc_time *time)
 {
