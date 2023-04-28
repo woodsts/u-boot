@@ -133,7 +133,7 @@ void enable_uart_clk(unsigned char enable)
 }
 #endif
 
-#ifdef CONFIG_MMC
+#if CONFIG_IS_ENABLED(MMC)
 int enable_usdhc_clk(unsigned char enable, unsigned bus_num)
 {
 	u32 mask;

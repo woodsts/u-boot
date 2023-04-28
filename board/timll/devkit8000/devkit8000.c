@@ -133,14 +133,14 @@ void set_muxconf_regs(void)
 	MUX_DEVKIT8000();
 }
 
-#if defined(CONFIG_MMC)
+#if CONFIG_IS_ENABLED(MMC)
 int board_mmc_init(struct bd_info *bis)
 {
 	return omap_mmc_init(0, 0, 0, -1, -1);
 }
 #endif
 
-#if defined(CONFIG_MMC)
+#if CONFIG_IS_ENABLED(MMC)
 void board_mmc_power_init(void)
 {
 	twl4030_power_mmc_init(0);

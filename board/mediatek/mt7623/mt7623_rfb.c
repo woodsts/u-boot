@@ -17,7 +17,7 @@ int board_init(void)
 	return 0;
 }
 
-#ifdef CONFIG_MMC
+#if CONFIG_IS_ENABLED(MMC)
 int mmc_get_boot_dev(void)
 {
 	int g_mmc_devid = -1;

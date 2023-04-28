@@ -222,7 +222,7 @@ s16 divn_val[16] = {
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1
 };
 
-#if defined(CONFIG_MMC)
+#if CONFIG_IS_ENABLED(MMC)
 int board_mmc_init(struct bd_info *bis)
 {
 	if (psc_enable_module(KS2_LPSC_MMC)) {

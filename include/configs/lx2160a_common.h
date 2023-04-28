@@ -198,7 +198,7 @@
 #define BOOT_TARGET_DEVICES_USB(func)
 #endif
 
-#ifdef CONFIG_MMC
+#if CONFIG_IS_ENABLED(MMC)
 #define BOOT_TARGET_DEVICES_MMC(func, instance) func(MMC, mmc, instance)
 #else
 #define BOOT_TARGET_DEVICES_MMC(func)

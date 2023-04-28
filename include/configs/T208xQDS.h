@@ -388,7 +388,7 @@
 /*
  * SDHC
  */
-#ifdef CONFIG_MMC
+#if CONFIG_IS_ENABLED(MMC)
 #define CFG_SYS_FSL_ESDHC_ADDR	CFG_SYS_MPC85xx_ESDHC_ADDR
 #endif
 

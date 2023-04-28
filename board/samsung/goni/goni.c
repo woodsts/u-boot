@@ -61,7 +61,7 @@ int checkboard(void)
 }
 #endif
 
-#ifdef CONFIG_MMC
+#if CONFIG_IS_ENABLED(MMC)
 int board_mmc_init(struct bd_info *bis)
 {
 	int i, ret, ret_sd = 0;

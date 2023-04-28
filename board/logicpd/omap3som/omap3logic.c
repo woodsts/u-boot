@@ -232,7 +232,7 @@ int board_late_init(void)
 }
 #endif
 
-#if defined(CONFIG_MMC)
+#if CONFIG_IS_ENABLED(MMC)
 void board_mmc_power_init(void)
 {
 	twl4030_power_mmc_init(0);

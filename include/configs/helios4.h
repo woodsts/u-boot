@@ -40,7 +40,7 @@
 #include "mv-common.h"
 
 /* Include the common distro boot environment */
-#ifdef CONFIG_MMC
+#if CONFIG_IS_ENABLED(MMC)
 #define BOOT_TARGET_DEVICES_MMC(func) func(MMC, mmc, 0)
 #else
 #define BOOT_TARGET_DEVICES_MMC(func)

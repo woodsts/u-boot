@@ -98,7 +98,7 @@ static struct module_pin_mux rgmii2_pin_mux[] = {
 };
 #endif
 
-#ifdef CONFIG_MMC
+#if CONFIG_IS_ENABLED(MMC)
 static struct module_pin_mux mmc0_pin_mux[] = {
 	{OFFSET(mmc0_dat3), (MODE(0) | RXACTIVE | PULLUP_EN)},	/* MMC0_DAT3 */
 	{OFFSET(mmc0_dat2), (MODE(0) | RXACTIVE | PULLUP_EN)},	/* MMC0_DAT2 */
@@ -176,7 +176,7 @@ void enable_board_pin_mux(void)
 	configure_module_pin_mux(rgmii1_pin_mux);
 	configure_module_pin_mux(rgmii2_pin_mux);
 #endif
-#ifdef CONFIG_MMC
+#if CONFIG_IS_ENABLED(MMC)
 	configure_module_pin_mux(mmc0_pin_mux);
 #endif
 	configure_module_pin_mux(lcdc_pin_mux);

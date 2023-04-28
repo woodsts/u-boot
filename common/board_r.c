@@ -398,7 +398,7 @@ static int initr_onenand(void)
 }
 #endif
 
-#ifdef CONFIG_MMC
+#if CONFIG_IS_ENABLED(MMC)
 static int initr_mmc(void)
 {
 	puts("MMC:   ");
@@ -696,7 +696,7 @@ static init_fnc_t init_sequence_r[] = {
 #ifdef CONFIG_CMD_ONENAND
 	initr_onenand,
 #endif
-#ifdef CONFIG_MMC
+#if CONFIG_IS_ENABLED(MMC)
 	initr_mmc,
 #endif
 #ifdef CONFIG_XEN

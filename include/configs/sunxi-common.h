@@ -191,7 +191,7 @@
 	"fdt ram " FDT_ADDR_R " 0x100000;" \
 	"ramdisk ram " RAMDISK_ADDR_R " 0x4000000\0"
 
-#ifdef CONFIG_MMC
+#if CONFIG_IS_ENABLED(MMC)
 #if CONFIG_MMC_SUNXI_SLOT_EXTRA != -1
 #define BOOTENV_DEV_MMC_AUTO(devtypeu, devtypel, instance)		\
 	BOOTENV_DEV_MMC(MMC, mmc, 0)					\

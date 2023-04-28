@@ -43,7 +43,7 @@ __weak const char *env_ext4_get_intf(void)
 
 __weak const char *env_ext4_get_dev_part(void)
 {
-#ifdef CONFIG_MMC
+#if CONFIG_IS_ENABLED(MMC)
 	static char *part_str;
 
 	if (!part_str) {
@@ -143,7 +143,7 @@ static int env_ext4_load(void)
 	const char *ifname = env_ext4_get_intf();
 	const char *dev_and_part = env_ext4_get_dev_part();
 
-#ifdef CONFIG_MMC
+#if CONFIG_IS_ENABLED(MMC)
 	if (!strcmp(ifname, "mmc"))
 		mmc_initialize(NULL);
 #endif

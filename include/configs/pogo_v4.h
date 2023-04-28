@@ -24,7 +24,7 @@
 /* Include the common distro boot environment */
 #ifndef CONFIG_SPL_BUILD
 
-#ifdef CONFIG_MMC
+#if CONFIG_IS_ENABLED(MMC)
 #define BOOT_TARGET_DEVICES_MMC(func) func(MMC, mmc, 0)
 #else
 #define BOOT_TARGET_DEVICES_MMC(func)

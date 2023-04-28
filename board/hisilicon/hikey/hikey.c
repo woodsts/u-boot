@@ -380,7 +380,7 @@ int board_init(void)
 	return 0;
 }
 
-#ifdef CONFIG_MMC
+#if CONFIG_IS_ENABLED(MMC)
 
 static int init_dwmmc(void)
 {

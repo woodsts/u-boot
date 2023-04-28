@@ -339,7 +339,7 @@ extern unsigned long get_sdram_size(void);
 /* eSPI - Enhanced SPI */
 #endif
 
-#ifdef CONFIG_MMC
+#if CONFIG_IS_ENABLED(MMC)
 #define CFG_SYS_FSL_ESDHC_ADDR	CFG_SYS_MPC85xx_ESDHC_ADDR
 #endif
 
@@ -352,7 +352,7 @@ extern unsigned long get_sdram_size(void);
 #endif
 #endif
 
-#if defined(CONFIG_MMC) || defined(CONFIG_USB_EHCI_HCD) \
+#if CONFIG_IS_ENABLED(MMC) || defined(CONFIG_USB_EHCI_HCD) \
 		 || defined(CONFIG_FSL_SATA)
 #endif
 

@@ -56,7 +56,7 @@ int board_init(void)
 	return 0;
 }
 
-#if defined(CONFIG_MMC)
+#if CONFIG_IS_ENABLED(MMC)
 int board_mmc_init(struct bd_info *bis)
 {
 	return omap_mmc_init(0, 0, 0, -1, -1);

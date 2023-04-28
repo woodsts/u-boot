@@ -198,7 +198,7 @@ void set_muxconf_regs(void)
 		   sizeof(struct pad_conf_entry));
 }
 
-#if defined(CONFIG_MMC)
+#if CONFIG_IS_ENABLED(MMC)
 int board_mmc_init(struct bd_info *bis)
 {
 	omap_mmc_init(0, 0, 0, -1, -1);

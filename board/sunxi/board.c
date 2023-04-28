@@ -353,7 +353,7 @@ void board_nand_init(void)
 }
 #endif /* CONFIG_NAND_SUNXI */
 
-#ifdef CONFIG_MMC
+#if CONFIG_IS_ENABLED(MMC)
 static void mmc_pinmux_setup(int sdc)
 {
 	unsigned int pin;

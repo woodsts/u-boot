@@ -48,7 +48,7 @@ static const struct efi_device_path_vendor ROOT = {
 	.guid = U_BOOT_GUID,
 };
 
-#if defined(CONFIG_MMC)
+#if CONFIG_IS_ENABLED(MMC)
 /*
  * Determine if an MMC device is an SD card.
  *
@@ -519,7 +519,7 @@ __maybe_unused static unsigned int dp_size(struct udevice *dev)
 			return dp_size(dev->parent) +
 				sizeof(struct efi_device_path_scsi);
 #endif
-#if defined(CONFIG_MMC)
+#if CONFIG_IS_ENABLED(MMC)
 		case UCLASS_MMC:
 			return dp_size(dev->parent) +
 				sizeof(struct efi_device_path_sd_mmc_path);
@@ -572,7 +572,7 @@ __maybe_unused static unsigned int dp_size(struct udevice *dev)
 		default:
 			return dp_size(dev->parent);
 		}
-#if defined(CONFIG_MMC)
+#if CONFIG_IS_ENABLED(MMC)
 	case UCLASS_MMC:
 		return dp_size(dev->parent) +
 			sizeof(struct efi_device_path_sd_mmc_path);
@@ -709,7 +709,7 @@ __maybe_unused static void *dp_fill(void *buf, struct udevice *dev)
 			return &dp[1];
 			}
 #endif
-#if defined(CONFIG_MMC)
+#if CONFIG_IS_ENABLED(MMC)
 		case UCLASS_MMC: {
 			struct efi_device_path_sd_mmc_path *sddp =
 				dp_fill(buf, dev->parent);
@@ -773,7 +773,7 @@ __maybe_unused static void *dp_fill(void *buf, struct udevice *dev)
 			      dev->name, dev->parent->uclass->uc_drv->id);
 			return dp_fill(buf, dev->parent);
 		}
-#if defined(CONFIG_MMC)
+#if CONFIG_IS_ENABLED(MMC)
 	case UCLASS_MMC: {
 		struct efi_device_path_sd_mmc_path *sddp =
 			dp_fill(buf, dev->parent);

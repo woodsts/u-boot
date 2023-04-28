@@ -32,7 +32,7 @@
  */
 #define DEFAULT_ENV_IS_RW		/* required for configuring default fdtfile= */
 
-#ifdef CONFIG_MMC
+#if CONFIG_IS_ENABLED(MMC)
 #define BOOT_TARGET_DEVICES_MMC(func, i) func(MMC, mmc, i)
 #else
 #define BOOT_TARGET_DEVICES_MMC(func, i)
