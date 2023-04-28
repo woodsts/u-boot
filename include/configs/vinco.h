@@ -39,7 +39,7 @@
 
 /* USB device */
 
-#ifdef CONFIG_SPI_BOOT
+#if CONFIG_IS_ENABLED(SPI_BOOT)
 /* bootstrap + u-boot + env + linux in serial flash */
 /* Use our own mapping for the VInCo platform */
 

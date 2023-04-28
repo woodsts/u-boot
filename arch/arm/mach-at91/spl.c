@@ -52,7 +52,7 @@ u32 spl_boot_device(void)
 
 #if defined(CONFIG_SYS_USE_SERIALFLASH) || \
 	defined(CONFIG_SYS_USE_SPIFLASH) || \
-	defined(CONFIG_SPI_BOOT)
+	CONFIG_IS_ENABLED(SPI_BOOT)
 	if (dev == ATMEL_SAMA5_BOOT_FROM_SPI)
 		return BOOT_DEVICE_SPI;
 #endif
@@ -79,7 +79,7 @@ u32 spl_boot_device(void)
 	return BOOT_DEVICE_NAND;
 #elif defined(CONFIG_SYS_USE_SERIALFLASH) || \
 	defined(CONFIG_SYS_USE_SPIFLASH) || \
-	defined(CONFIG_SPI_BOOT)
+	CONFIG_IS_ENABLED(SPI_BOOT)
 	return BOOT_DEVICE_SPI;
 #endif
 	return BOOT_DEVICE_NONE;
