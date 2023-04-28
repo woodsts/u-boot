@@ -280,7 +280,7 @@ int board_usb_cleanup(int index, enum usb_init_type init)
 }
 #endif /* CONFIG_USB_GADGET_DWC2_OTG */
 
-#if defined(CONFIG_USB_DWC3_GADGET) && !defined(CONFIG_DM_USB_GADGET)
+#if defined(CONFIG_USB_DWC3_GADGET) && !CONFIG_IS_ENABLED(DM_USB_GADGET)
 #include <dwc3-uboot.h>
 
 static struct dwc3_device dwc3_device_data = {

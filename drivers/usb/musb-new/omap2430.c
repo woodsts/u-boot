@@ -46,7 +46,7 @@ static inline void omap2430_low_level_init(struct musb *musb)
 	musb_writel(musb->mregs, OTG_FORCESTDBY, l);
 }
 
-#ifdef CONFIG_DM_USB_GADGET
+#if CONFIG_IS_ENABLED(DM_USB_GADGET)
 int dm_usb_gadget_handle_interrupts(struct udevice *dev)
 {
 	struct musb_host_data *host = dev_get_priv(dev);
