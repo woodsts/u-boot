@@ -16,7 +16,7 @@
 /* Total Size of Environment Sector */
 
 /* Environment */
-#ifndef CONFIG_ENV_IS_NOWHERE
+#if !CONFIG_IS_ENABLED(ENV_IS_NOWHERE)
 /* Environment in MMC */
 # if CONFIG_IS_ENABLED(ENV_IS_IN_MMC)
 /* Environment in NAND */

@@ -84,7 +84,7 @@ static enum env_location env_locations[] = {
 #ifdef CONFIG_ENV_IS_IN_UBI
 	ENVL_UBI,
 #endif
-#ifdef CONFIG_ENV_IS_NOWHERE
+#if CONFIG_IS_ENABLED(ENV_IS_NOWHERE)
 	ENVL_NOWHERE,
 #endif
 };

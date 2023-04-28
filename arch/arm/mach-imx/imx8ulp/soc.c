@@ -892,7 +892,7 @@ enum env_location env_get_location(enum env_operation op, int prio)
 		break;
 #endif
 	default:
-#if defined(CONFIG_ENV_IS_NOWHERE)
+#if CONFIG_IS_ENABLED(ENV_IS_NOWHERE)
 		env_loc = ENVL_NOWHERE;
 #endif
 		break;

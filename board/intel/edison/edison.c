@@ -43,7 +43,7 @@ static void assign_serial(void)
 		snprintf(&serial[2 * i], 3, "%02x", ssn[i]);
 	env_set("serial#", serial);
 
-#if defined(CONFIG_CMD_SAVEENV) && !defined(CONFIG_ENV_IS_NOWHERE)
+#if defined(CONFIG_CMD_SAVEENV) && !CONFIG_IS_ENABLED(ENV_IS_NOWHERE)
 	env_save();
 #endif
 }
@@ -61,7 +61,7 @@ static void assign_hardware_id(void)
 	snprintf(hardware_id, sizeof(hardware_id), "%02X", v.hardware_id);
 	env_set("hardware_id", hardware_id);
 
-#if defined(CONFIG_CMD_SAVEENV) && !defined(CONFIG_ENV_IS_NOWHERE)
+#if defined(CONFIG_CMD_SAVEENV) && !CONFIG_IS_ENABLED(ENV_IS_NOWHERE)
 	env_save();
 #endif
 }
