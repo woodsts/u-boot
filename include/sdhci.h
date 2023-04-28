@@ -439,7 +439,7 @@ static inline u8 sdhci_readb(struct sdhci_host *host, int reg)
 }
 #endif
 
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 /**
  * sdhci_setup_cfg() - Set up the configuration for DWMMC
  *

@@ -191,7 +191,7 @@ struct dwmci_host {
 	 * @freq:	Frequency the host is trying to achieve
 	 */
 	unsigned int (*get_mmc_clk)(struct dwmci_host *host, uint freq);
-#ifndef CONFIG_BLK
+#if !CONFIG_IS_ENABLED(BLK)
 	struct mmc_config cfg;
 #endif
 
@@ -235,7 +235,7 @@ static inline u8 dwmci_readb(struct dwmci_host *host, int reg)
 	return readb(host->ioaddr + reg);
 }
 
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 /**
  * dwmci_setup_cfg() - Set up the configuration for DWMMC
  *

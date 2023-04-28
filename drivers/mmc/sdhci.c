@@ -1015,7 +1015,7 @@ int sdhci_setup_cfg(struct mmc_config *cfg, struct sdhci_host *host,
 	return 0;
 }
 
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 int sdhci_bind(struct udevice *dev, struct mmc *mmc, struct mmc_config *cfg)
 {
 	return mmc_bind(dev, mmc, cfg);

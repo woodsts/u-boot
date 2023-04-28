@@ -151,7 +151,7 @@ static int socfpga_dwmmc_of_to_plat(struct udevice *dev)
 
 static int socfpga_dwmmc_probe(struct udevice *dev)
 {
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 	struct socfpga_dwmci_plat *plat = dev_get_plat(dev);
 #endif
 	struct mmc_uclass_priv *upriv = dev_get_uclass_priv(dev);
@@ -165,7 +165,7 @@ static int socfpga_dwmmc_probe(struct udevice *dev)
 
 	socfpga_dwmci_reset(dev);
 
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 	dwmci_setup_cfg(&plat->cfg, host, host->bus_hz, 400000);
 	host->mmc = &plat->mmc;
 #else
@@ -183,7 +183,7 @@ static int socfpga_dwmmc_probe(struct udevice *dev)
 
 static int socfpga_dwmmc_bind(struct udevice *dev)
 {
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 	struct socfpga_dwmci_plat *plat = dev_get_plat(dev);
 	int ret;
 

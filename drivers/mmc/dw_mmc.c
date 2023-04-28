@@ -614,7 +614,7 @@ void dwmci_setup_cfg(struct mmc_config *cfg, struct dwmci_host *host,
 	cfg->b_max = CONFIG_SYS_MMC_MAX_BLK_COUNT;
 }
 
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 int dwmci_bind(struct udevice *dev, struct mmc *mmc, struct mmc_config *cfg)
 {
 	return mmc_bind(dev, mmc, cfg);

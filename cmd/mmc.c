@@ -326,7 +326,7 @@ static int do_mmcrpmb(struct cmd_tbl *cmdtp, int flag,
 		return CMD_RET_FAILURE;
 	}
 	/* Switch to the RPMB partition */
-#ifndef CONFIG_BLK
+#if !CONFIG_IS_ENABLED(BLK)
 	original_part = mmc->block_dev.hwpart;
 #else
 	original_part = mmc_get_blk_desc(mmc)->hwpart;

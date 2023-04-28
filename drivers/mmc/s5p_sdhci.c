@@ -99,7 +99,7 @@ static int s5p_sdhci_core_init(struct sdhci_host *host)
 	if (host->bus_width == 8)
 		host->host_caps |= MMC_MODE_8BIT;
 
-#ifndef CONFIG_BLK
+#if !CONFIG_IS_ENABLED(BLK)
 	return add_sdhci(host, 0, 400000);
 #else
 	return 0;

@@ -183,7 +183,7 @@ void cs4340_upload_firmware(struct phy_device *phydev)
 			printf("MMC read: dev # %u, block # %u, count %u ...\n",
 				  dev, blk, cnt);
 			mmc_init(mmc);
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 			(void)blk_dread(mmc_get_blk_desc(mmc), blk, cnt, addr);
 #else
 			(void)mmc->block_dev.block_read(&mmc->block_dev, blk, cnt, addr);
@@ -236,7 +236,7 @@ void cs4340_upload_firmware(struct phy_device *phydev)
 		printf("MMC read: dev # %u, block # %u, count %u ...\n",
 		       dev, blk, cnt);
 		mmc_init(mmc);
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 		(void)blk_dread(mmc_get_blk_desc(mmc), blk, cnt,
 						addr);
 #else

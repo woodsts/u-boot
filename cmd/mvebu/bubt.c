@@ -23,7 +23,7 @@
 #include <usb.h>
 #include <fs.h>
 #include <mmc.h>
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 #include <blk.h>
 #endif
 #include <u-boot/sha1.h>
@@ -187,7 +187,7 @@ static int mmc_burn_image(size_t image_size)
 	ulong		blk_written;
 	int		err;
 	const u8	mmc_dev_num = CONFIG_SYS_MMC_ENV_DEV;
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 	struct blk_desc *blk_desc;
 #endif
 #ifdef CONFIG_SUPPORT_EMMC_BOOT
@@ -208,7 +208,7 @@ static int mmc_burn_image(size_t image_size)
 		return err;
 	}
 
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 	blk_desc = mmc_get_blk_desc(mmc);
 	if (!blk_desc) {
 		printf("Error - failed to obtain block descriptor\n");
@@ -217,7 +217,7 @@ static int mmc_burn_image(size_t image_size)
 #endif
 
 #ifdef CONFIG_SUPPORT_EMMC_BOOT
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 	orig_part = blk_desc->hwpart;
 #else
 	orig_part = mmc->block_dev.hwpart;
@@ -227,7 +227,7 @@ static int mmc_burn_image(size_t image_size)
 	if (part == 7)
 		part = 0;
 
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 	err = blk_dselect_hwpart(blk_desc, part);
 #else
 	err = mmc_switch_part(mmc, part);
@@ -243,7 +243,7 @@ static int mmc_burn_image(size_t image_size)
 	 * MMC/eMMC boots from LBA-0
 	 */
 	start_lba = IS_SD(mmc) ? 1 : 0;
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 	blk_count = image_size / mmc->write_bl_len;
 	if (image_size % mmc->write_bl_len)
 		blk_count += 1;
@@ -261,7 +261,7 @@ static int mmc_burn_image(size_t image_size)
 #endif /* CONFIG_BLK */
 
 #ifdef CONFIG_SUPPORT_EMMC_BOOT
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 	err = blk_dselect_hwpart(blk_desc, orig_part);
 #else
 	err = mmc_switch_part(mmc, orig_part);
@@ -336,7 +336,7 @@ static int is_mmc_active(void)
 /********************************************************************
  *     SATA services
  ********************************************************************/
-#if defined(CONFIG_SCSI) && defined(CONFIG_BLK)
+#if defined(CONFIG_SCSI) && CONFIG_IS_ENABLED(BLK)
 static int sata_burn_image(size_t image_size)
 {
 #if defined(CONFIG_ARMADA_3700) || defined(CONFIG_ARMADA_32BIT)
@@ -590,7 +590,7 @@ static int is_nand_active(void)
 /********************************************************************
  *     USB services
  ********************************************************************/
-#if defined(CONFIG_USB_STORAGE) && defined(CONFIG_BLK)
+#if defined(CONFIG_USB_STORAGE) && CONFIG_IS_ENABLED(BLK)
 static size_t usb_read_file(const char *file_name)
 {
 	loff_t act_read = 0;

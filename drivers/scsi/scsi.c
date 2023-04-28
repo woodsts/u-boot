@@ -106,7 +106,7 @@ static void scsi_setup_inquiry(struct scsi_cmd *pccb)
 	pccb->msgout[0] = SCSI_IDENTIFY; /* NOT USED */
 }
 
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 static void scsi_setup_read_ext(struct scsi_cmd *pccb, lbaint_t start,
 				unsigned short blocks)
 {
@@ -715,7 +715,7 @@ int scsi_scan(bool verbose)
 }
 #endif
 
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 static const struct blk_ops scsi_blk_ops = {
 	.read	= scsi_read,
 	.write	= scsi_write,

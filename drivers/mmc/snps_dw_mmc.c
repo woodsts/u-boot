@@ -131,7 +131,7 @@ struct dm_mmc_ops snps_dwmci_dm_ops;
 
 static int snps_dwmmc_probe(struct udevice *dev)
 {
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 	struct snps_dwmci_plat *plat = dev_get_plat(dev);
 #endif
 	struct mmc_uclass_priv *upriv = dev_get_uclass_priv(dev);
@@ -153,7 +153,7 @@ static int snps_dwmmc_probe(struct udevice *dev)
 	else
 		clock_max = min_t(unsigned int, host->bus_hz, priv->f_max);
 
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 	dwmci_setup_cfg(&plat->cfg, host, clock_max, CLOCK_MIN);
 	host->mmc = &plat->mmc;
 #else
@@ -170,7 +170,7 @@ static int snps_dwmmc_probe(struct udevice *dev)
 
 static int snps_dwmmc_bind(struct udevice *dev)
 {
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 	struct snps_dwmci_plat *plat = dev_get_plat(dev);
 	int ret;
 

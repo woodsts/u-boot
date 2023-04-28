@@ -1946,7 +1946,7 @@ static int omap_hsmmc_of_to_plat(struct udevice *dev)
 }
 #endif
 
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 
 static int omap_hsmmc_bind(struct udevice *dev)
 {
@@ -1971,7 +1971,7 @@ static int omap_hsmmc_probe(struct udevice *dev)
 	priv->controller_flags = plat->controller_flags;
 	priv->hw_rev = plat->hw_rev;
 
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 	mmc = plat->mmc;
 #else
 	mmc = mmc_create(cfg, priv);
@@ -2033,7 +2033,7 @@ U_BOOT_DRIVER(omap_hsmmc) = {
 	.of_to_plat = omap_hsmmc_of_to_plat,
 	.plat_auto	= sizeof(struct omap_hsmmc_plat),
 #endif
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 	.bind = omap_hsmmc_bind,
 #endif
 	.ops = &omap_hsmmc_ops,

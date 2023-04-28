@@ -28,7 +28,7 @@ int mmc_get_env_addr(struct mmc *mmc, int copy, u32 *env_addr)
 		return 1;
 
 	/* read out the first block, get the config data information */
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 	n = blk_dread(mmc_get_blk_desc(mmc), 0, 1, tmp_buf);
 #else
 	n = mmc->block_dev.block_read(&mmc->block_dev, 0, 1, tmp_buf);

@@ -336,7 +336,7 @@ lbasize_t dev_read_stor(void *cookie, void *buf, lbasize_t len, lbastart_t start
 	if (!dev_stor_is_valid(type, dd))
 		return 0;
 
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 	return blk_dread(dd, start, len, buf);
 #else
 	if ((dd->block_read) == NULL) {
@@ -345,7 +345,7 @@ lbasize_t dev_read_stor(void *cookie, void *buf, lbasize_t len, lbastart_t start
 	}
 
 	return dd->block_read(dd, start, len, buf);
-#endif	/* defined(CONFIG_BLK) */
+#endif	/* CONFIG_IS_ENABLED(BLK) */
 }
 
 
@@ -360,7 +360,7 @@ lbasize_t dev_write_stor(void *cookie, void *buf, lbasize_t len, lbastart_t star
 	if (!dev_stor_is_valid(type, dd))
 		return 0;
 
-#ifdef CONFIG_BLK
+#if CONFIG_IS_ENABLED(BLK)
 	return blk_dwrite(dd, start, len, buf);
 #else
 	if (dd->block_write == NULL) {
@@ -369,5 +369,5 @@ lbasize_t dev_write_stor(void *cookie, void *buf, lbasize_t len, lbastart_t star
 	}
 
 	return dd->block_write(dd, start, len, buf);
-#endif	/* defined(CONFIG_BLK) */
+#endif	/* CONFIG_IS_ENABLED(BLK) */
 }
