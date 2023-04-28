@@ -15,7 +15,7 @@ ENTRY(smh_trap)
 	hlt	#0xf000
 #elif defined(CONFIG_CPU_V7M)
 	bkpt	#0xab
-#elif defined(CONFIG_SYS_THUMB_BUILD)
+#elif CONFIG_IS_ENABLED(SYS_THUMB_BUILD)
 	svc	#0xab
 #else
 	svc	#0x123456
