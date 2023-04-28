@@ -396,7 +396,7 @@ int board_late_init(void)
 	char *env_targets;
 	int ret, multiboot;
 
-#if defined(CONFIG_USB_ETHER) && !defined(CONFIG_USB_GADGET_DOWNLOAD)
+#if CONFIG_IS_ENABLED(USB_ETHER) && !defined(CONFIG_USB_GADGET_DOWNLOAD)
 	usb_ether_init();
 #endif
 

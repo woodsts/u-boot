@@ -171,7 +171,7 @@ int misc_init_r(void)
 #endif
 	omap_die_id_display();
 
-#if defined(CONFIG_USB_ETHER) && defined(CONFIG_USB_MUSB_GADGET) && \
+#if CONFIG_IS_ENABLED(USB_ETHER) && defined(CONFIG_USB_MUSB_GADGET) && \
 						!defined(CONFIG_SMC911X)
 	omap_die_id_usbethaddr();
 #endif

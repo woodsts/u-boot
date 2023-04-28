@@ -424,7 +424,7 @@ static struct cpsw_platform_data cpsw_data = {
 #if ((defined(CONFIG_SPL_ETH) || defined(CONFIG_SPL_USB_ETHER)) \
 		&& defined(CONFIG_SPL_BUILD)) || \
 	((defined(CONFIG_DRIVER_TI_CPSW) || \
-	  defined(CONFIG_USB_ETHER) && defined(CONFIG_USB_MUSB_GADGET)) && \
+	  CONFIG_IS_ENABLED(USB_ETHER) && defined(CONFIG_USB_MUSB_GADGET)) && \
 	 !defined(CONFIG_SPL_BUILD))
 int board_eth_init(struct bd_info *bis)
 {

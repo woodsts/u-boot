@@ -866,7 +866,7 @@ int misc_init_r(void)
 
 int board_late_init(void)
 {
-#ifdef CONFIG_USB_ETHER
+#if CONFIG_IS_ENABLED(USB_ETHER)
 	usb_ether_init();
 #endif
 

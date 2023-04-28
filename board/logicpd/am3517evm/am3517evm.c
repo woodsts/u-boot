@@ -135,7 +135,7 @@ void set_muxconf_regs(void)
 	MUX_AM3517EVM();
 }
 
-#if defined(CONFIG_USB_ETHER) && defined(CONFIG_USB_MUSB_GADGET)
+#if CONFIG_IS_ENABLED(USB_ETHER) && defined(CONFIG_USB_MUSB_GADGET)
 int board_eth_init(struct bd_info *bis)
 {
 	int rv, n = 0;

@@ -269,7 +269,7 @@ int arch_misc_init(void)
 	if (ret)
 		return ret;
 
-#if CONFIG_IS_ENABLED(DM_ETH) && defined(CONFIG_USB_ETHER)
+#if CONFIG_IS_ENABLED(DM_ETH) && CONFIG_IS_ENABLED(USB_ETHER)
 	ret = usb_ether_init();
 	if (ret) {
 		pr_err("USB ether init failed\n");

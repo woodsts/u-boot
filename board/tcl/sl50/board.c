@@ -305,7 +305,7 @@ static struct cpsw_platform_data cpsw_data = {
 #if ((defined(CONFIG_SPL_ETH) || defined(CONFIG_SPL_USB_ETHER)) \
 		&& defined(CONFIG_SPL_BUILD)) || \
 	((defined(CONFIG_DRIVER_TI_CPSW) || \
-	  defined(CONFIG_USB_ETHER) && defined(CONFIG_MUSB_GADGET)) && \
+	  CONFIG_IS_ENABLED(USB_ETHER) && defined(CONFIG_MUSB_GADGET)) && \
 	 !defined(CONFIG_SPL_BUILD))
 int board_eth_init(struct bd_info *bis)
 {
@@ -373,7 +373,7 @@ int board_eth_init(struct bd_info *bis)
 #define AR8051_RGMII_TX_CLK_DLY		0x100
 
 #endif
-#if defined(CONFIG_USB_ETHER) && \
+#if CONFIG_IS_ENABLED(USB_ETHER) && \
 	(!defined(CONFIG_SPL_BUILD) || defined(CONFIG_SPL_USB_ETHER))
 	if (is_valid_ether_addr(mac_addr))
 		eth_env_set_enetaddr("usbnet_devaddr", mac_addr);
