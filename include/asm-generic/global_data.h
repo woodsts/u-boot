@@ -315,7 +315,7 @@ struct global_data {
 	 */
 	unsigned long malloc_ptr;
 #endif
-#ifdef CONFIG_PCI
+#if CONFIG_IS_ENABLED(PCI)
 	/**
 	 * @hose: PCI hose for early use
 	 */

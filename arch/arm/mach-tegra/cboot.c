@@ -189,7 +189,7 @@ int cboot_dram_init_banksize(void)
 		gd->bd->bi_dram[i].size = tegra_mem_map[1 + i].size;
 	}
 
-#ifdef CONFIG_PCI
+#if CONFIG_IS_ENABLED(PCI)
 	gd->pci_ram_top = ram_top;
 #endif
 

@@ -91,7 +91,7 @@ int print_cpuinfo(void)
 		       strmhz(buf1, gd->cpu_clk),
 		       strmhz(buf2, gd->bus_clk),
 		       strmhz(buf3, gd->arch.flb_clk));
-#ifdef CONFIG_PCI
+#if CONFIG_IS_ENABLED(PCI)
 		printf("       PCI CLK %s MHz INP CLK %s MHz VCO CLK %s MHz\n",
 		       strmhz(buf1, gd->pci_clk),
 		       strmhz(buf2, gd->arch.inp_clk),

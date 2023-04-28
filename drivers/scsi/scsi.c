@@ -36,7 +36,7 @@
 # endif
 #endif
 
-#if defined(CONFIG_PCI) && !defined(CONFIG_SCSI_AHCI_PLAT) && \
+#if CONFIG_IS_ENABLED(PCI) && !defined(CONFIG_SCSI_AHCI_PLAT) && \
 	!defined(CONFIG_DM_SCSI)
 const struct pci_device_id scsi_device_list[] = { SCSI_DEV_LIST };
 #endif
@@ -275,7 +275,7 @@ static ulong scsi_write(struct udevice *dev, lbaint_t blknr, lbaint_t blkcnt,
 }
 #endif
 
-#if defined(CONFIG_PCI) && !defined(CONFIG_SCSI_AHCI_PLAT) && \
+#if CONFIG_IS_ENABLED(PCI) && !defined(CONFIG_SCSI_AHCI_PLAT) && \
 	!defined(CONFIG_DM_SCSI)
 void scsi_init(void)
 {

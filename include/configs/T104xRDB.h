@@ -269,7 +269,7 @@
  * Memory space is mapped 1-1, but I/O space must start from 0.
  */
 
-#ifdef CONFIG_PCI
+#if CONFIG_IS_ENABLED(PCI)
 /* controller 1, direct to uli, tgtid 3, Base address 20000 */
 #ifdef CONFIG_PCIE1
 #define	CFG_SYS_PCIE1_MEM_VIRT	0x80000000

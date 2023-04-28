@@ -25,7 +25,7 @@ DECLARE_GLOBAL_DATA_PTR;
 /* Enable access to PCI memory with map_sysmem() */
 static bool enable_pci_map;
 
-#ifdef CONFIG_PCI
+#if CONFIG_IS_ENABLED(PCI)
 /* Last device that was mapped into memory, and length of mapping */
 static struct udevice *map_dev;
 unsigned long map_len;
@@ -164,7 +164,7 @@ phys_addr_t virt_to_phys(void *ptr)
 
 void *map_physmem(phys_addr_t paddr, unsigned long len, unsigned long flags)
 {
-#if defined(CONFIG_PCI) && !defined(CONFIG_SPL_BUILD)
+#if CONFIG_IS_ENABLED(PCI) && !defined(CONFIG_SPL_BUILD)
 	unsigned long plen = len;
 	void *ptr;
 
@@ -184,7 +184,7 @@ void *map_physmem(phys_addr_t paddr, unsigned long len, unsigned long flags)
 
 void unmap_physmem(const void *ptr, unsigned long flags)
 {
-#ifdef CONFIG_PCI
+#if CONFIG_IS_ENABLED(PCI)
 	if (map_dev) {
 		pci_unmap_physmem(ptr, map_len, map_dev);
 		map_dev = NULL;

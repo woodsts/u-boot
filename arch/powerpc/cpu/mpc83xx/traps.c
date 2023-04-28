@@ -83,7 +83,7 @@ static void _exception(int signr, struct pt_regs *regs)
 	panic("Exception in kernel pc %lx signal %d",regs->nip,signr);
 }
 
-#ifdef CONFIG_PCI
+#if CONFIG_IS_ENABLED(PCI)
 void dump_pci (void)
 {
 /*
@@ -108,7 +108,7 @@ void MachineCheckException(struct pt_regs *regs)
 	 * when a device is not present.  Catch it and return to
 	 * the PCI exception handler.
 	 */
-#ifdef CONFIG_PCI
+#if CONFIG_IS_ENABLED(PCI)
 #if 0
 	volatile immap_t *immap  = (immap_t *)CONFIG_SYS_IMMR;
 #ifdef DEBUG
@@ -153,7 +153,7 @@ void MachineCheckException(struct pt_regs *regs)
 	}
 	show_regs(regs);
 	print_backtrace((unsigned long *)regs->gpr[1]);
-#ifdef CONFIG_PCI
+#if CONFIG_IS_ENABLED(PCI)
 	dump_pci();
 #endif
 	panic("machine check");

@@ -1890,7 +1890,7 @@ static void rk3588_clk_init(struct rk3588_clk_priv *priv)
 			priv->gpll_hz = GPLL_HZ;
 	}
 
-#ifdef CONFIG_PCI
+#if CONFIG_IS_ENABLED(PCI)
 	if (priv->ppll_hz != PPLL_HZ) {
 		ret = rockchip_pll_set_rate(&rk3588_pll_clks[PPLL], priv->cru,
 					    PPLL, PPLL_HZ);

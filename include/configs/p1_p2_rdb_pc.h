@@ -324,7 +324,7 @@
 
 /* enable read and write access to EEPROM */
 
-#if defined(CONFIG_PCI)
+#if CONFIG_IS_ENABLED(PCI)
 /*
  * General PCI
  * Memory space is mapped 1-1, but I/O space must start from 0.

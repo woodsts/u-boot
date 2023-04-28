@@ -46,7 +46,7 @@
 #endif
 
 #if defined(CONFIG_CPU_ARM920T) || \
-	defined(CONFIG_PCI) || \
+	CONFIG_IS_ENABLED(PCI) || \
 	defined(CONFIG_SYS_OHCI_USE_NPS)
 # define OHCI_USE_NPS		/* force NoPowerSwitching mode */
 #endif

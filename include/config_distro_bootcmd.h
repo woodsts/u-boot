@@ -287,7 +287,7 @@
 	BOOT_TARGET_DEVICES_references_IDE_without_CONFIG_IDE
 #endif
 
-#if defined(CONFIG_PCI)
+#if CONFIG_IS_ENABLED(PCI)
 #define BOOTENV_RUN_PCI_ENUM "run boot_pci_enum; "
 #define BOOTENV_SHARED_PCI \
 	"boot_pci_enum=pci enum\0"

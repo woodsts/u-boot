@@ -373,7 +373,7 @@ static int virtio_bootdev_hunt(struct bootdev_hunter *info, bool show)
 {
 	int ret;
 
-	if (IS_ENABLED(CONFIG_PCI)) {
+	if (CONFIG_IS_ENABLED(PCI)) {
 		ret = uclass_probe_all(UCLASS_PCI);
 		if (ret && ret != -ENOENT)
 			return log_msg_ret("pci", ret);

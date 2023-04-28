@@ -186,7 +186,7 @@ int ft_board_setup(void *blob, struct bd_info *bd)
 
 	fdt_fixup_memory(blob, (u64)base, (u64)size);
 
-#ifdef CONFIG_PCI
+#if CONFIG_IS_ENABLED(PCI)
 	pci_of_setup(blob, bd);
 #endif
 

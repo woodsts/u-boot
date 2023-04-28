@@ -345,7 +345,7 @@ int board_late_init(void)
 }
 #endif
 
-#if !defined(CONFIG_SPL_BUILD) && defined(CONFIG_PCI)
+#if !defined(CONFIG_SPL_BUILD) && CONFIG_IS_ENABLED(PCI)
 static int pcie_get_link_speed_width(pci_dev_t bdf, int *speed, int *width)
 {
 	struct udevice *dev;

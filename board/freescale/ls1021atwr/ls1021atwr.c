@@ -580,7 +580,7 @@ int ft_board_setup(void *blob, struct bd_info *bd)
 {
 	ft_cpu_setup(blob, bd);
 
-#ifdef CONFIG_PCI
+#if CONFIG_IS_ENABLED(PCI)
 	ft_pci_setup(blob, bd);
 #endif
 

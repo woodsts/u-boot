@@ -738,7 +738,7 @@ int fdt_delete_disabled_nodes(void *blob)
 	return 0;
 }
 
-#ifdef CONFIG_PCI
+#if CONFIG_IS_ENABLED(PCI)
 #define CFG_SYS_PCI_NR_INBOUND_WIN 4
 
 #define FDT_PCI_PREFETCH	(0x40000000)

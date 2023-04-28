@@ -40,7 +40,7 @@ int checkboard (void)
 	char buf[64];
 	int f;
 	int i = env_get_f("serial#", buf, sizeof(buf));
-#ifdef CONFIG_PCI
+#if CONFIG_IS_ENABLED(PCI)
 	char *src;
 #endif
 
@@ -51,7 +51,7 @@ int checkboard (void)
 	}
 	putc('\n');
 
-#if defined(CONFIG_PCI)
+#if CONFIG_IS_ENABLED(PCI)
 	/* Check the PCI_clk sel bit */
 	if (in_be32(&gur->porpllsr) & (1<<15)) {
 		src = "SYSCLK";

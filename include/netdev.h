@@ -80,7 +80,7 @@ static inline int pci_eth_init(struct bd_info *bis)
 {
 	int num = 0;
 
-#ifdef CONFIG_PCI
+#if CONFIG_IS_ENABLED(PCI)
 
 #ifdef CONFIG_EEPRO100
 	num += eepro100_initialize(bis);

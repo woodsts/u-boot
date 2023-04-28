@@ -169,7 +169,7 @@ int fdt_record_loadable(void *blob, u32 index, const char *name,
 			uintptr_t load_addr, u32 size, uintptr_t entry_point,
 			const char *type, const char *os, const char *arch);
 
-#ifdef CONFIG_PCI
+#if CONFIG_IS_ENABLED(PCI)
 #include <pci.h>
 int fdt_pci_dma_ranges(void *blob, int phb_off, struct pci_controller *hose);
 #endif

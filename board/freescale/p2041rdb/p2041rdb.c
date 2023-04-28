@@ -233,7 +233,7 @@ int ft_board_setup(void *blob, struct bd_info *bd)
 	fsl_fdt_fixup_dr_usb(blob, bd);
 #endif
 
-#ifdef CONFIG_PCI
+#if CONFIG_IS_ENABLED(PCI)
 	pci_of_setup(blob, bd);
 #endif
 

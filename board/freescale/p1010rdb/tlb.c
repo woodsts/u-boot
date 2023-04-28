@@ -50,7 +50,7 @@ struct fsl_e_tlb_entry tlb_table[] = {
 			MAS3_SX|MAS3_SR, MAS2_W|MAS2_G,
 			0, 3, BOOKE_PAGESZ_16M, 1),
 
-#ifdef CONFIG_PCI
+#if CONFIG_IS_ENABLED(PCI)
 	/* *I*G* - PCI */
 	SET_TLB_ENTRY(1, CFG_SYS_PCIE1_MEM_VIRT, CFG_SYS_PCIE1_MEM_PHYS,
 			MAS3_SW|MAS3_SR, MAS2_I|MAS2_G,

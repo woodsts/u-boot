@@ -375,7 +375,7 @@ int dram_init_banksize(void)
 	gd->bd->bi_dram[0].start = CFG_SYS_SDRAM_BASE;
 	gd->bd->bi_dram[0].size = usable_ram_size_below_4g();
 
-#ifdef CONFIG_PCI
+#if CONFIG_IS_ENABLED(PCI)
 	gd->pci_ram_top = gd->bd->bi_dram[0].start + gd->bd->bi_dram[0].size;
 #endif
 

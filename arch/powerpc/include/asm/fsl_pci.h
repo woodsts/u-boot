@@ -231,7 +231,7 @@ int fsl_pcie_init_board(int busno);
 #define FT_FSL_PCIE3_SETUP __FT_FSL_PCIE_SETUP(blob, FSL_PCIE_COMPAT, 3)
 #define FT_FSL_PCIE4_SETUP __FT_FSL_PCIE_SETUP(blob, FSL_PCIE_COMPAT, 4)
 
-#if !defined(CONFIG_PCI)
+#if !CONFIG_IS_ENABLED(PCI)
 #define FT_FSL_PCI_SETUP
 #elif defined(CONFIG_FSL_CORENET)
 #define FSL_PCIE_COMPAT	CONFIG_SYS_FSL_PCIE_COMPAT
