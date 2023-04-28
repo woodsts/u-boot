@@ -51,7 +51,7 @@ int sata_scan(struct udevice *dev)
 }
 
 #ifndef CONFIG_AHCI
-#ifdef CONFIG_PARTITIONS
+#if CONFIG_IS_ENABLED(PARTITIONS)
 struct blk_desc *sata_get_dev(int dev)
 {
 	return (dev < CONFIG_SYS_SATA_MAX_DEVICE) ? &sata_dev_desc[dev] : NULL;
