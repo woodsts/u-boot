@@ -238,7 +238,7 @@ static void cl_som_imx7_setup_fec(void)
 static void cl_som_imx7_setup_fec(void) {}
 #endif /* CONFIG_FEC_MXC */
 
-#ifdef CONFIG_SPI
+#if CONFIG_IS_ENABLED(SPI)
 
 static void cl_som_imx7_spi_init(void)
 {

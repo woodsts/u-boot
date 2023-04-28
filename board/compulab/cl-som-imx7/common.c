@@ -12,7 +12,7 @@
 #include <asm-generic/gpio.h>
 #include "common.h"
 
-#ifdef CONFIG_SPI
+#if CONFIG_IS_ENABLED(SPI)
 
 #define CL_SOM_IMX7_GPIO_SPI_CS	IMX_GPIO_NR(4, 19)
 

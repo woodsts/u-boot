@@ -637,7 +637,7 @@ int acpi_device_write_i2c_dev(struct acpi_ctx *ctx, const struct udevice *dev)
 	return ret;
 }
 
-#ifdef CONFIG_SPI
+#if CONFIG_IS_ENABLED(SPI)
 /* ACPI 6.1 section 6.4.3.8.2.2 - SpiSerialBus() */
 static void acpi_device_write_spi(struct acpi_ctx *ctx, const struct acpi_spi *spi)
 {

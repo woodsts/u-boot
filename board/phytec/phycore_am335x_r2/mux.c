@@ -40,7 +40,7 @@ static struct module_pin_mux i2c0_pin_mux[] = {
 	{-1},
 };
 
-#ifdef CONFIG_SPI
+#if CONFIG_IS_ENABLED(SPI)
 static struct module_pin_mux spi0_pin_mux[] = {
 	{OFFSET(spi0_sclk), (MODE(0) | RXACTIVE | PULLUDEN)},	/* SPI0_SCLK */
 	{OFFSET(spi0_d0), (MODE(0) | RXACTIVE |
@@ -111,7 +111,7 @@ void enable_board_pin_mux(void)
 #ifdef CONFIG_MTD_RAW_NAND
 	configure_module_pin_mux(nand_pin_mux);
 #endif
-#ifdef CONFIG_SPI
+#if CONFIG_IS_ENABLED(SPI)
 	configure_module_pin_mux(spi0_pin_mux);
 #endif
 }

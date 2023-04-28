@@ -14,7 +14,7 @@
 PADS_SET_PROT(usdhc1_pads);
 #endif /* CONFIG_FSL_ESDHC_IMX */
 PADS_SET_PROT(uart1_pads);
-#ifdef CONFIG_SPI
+#if CONFIG_IS_ENABLED(SPI)
 PADS_SET_PROT(espi1_pads);
 #endif /* CONFIG_SPI */
 

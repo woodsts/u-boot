@@ -48,7 +48,7 @@ static iomux_v3_cfg_t const uart1_pads[] = {
 
 PADS_SET(uart1_pads)
 
-#ifdef CONFIG_SPI
+#if CONFIG_IS_ENABLED(SPI)
 
 #define SPI_PAD_CTRL	(PAD_CTL_HYS | PAD_CTL_SRE_SLOW | \
 			PAD_CTL_DSE_3P3V_32OHM)
