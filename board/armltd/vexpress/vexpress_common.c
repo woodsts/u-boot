@@ -37,7 +37,7 @@ static void flash__init(void);
 static void vexpress_timer_init(void);
 DECLARE_GLOBAL_DATA_PTR;
 
-#if defined(CONFIG_SHOW_BOOT_PROGRESS)
+#if CONFIG_IS_ENABLED(SHOW_BOOT_PROGRESS)
 void show_boot_progress(int progress)
 {
 	printf("Boot reached stage %d\n", progress);

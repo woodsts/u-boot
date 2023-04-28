@@ -16,7 +16,7 @@
 #include <malloc.h>
 #include <u-boot/crc.h>
 
-#ifdef CONFIG_SHOW_BOOT_PROGRESS
+#if CONFIG_IS_ENABLED(SHOW_BOOT_PROGRESS)
 #include <status_led.h>
 #endif
 

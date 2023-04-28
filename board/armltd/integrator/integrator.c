@@ -52,7 +52,7 @@ U_BOOT_DRVINFO(integrator_serials) = {
 
 void peripheral_power_enable (void);
 
-#if defined(CONFIG_SHOW_BOOT_PROGRESS)
+#if CONFIG_IS_ENABLED(SHOW_BOOT_PROGRESS)
 void show_boot_progress(int progress)
 {
 	printf("Boot reached stage %d\n", progress);
