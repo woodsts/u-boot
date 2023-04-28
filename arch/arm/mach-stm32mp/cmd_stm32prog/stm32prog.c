@@ -1707,7 +1707,7 @@ error:
 static void stm32prog_end_phase(struct stm32prog_data *data, u64 offset)
 {
 	if (data->phase == PHASE_FLASHLAYOUT) {
-#if defined(CONFIG_LEGACY_IMAGE_FORMAT)
+#if CONFIG_IS_ENABLED(LEGACY_IMAGE_FORMAT)
 		if (genimg_get_format((void *)CONFIG_SYS_LOAD_ADDR) == IMAGE_FORMAT_LEGACY) {
 			data->script = CONFIG_SYS_LOAD_ADDR;
 			data->phase = PHASE_END;

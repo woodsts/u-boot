@@ -285,7 +285,7 @@ static int do_fpga_loadmk(struct cmd_tbl *cmdtp, int flag, int argc,
 	}
 
 	switch (genimg_get_format(fpga_data)) {
-#if defined(CONFIG_LEGACY_IMAGE_FORMAT)
+#if CONFIG_IS_ENABLED(LEGACY_IMAGE_FORMAT)
 	case IMAGE_FORMAT_LEGACY:
 	{
 		struct legacy_img_hdr *hdr = (struct legacy_img_hdr *)fpga_data;

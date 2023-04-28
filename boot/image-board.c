@@ -1015,7 +1015,7 @@ int image_locate_script(void *buf, int size, const char *fit_uname,
 
 	switch (genimg_get_format(buf)) {
 	case IMAGE_FORMAT_LEGACY:
-		if (!IS_ENABLED(CONFIG_LEGACY_IMAGE_FORMAT)) {
+		if (!CONFIG_IS_ENABLED(LEGACY_IMAGE_FORMAT)) {
 			goto exit_image_format;
 		} else {
 			hdr = buf;

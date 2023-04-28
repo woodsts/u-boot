@@ -979,7 +979,7 @@ static int nand_load_image(struct cmd_tbl *cmdtp, struct mtd_info *mtd,
 	int r;
 	char *s;
 	size_t cnt;
-#if defined(CONFIG_LEGACY_IMAGE_FORMAT)
+#if CONFIG_IS_ENABLED(LEGACY_IMAGE_FORMAT)
 	struct legacy_img_hdr *hdr;
 #endif
 #if CONFIG_IS_ENABLED(FIT)
@@ -1007,7 +1007,7 @@ static int nand_load_image(struct cmd_tbl *cmdtp, struct mtd_info *mtd,
 	bootstage_mark(BOOTSTAGE_ID_NAND_HDR_READ);
 
 	switch (genimg_get_format ((void *)addr)) {
-#if defined(CONFIG_LEGACY_IMAGE_FORMAT)
+#if CONFIG_IS_ENABLED(LEGACY_IMAGE_FORMAT)
 	case IMAGE_FORMAT_LEGACY:
 		hdr = (struct legacy_img_hdr *)addr;
 
