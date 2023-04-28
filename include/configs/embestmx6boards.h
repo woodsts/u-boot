@@ -37,7 +37,7 @@
 /* RiOTboard */
 #define FDTFILE	"imx6dl-riotboard.dtb"
 #define CFG_SYS_FSL_USDHC_NUM	3
-#elif defined(CONFIG_ENV_IS_IN_SPI_FLASH)
+#elif CONFIG_IS_ENABLED(ENV_IS_IN_SPI_FLASH)
 /* MarSBoard */
 #define FDTFILE	"imx6q-marsboard.dtb"
 #define CFG_SYS_FSL_USDHC_NUM	2

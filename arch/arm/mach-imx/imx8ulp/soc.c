@@ -876,7 +876,7 @@ enum env_location env_get_location(enum env_operation op, int prio)
 		return env_loc;
 
 	switch (dev) {
-#ifdef CONFIG_ENV_IS_IN_SPI_FLASH
+#if CONFIG_IS_ENABLED(ENV_IS_IN_SPI_FLASH)
 	case QSPI_BOOT:
 		env_loc = ENVL_SPI_FLASH;
 		break;

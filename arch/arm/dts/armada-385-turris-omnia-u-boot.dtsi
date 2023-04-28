@@ -35,7 +35,7 @@
 	};
 };
 
-#ifdef CONFIG_ENV_IS_IN_SPI_FLASH
+#if CONFIG_IS_ENABLED(ENV_IS_IN_SPI_FLASH)
 &spi0 {
 	flash@0 {
 		partitions {

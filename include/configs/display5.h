@@ -284,7 +284,7 @@
 #define CFG_SYS_INIT_RAM_SIZE	IRAM_SIZE
 
 /* ENV config */
-#ifdef CONFIG_ENV_IS_IN_SPI_FLASH
+#if CONFIG_IS_ENABLED(ENV_IS_IN_SPI_FLASH)
 /* The 0x120000 value corresponds to above SPI-NOR memory MAP */
 #endif
 

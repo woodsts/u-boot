@@ -1028,7 +1028,7 @@ int is_flash_available(void)
 }
 #endif
 
-#ifdef CONFIG_ENV_IS_IN_SPI_FLASH
+#if CONFIG_IS_ENABLED(ENV_IS_IN_SPI_FLASH)
 void *env_sf_get_env_addr(void)
 {
 	return (void *)(CFG_SYS_FSL_QSPI_BASE + CONFIG_ENV_OFFSET);

@@ -9,7 +9,7 @@
 		 */
 		spi-max-frequency = <50000000>;
 
-#ifdef CONFIG_ENV_IS_IN_SPI_FLASH
+#if CONFIG_IS_ENABLED(ENV_IS_IN_SPI_FLASH)
 		partitions {
 			compatible = "fixed-partitions";
 			#address-cells = <1>;
