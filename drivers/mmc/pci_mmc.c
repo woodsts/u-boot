@@ -139,7 +139,7 @@ static int pci_mmc_acpi_fill_ssdt(const struct udevice *dev,
 }
 
 struct acpi_ops pci_mmc_acpi_ops = {
-#ifdef CONFIG_ACPIGEN
+#if CONFIG_IS_ENABLED(ACPIGEN)
 	.fill_ssdt	= pci_mmc_acpi_fill_ssdt,
 #endif
 };

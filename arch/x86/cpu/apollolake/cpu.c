@@ -19,7 +19,7 @@
 #include <asm/arch/iomap.h>
 #include <dm/acpi.h>
 
-#ifdef CONFIG_ACPIGEN
+#if CONFIG_IS_ENABLED(ACPIGEN)
 #define CSTATE_RES(address_space, width, offset, address)		\
 	{								\
 	.space_id = address_space,					\
@@ -172,7 +172,7 @@ static int cpu_apl_probe(struct udevice *dev)
 	return 0;
 }
 
-#ifdef CONFIG_ACPIGEN
+#if CONFIG_IS_ENABLED(ACPIGEN)
 struct acpi_ops apl_cpu_acpi_ops = {
 	.fill_ssdt	= acpi_cpu_fill_ssdt,
 };
