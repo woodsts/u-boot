@@ -397,7 +397,7 @@ static int do_bootflow_menu(struct cmd_tbl *cmdtp, int flag, int argc,
 	if (ret)
 		return CMD_RET_FAILURE;
 
-	if (IS_ENABLED(CONFIG_EXPO)) {
+	if (CONFIG_IS_ENABLED(EXPO)) {
 		ret = bootflow_menu_run(std, text_mode, &bflow);
 		if (ret) {
 			if (ret == -EAGAIN)
