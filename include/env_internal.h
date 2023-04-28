@@ -43,7 +43,7 @@
 # endif
 #endif	/* CONFIG_ENV_IS_IN_FLASH */
 
-#if defined(CONFIG_ENV_IS_IN_NAND)
+#if CONFIG_IS_ENABLED(ENV_IS_IN_NAND)
 # if defined(CONFIG_ENV_OFFSET_OOB)
 #  ifdef CONFIG_ENV_OFFSET_REDUND
 #   error "CONFIG_ENV_OFFSET_REDUND is not supported when CONFIG_ENV_OFFSET_OOB"

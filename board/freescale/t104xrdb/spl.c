@@ -97,7 +97,7 @@ void board_init_r(gd_t *gd, ulong dest_addr)
 #endif
 
 	/* relocate environment function pointers etc. */
-#if defined(CONFIG_ENV_IS_IN_NAND) || CONFIG_IS_ENABLED(ENV_IS_IN_MMC) || \
+#if CONFIG_IS_ENABLED(ENV_IS_IN_NAND) || CONFIG_IS_ENABLED(ENV_IS_IN_MMC) || \
 	defined(CONFIG_ENV_IS_IN_SPI_FLASH)
 #ifdef CONFIG_SPL_NAND_BOOT
 	nand_spl_load_image(CONFIG_ENV_OFFSET, CONFIG_ENV_SIZE,
