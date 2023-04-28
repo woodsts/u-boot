@@ -39,7 +39,7 @@ bool is_usb_boot(void)
 	return get_boot_device() == USB_BOOT;
 }
 
-#ifdef CONFIG_ENV_IS_IN_MMC
+#if CONFIG_IS_ENABLED(ENV_IS_IN_MMC)
 __weak int board_mmc_get_env_dev(int devno)
 {
 	return devno;
@@ -881,7 +881,7 @@ enum env_location env_get_location(enum env_operation op, int prio)
 		env_loc = ENVL_SPI_FLASH;
 		break;
 #endif
-#ifdef CONFIG_ENV_IS_IN_MMC
+#if CONFIG_IS_ENABLED(ENV_IS_IN_MMC)
 	case SD1_BOOT:
 	case SD2_BOOT:
 	case SD3_BOOT:

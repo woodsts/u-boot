@@ -66,7 +66,7 @@ static enum env_location env_locations[] = {
 #if CONFIG_IS_ENABLED(ENV_IS_IN_FLASH)
 	ENVL_FLASH,
 #endif
-#ifdef CONFIG_ENV_IS_IN_MMC
+#if CONFIG_IS_ENABLED(ENV_IS_IN_MMC)
 	ENVL_MMC,
 #endif
 #ifdef CONFIG_ENV_IS_IN_NAND

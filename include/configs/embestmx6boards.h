@@ -33,7 +33,7 @@
 
 /* Environment organization */
 
-#if defined(CONFIG_ENV_IS_IN_MMC)
+#if CONFIG_IS_ENABLED(ENV_IS_IN_MMC)
 /* RiOTboard */
 #define FDTFILE	"imx6dl-riotboard.dtb"
 #define CFG_SYS_FSL_USDHC_NUM	3

@@ -55,7 +55,7 @@
 	     "load ${loaddev}:1 ${dtbaddr} am335x-brppt30-legacy.dtb; " \
 	 "fi;\0"
 
-#ifdef CONFIG_ENV_IS_IN_MMC
+#if CONFIG_IS_ENABLED(ENV_IS_IN_MMC)
 #define MMCTGTS \
 MMC_TGTS \
 "cfgscr=mw ${cfgaddr} 0;" \

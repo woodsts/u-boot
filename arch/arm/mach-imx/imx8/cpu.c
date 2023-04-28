@@ -221,7 +221,7 @@ void get_board_serial(struct tag_serialnr *serialnr)
 }
 #endif /*CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG*/
 
-#ifdef CONFIG_ENV_IS_IN_MMC
+#if CONFIG_IS_ENABLED(ENV_IS_IN_MMC)
 __weak int board_mmc_get_env_dev(int devno)
 {
 	return CONFIG_SYS_MMC_ENV_DEV;

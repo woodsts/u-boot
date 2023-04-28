@@ -56,7 +56,7 @@
 #define CFG_SYS_INIT_RAM_ADDR        0x40000000
 #define CFG_SYS_INIT_RAM_SIZE        SZ_2M
 
-#if defined(CONFIG_ENV_IS_IN_MMC)
+#if CONFIG_IS_ENABLED(ENV_IS_IN_MMC)
 /* Environment in eMMC, before config block at the end of 1st "boot sector" */
 #endif
 

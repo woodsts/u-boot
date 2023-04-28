@@ -46,7 +46,7 @@ int board_fit_config_name_match(const char *name)
 }
 #endif
 
-#ifdef CONFIG_ENV_IS_IN_MMC
+#if CONFIG_IS_ENABLED(ENV_IS_IN_MMC)
 void board_boot_order(u32 *spl_boot_list)
 {
 	u32 bmode = imx6_src_get_boot_mode();

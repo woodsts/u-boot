@@ -797,7 +797,7 @@ enum boot_src get_boot_src(void)
 	return __get_boot_src(porsr1);
 }
 
-#ifdef CONFIG_ENV_IS_IN_MMC
+#if CONFIG_IS_ENABLED(ENV_IS_IN_MMC)
 int mmc_get_env_dev(void)
 {
 	enum boot_src src = get_boot_src();

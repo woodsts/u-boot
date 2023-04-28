@@ -45,7 +45,7 @@
 
 #define CFG_IMX6_PWM_PER_CLK 66000000
 
-#ifdef CONFIG_ENV_IS_IN_MMC
+#if CONFIG_IS_ENABLED(ENV_IS_IN_MMC)
 /* 0=user, 1=boot0, 2=boot1, * 4..7=general0..3. */
 #endif
 

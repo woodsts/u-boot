@@ -22,7 +22,7 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
-#ifdef CONFIG_ENV_IS_IN_MMC
+#if CONFIG_IS_ENABLED(ENV_IS_IN_MMC)
 static void mmc_late_init(void)
 {
 	char cmd[32];
@@ -142,7 +142,7 @@ int board_late_init(void)
 	case IMX6_BMODE_ESD:
 	case IMX6_BMODE_MMC:
 	case IMX6_BMODE_EMMC:
-#ifdef CONFIG_ENV_IS_IN_MMC
+#if CONFIG_IS_ENABLED(ENV_IS_IN_MMC)
 		mmc_late_init();
 #endif
 		env_set("modeboot", "mmcboot");

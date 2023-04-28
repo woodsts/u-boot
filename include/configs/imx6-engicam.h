@@ -18,7 +18,7 @@
 /* Environment */
 #ifndef CONFIG_ENV_IS_NOWHERE
 /* Environment in MMC */
-# if defined(CONFIG_ENV_IS_IN_MMC)
+# if CONFIG_IS_ENABLED(ENV_IS_IN_MMC)
 /* Environment in NAND */
 # endif
 #endif

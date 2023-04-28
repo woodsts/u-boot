@@ -156,7 +156,7 @@ enum env_location env_get_location(enum env_operation op, int prio)
 	return ENVL_NOWHERE;
 }
 
-#if defined(CONFIG_ENV_IS_IN_MMC)
+#if CONFIG_IS_ENABLED(ENV_IS_IN_MMC)
 int board_mmc_get_env_dev(int devno)
 {
 	return devno;

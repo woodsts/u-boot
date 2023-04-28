@@ -87,7 +87,7 @@ void setup_gpmi_nand(void)
 }
 #endif /* CONFIG_NAND_MXS */
 
-#ifdef CONFIG_ENV_IS_IN_MMC
+#if CONFIG_IS_ENABLED(ENV_IS_IN_MMC)
 int board_mmc_get_env_dev(int devno)
 {
 	/* dev 0 for SD/eSD, dev 1 for MMC/eMMC */

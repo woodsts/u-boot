@@ -187,7 +187,7 @@ void setup_display(void)
 }
 #endif /* CONFIG_VIDEO_IPUV3 */
 
-#ifdef CONFIG_ENV_IS_IN_MMC
+#if CONFIG_IS_ENABLED(ENV_IS_IN_MMC)
 int board_mmc_get_env_dev(int devno)
 {
 	/* i.CoreM6 RQS has USDHC3 for SD and USDHC4 for eMMC */
