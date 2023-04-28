@@ -57,7 +57,7 @@ static int __maybe_unused setup_fec(void)
 	return 0;
 }
 
-#if (IS_ENABLED(CONFIG_NET))
+#if (CONFIG_IS_ENABLED(NET))
 int board_phy_config(struct phy_device *phydev)
 {
 	unsigned short val;
@@ -78,7 +78,7 @@ int board_phy_config(struct phy_device *phydev)
 
 	return 0;
 }
-#endif // IS_ENABLED(CONFIG_NET)
+#endif // CONFIG_IS_ENABLED(NET)
 
 int board_init(void)
 {

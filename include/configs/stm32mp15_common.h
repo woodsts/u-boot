@@ -45,7 +45,7 @@
 #define BOOT_TARGET_MMC2(func)
 #endif
 
-#ifdef CONFIG_NET
+#if CONFIG_IS_ENABLED(NET)
 #define BOOT_TARGET_PXE(func)	func(PXE, pxe, na)
 #else
 #define BOOT_TARGET_PXE(func)
