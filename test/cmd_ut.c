@@ -59,7 +59,7 @@ static struct cmd_tbl cmd_ut_sub[] = {
 			 "", ""),
 #endif
 	U_BOOT_CMD_MKENT(common, CONFIG_SYS_MAXARGS, 1, do_ut_common, "", ""),
-#if defined(CONFIG_UT_DM)
+#if CONFIG_IS_ENABLED(UT_DM)
 	U_BOOT_CMD_MKENT(dm, CONFIG_SYS_MAXARGS, 1, do_ut_dm, "", ""),
 #endif
 #if defined(CONFIG_UT_ENV)
@@ -185,7 +185,7 @@ static char ut_help_text[] =
 #ifdef CONFIG_SANDBOX
 	"\ncompression - compressors and bootm decompression"
 #endif
-#ifdef CONFIG_UT_DM
+#if CONFIG_IS_ENABLED(UT_DM)
 	"\ndm - driver model"
 #endif
 #ifdef CONFIG_UT_ENV
