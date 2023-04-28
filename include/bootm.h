@@ -42,7 +42,7 @@ int do_bootelf(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[]);
 
 boot_os_fn *bootm_os_get_boot_func(int os);
 
-#if defined(CONFIG_FIT_SIGNATURE)
+#if CONFIG_IS_ENABLED(FIT_SIGNATURE)
 int bootm_host_load_images(const void *fit, int cfg_noffset);
 #endif
 

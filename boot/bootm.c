@@ -367,7 +367,7 @@ static int bootm_find_other(struct cmd_tbl *cmdtp, int flag, int argc,
 }
 #endif /* USE_HOSTC */
 
-#if !defined(USE_HOSTCC) || defined(CONFIG_FIT_SIGNATURE)
+#if !defined(USE_HOSTCC) || CONFIG_IS_ENABLED(FIT_SIGNATURE)
 /**
  * handle_decomp_error() - display a decompression error
  *
@@ -1020,7 +1020,7 @@ void __weak switch_to_non_secure_mode(void)
 
 #else /* USE_HOSTCC */
 
-#if defined(CONFIG_FIT_SIGNATURE)
+#if CONFIG_IS_ENABLED(FIT_SIGNATURE)
 static int bootm_host_load_image(const void *fit, int req_image_type,
 				 int cfg_noffset)
 {
