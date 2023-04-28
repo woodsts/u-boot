@@ -7,7 +7,7 @@
 #define TEST_EXPORT_H
 
 /* Declare something static, unless we are doing unit tests */
-#ifdef CONFIG_UNIT_TEST
+#if CONFIG_IS_ENABLED(UNIT_TEST)
 #define TEST_STATIC
 #else
 #define TEST_STATIC static
