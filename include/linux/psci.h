@@ -129,7 +129,7 @@ struct psci_plat_data {
 			  struct arm_smccc_res *res);
 };
 
-#ifdef CONFIG_ARM_PSCI_FW
+#if CONFIG_IS_ENABLED(ARM_PSCI_FW)
 unsigned long invoke_psci_fn(unsigned long a0, unsigned long a1,
 			     unsigned long a2, unsigned long a3);
 void psci_sys_reset(u32 type);
