@@ -17,7 +17,7 @@
 	{300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200, 230400}
 
 /* architecture dependent code */
-#if defined(CONFIG_CMD_PXE) && CONFIG_IS_ENABLED(CMD_DHCP)
+#if CONFIG_IS_ENABLED(CMD_PXE) && CONFIG_IS_ENABLED(CMD_DHCP)
 #define BOOT_TARGET_DEVICES_PXE(func)	func(PXE, pxe, na)
 #else
 #define BOOT_TARGET_DEVICES_PXE(func)

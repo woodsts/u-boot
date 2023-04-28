@@ -422,7 +422,7 @@
 	BOOT_TARGET_DEVICES_references_DHCP_without_CONFIG_CMD_DHCP
 #endif
 
-#if CONFIG_IS_ENABLED(CMD_DHCP) && defined(CONFIG_CMD_PXE)
+#if CONFIG_IS_ENABLED(CMD_DHCP) && CONFIG_IS_ENABLED(CMD_PXE)
 #define BOOTENV_DEV_PXE(devtypeu, devtypel, instance) \
 	"bootcmd_pxe=" \
 		BOOTENV_RUN_NET_USB_START \

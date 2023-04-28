@@ -56,7 +56,7 @@
 #define BOOT_TARGET_DEVICES_NVME(func)
 #endif
 
-#if CONFIG_IS_ENABLED(CMD_DHCP) && defined(CONFIG_CMD_PXE)
+#if CONFIG_IS_ENABLED(CMD_DHCP) && CONFIG_IS_ENABLED(CMD_PXE)
 #define BOOT_TARGET_DEVICES_PXE(func) func(PXE, pxe, na)
 #else
 #define BOOT_TARGET_DEVICES_PXE(func)

@@ -42,7 +42,7 @@
 #define DISTRO_BOOT_DEV_USB(func)
 #endif
 
-#ifdef CONFIG_CMD_PXE
+#if CONFIG_IS_ENABLED(CMD_PXE)
 #define DISTRO_BOOT_DEV_PXE(func) func(PXE, pxe, na)
 #else
 #define DISTRO_BOOT_DEV_PXE(func)
