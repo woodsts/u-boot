@@ -92,7 +92,7 @@ struct usbnc_regs {
 	u32 adp_status;
 };
 
-#if defined(CONFIG_MX6) && !defined(CONFIG_PHY)
+#if defined(CONFIG_MX6) && !CONFIG_IS_ENABLED(PHY)
 static void usb_power_config_mx6(struct anatop_regs __iomem *anatop,
 				 int anatop_bits_index)
 {
@@ -142,7 +142,7 @@ static void __maybe_unused
 usb_power_config_mx6(void *anatop, int anatop_bits_index) { }
 #endif
 
-#if defined(CONFIG_MX7) && !defined(CONFIG_PHY)
+#if defined(CONFIG_MX7) && !CONFIG_IS_ENABLED(PHY)
 static void usb_power_config_mx7(struct usbnc_regs *usbnc)
 {
 	void __iomem *phy_cfg2 = (void __iomem *)(&usbnc->phy_cfg2);
@@ -161,7 +161,7 @@ static void __maybe_unused
 usb_power_config_mx7(void *usbnc) { }
 #endif
 
-#if defined(CONFIG_MX7ULP) && !defined(CONFIG_PHY)
+#if defined(CONFIG_MX7ULP) && !CONFIG_IS_ENABLED(PHY)
 static void usb_power_config_mx7ulp(struct usbphy_regs __iomem *usbphy)
 {
 	if (!is_mx7ulp())
@@ -186,7 +186,7 @@ static const unsigned phy_bases[] = {
 #endif
 };
 
-#if !defined(CONFIG_PHY)
+#if !CONFIG_IS_ENABLED(PHY)
 static void usb_internal_phy_clock_gate(void __iomem *phy_reg, int on)
 {
 	phy_reg += on ? USBPHY_CTRL_CLR : USBPHY_CTRL_SET;
@@ -266,7 +266,7 @@ int usb_phy_mode(int port)
 }
 #endif
 
-#if !defined(CONFIG_PHY)
+#if !CONFIG_IS_ENABLED(PHY)
 /* Should be done in the MXS PHY driver */
 static void usb_oc_config(struct usbnc_regs *usbnc, int index)
 {
@@ -432,7 +432,7 @@ struct ehci_mx6_priv_data {
 	struct phy phy;
 	enum usb_init_type init_type;
 	enum usb_phy_interface phy_type;
-#if !defined(CONFIG_PHY)
+#if !CONFIG_IS_ENABLED(PHY)
 	int portnr;
 	void __iomem *phy_addr;
 	void __iomem *misc_addr;
@@ -464,7 +464,7 @@ static int mx6_init_after_reset(struct ehci_ctrl *dev)
 	enum usb_init_type type = priv->init_type;
 	struct usb_ehci *ehci = priv->ehci;
 
-#if !defined(CONFIG_PHY)
+#if !CONFIG_IS_ENABLED(PHY)
 	usb_power_config_mx6(priv->anatop_addr, priv->portnr);
 	usb_power_config_mx7(priv->misc_addr);
 	usb_power_config_mx7ulp(priv->phy_addr);
@@ -577,7 +577,7 @@ static int ehci_usb_of_to_plat(struct udevice *dev)
 
 static int mx6_parse_dt_addrs(struct udevice *dev)
 {
-#if !defined(CONFIG_PHY)
+#if !CONFIG_IS_ENABLED(PHY)
 	struct ehci_mx6_priv_data *priv = dev_get_priv(dev);
 	int phy_off, misc_off;
 	const void *blob = gd->fdt_blob;
@@ -692,7 +692,7 @@ static int ehci_usb_probe(struct udevice *dev)
 		debug("%s: No vbus supply\n", dev->name);
 #endif
 
-#if !defined(CONFIG_PHY)
+#if !CONFIG_IS_ENABLED(PHY)
 	usb_power_config_mx6(priv->anatop_addr, priv->portnr);
 	usb_power_config_mx7(priv->misc_addr);
 	usb_power_config_mx7ulp(priv->phy_addr);
@@ -725,7 +725,7 @@ static int ehci_usb_probe(struct udevice *dev)
 
 	mdelay(10);
 
-#if defined(CONFIG_PHY)
+#if CONFIG_IS_ENABLED(PHY)
 	ret = generic_setup_phy(dev, &priv->phy, 0);
 	if (ret)
 		goto err_regulator;
@@ -742,7 +742,7 @@ static int ehci_usb_probe(struct udevice *dev)
 	return ret;
 
 err_phy:
-#if defined(CONFIG_PHY)
+#if CONFIG_IS_ENABLED(PHY)
 	generic_shutdown_phy(&priv->phy);
 err_regulator:
 #endif
@@ -766,7 +766,7 @@ int ehci_usb_remove(struct udevice *dev)
 
 	ehci_deregister(dev);
 
-#if defined(CONFIG_PHY)
+#if CONFIG_IS_ENABLED(PHY)
 	generic_shutdown_phy(&priv->phy);
 #endif
 
