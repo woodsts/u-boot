@@ -20,7 +20,7 @@
 #include <malloc.h>
 #include <mapmem.h>
 #include <watchdog.h>
-#if defined(CONFIG_BZIP2)
+#if CONFIG_IS_ENABLED(BZIP2)
 #include <bzlib.h>
 #endif
 #include <asm/byteorder.h>
@@ -217,7 +217,7 @@ do_imgextract(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 			}
 			break;
 #endif
-#if defined(CONFIG_BZIP2) && defined(CONFIG_LEGACY_IMAGE_FORMAT)
+#if CONFIG_IS_ENABLED(BZIP2) && defined(CONFIG_LEGACY_IMAGE_FORMAT)
 		case IH_COMP_BZIP2:
 			{
 				int i;
