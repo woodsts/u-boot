@@ -156,7 +156,7 @@ int board_mmc_init(struct bd_info *bis)
 #endif
 
 #ifdef CONFIG_USB_EHCI_MX6
-#ifndef CONFIG_DM_USB
+#if !CONFIG_IS_ENABLED(DM_USB)
 
 #define USB_OTHERREGS_OFFSET	0x800
 #define UCTRL_PWR_POL		(1 << 9)
@@ -285,7 +285,7 @@ int board_init(void)
 #endif
 
 #ifdef CONFIG_USB_EHCI_MX6
-#ifndef CONFIG_DM_USB
+#if !CONFIG_IS_ENABLED(DM_USB)
 	setup_usb();
 #endif
 #endif

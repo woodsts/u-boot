@@ -270,7 +270,7 @@ static void usb_display_config(struct usb_device *dev)
  */
 static struct usb_device *usb_find_device(int devnum)
 {
-#ifdef CONFIG_DM_USB
+#if CONFIG_IS_ENABLED(DM_USB)
 	struct usb_device *udev;
 	struct udevice *hub;
 	struct uclass *uc;
@@ -340,7 +340,7 @@ static void usb_show_tree_graph(struct usb_device *dev, char *pre)
 
 	index = strlen(pre);
 	printf(" %s", pre);
-#ifdef CONFIG_DM_USB
+#if CONFIG_IS_ENABLED(DM_USB)
 	has_child = device_has_active_children(dev->dev);
 	if (device_get_uclass_id(dev->dev) == UCLASS_MASS_STORAGE) {
 		struct udevice *child;
@@ -363,7 +363,7 @@ static void usb_show_tree_graph(struct usb_device *dev, char *pre)
 	}
 #endif
 	/* check if we are the last one */
-#ifdef CONFIG_DM_USB
+#if CONFIG_IS_ENABLED(DM_USB)
 	/* Not the root of the usb tree? */
 	if (device_get_uclass_id(dev->dev->parent) != UCLASS_USB) {
 		last_child = device_is_last_sibling(dev->dev);
@@ -404,7 +404,7 @@ static void usb_show_tree_graph(struct usb_device *dev, char *pre)
 	if (strlen(dev->mf) || strlen(dev->prod) || strlen(dev->serial))
 		printf(" %s  %s %s %s\n", pre, dev->mf, dev->prod, dev->serial);
 	printf(" %s\n", pre);
-#ifdef CONFIG_DM_USB
+#if CONFIG_IS_ENABLED(DM_USB)
 	struct udevice *child;
 
 	for (device_find_first_child(dev->dev, &child);
@@ -448,7 +448,7 @@ static void usb_show_subtree(struct usb_device *dev)
 	usb_show_tree_graph(dev, &preamble[0]);
 }
 
-#ifdef CONFIG_DM_USB
+#if CONFIG_IS_ENABLED(DM_USB)
 typedef void (*usb_dev_func_t)(struct usb_device *udev);
 
 static void usb_for_each_root_dev(usb_dev_func_t func)
@@ -475,7 +475,7 @@ static void usb_for_each_root_dev(usb_dev_func_t func)
 
 void usb_show_tree(void)
 {
-#ifdef CONFIG_DM_USB
+#if CONFIG_IS_ENABLED(DM_USB)
 	usb_for_each_root_dev(usb_show_subtree);
 #else
 	struct usb_device *udev;
@@ -586,14 +586,14 @@ static void do_usb_start(void)
 	/* try to recognize storage devices immediately */
 	usb_stor_curr_dev = usb_stor_scan(1);
 # endif
-#ifndef CONFIG_DM_USB
+#if !CONFIG_IS_ENABLED(DM_USB)
 # ifdef CONFIG_USB_KEYBOARD
 	drv_usb_kbd_init();
 # endif
 #endif /* !CONFIG_DM_USB */
 }
 
-#ifdef CONFIG_DM_USB
+#if CONFIG_IS_ENABLED(DM_USB)
 static void usb_show_info(struct usb_device *udev)
 {
 	struct udevice *child;
@@ -661,7 +661,7 @@ static int do_usb(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 	}
 	if (strncmp(argv[1], "inf", 3) == 0) {
 		if (argc == 2) {
-#ifdef CONFIG_DM_USB
+#if CONFIG_IS_ENABLED(DM_USB)
 			usb_for_each_root_dev(usb_show_info);
 #else
 			int d;

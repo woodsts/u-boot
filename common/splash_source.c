@@ -179,7 +179,7 @@ static int splash_init_usb(void)
 	if (err)
 		return err;
 
-#ifndef CONFIG_DM_USB
+#if !CONFIG_IS_ENABLED(DM_USB)
 	err = usb_stor_scan(1) < 0 ? -ENODEV : 0;
 #endif
 
