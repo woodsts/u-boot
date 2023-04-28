@@ -1248,7 +1248,7 @@ void __efi_runtime reset_cpu(void)
 }
 #endif
 
-#if defined(CONFIG_EFI_LOADER) && !defined(CONFIG_PSCI_RESET)
+#if CONFIG_IS_ENABLED(EFI_LOADER) && !defined(CONFIG_PSCI_RESET)
 
 void __efi_runtime EFIAPI efi_reset_system(
 		       enum efi_reset_type reset_type,

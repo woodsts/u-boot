@@ -216,7 +216,7 @@ static int sunxi_de2_init(struct udevice *dev, ulong fbbase,
 	uc_priv->bpix = l2bpp;
 	debug("fb=%lx, size=%d %d\n", fbbase, uc_priv->xsize, uc_priv->ysize);
 
-#ifdef CONFIG_EFI_LOADER
+#if CONFIG_IS_ENABLED(EFI_LOADER)
 	efi_add_memory_map(fbbase,
 			   timing.hactive.typ * timing.vactive.typ *
 			   (1 << l2bpp) / 8,

@@ -6,7 +6,7 @@
 #include <linux/arm-smccc.h>
 #include <generated/asm-offsets.h>
 
-#ifdef CONFIG_EFI_LOADER
+#if CONFIG_IS_ENABLED(EFI_LOADER)
 	.section	.text.efi_runtime
 #endif
 

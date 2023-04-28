@@ -158,7 +158,7 @@ static int initr_reloc_global_data(void)
 	if (IS_ENABLED(CONFIG_OF_EMBED) && IS_ENABLED(CONFIG_NEEDS_MANUAL_RELOC))
 		gd->fdt_blob += gd->reloc_off;
 
-#ifdef CONFIG_EFI_LOADER
+#if CONFIG_IS_ENABLED(EFI_LOADER)
 	/*
 	 * On the ARM architecture gd is mapped to a fixed register (r9 or x18).
 	 * As this register may be overwritten by an EFI payload we save it here
@@ -637,7 +637,7 @@ static init_fnc_t init_sequence_r[] = {
 #ifdef CONFIG_CLOCKS
 	set_cpu_clk_info, /* Setup clock information */
 #endif
-#ifdef CONFIG_EFI_LOADER
+#if CONFIG_IS_ENABLED(EFI_LOADER)
 	efi_memory_init,
 #endif
 	initr_binman,
@@ -687,7 +687,7 @@ static init_fnc_t init_sequence_r[] = {
 	/* initialize higher level parts of CPU like time base and timers */
 	cpu_init_r,
 #endif
-#ifdef CONFIG_EFI_LOADER
+#if CONFIG_IS_ENABLED(EFI_LOADER)
 	efi_init_early,
 #endif
 #ifdef CONFIG_CMD_NAND

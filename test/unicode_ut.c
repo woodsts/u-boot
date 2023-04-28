@@ -776,7 +776,7 @@ static int unicode_test_utf8_to_utf32_stream(struct unit_test_state *uts)
 }
 UNICODE_TEST(unicode_test_utf8_to_utf32_stream);
 
-#ifdef CONFIG_EFI_LOADER
+#if CONFIG_IS_ENABLED(EFI_LOADER)
 static int unicode_test_efi_create_indexed_name(struct unit_test_state *uts)
 {
 	u16 buf[16];

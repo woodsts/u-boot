@@ -136,7 +136,7 @@ int board_fix_fdt(void *fdt)
 int arch_fixup_fdt(void *blob)
 {
 	int err;
-#ifdef CONFIG_EFI_LOADER
+#if CONFIG_IS_ENABLED(EFI_LOADER)
 	u32 size;
 	int chosen_offset;
 

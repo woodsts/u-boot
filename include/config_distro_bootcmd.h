@@ -105,7 +105,7 @@
 	BOOT_TARGET_DEVICES_references_UBIFS_without_CONFIG_CMD_UBIFS
 #endif
 
-#ifdef CONFIG_EFI_LOADER
+#if CONFIG_IS_ENABLED(EFI_LOADER)
 #if defined(CONFIG_ARM64)
 #define BOOTEFI_NAME "bootaa64.efi"
 #elif defined(CONFIG_ARM)
@@ -346,7 +346,7 @@
 #endif
 
 #if CONFIG_IS_ENABLED(CMD_DHCP)
-#if defined(CONFIG_EFI_LOADER)
+#if CONFIG_IS_ENABLED(EFI_LOADER)
 /* http://www.iana.org/assignments/dhcpv6-parameters/dhcpv6-parameters.xml */
 #if defined(CONFIG_ARM64) || defined(__aarch64__)
 #define BOOTENV_EFI_PXE_ARCH "0xb"

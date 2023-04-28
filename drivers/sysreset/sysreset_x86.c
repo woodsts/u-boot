@@ -100,7 +100,7 @@ static int x86_sysreset_get_last(struct udevice *dev)
 	return SYSRESET_POWER;
 }
 
-#ifdef CONFIG_EFI_LOADER
+#if CONFIG_IS_ENABLED(EFI_LOADER)
 void __efi_runtime EFIAPI efi_reset_system(
 			enum efi_reset_type reset_type,
 			efi_status_t reset_status,

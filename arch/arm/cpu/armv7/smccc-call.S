@@ -7,7 +7,7 @@
 #include <asm/opcodes-sec.h>
 #include <asm/opcodes-virt.h>
 
-#ifdef CONFIG_EFI_LOADER
+#if CONFIG_IS_ENABLED(EFI_LOADER)
 	.section	.text.efi_runtime
 #endif
 

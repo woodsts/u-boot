@@ -84,7 +84,7 @@ int fsl_layerscape_wake_seconday_cores(void)
 	u32 cores, cpu_up_mask = 1;
 	int i, timeout = 10;
 	u64 *table;
-#ifdef CONFIG_EFI_LOADER
+#if CONFIG_IS_ENABLED(EFI_LOADER)
 	void *reloc_addr;
 #endif
 
@@ -95,7 +95,7 @@ int fsl_layerscape_wake_seconday_cores(void)
 			   (unsigned long)&__real_cntfrq + 8);
 #endif
 
-#ifdef CONFIG_EFI_LOADER
+#if CONFIG_IS_ENABLED(EFI_LOADER)
 	/*
 	 * EFI will reserve 64kb for its runtime services. This will probably
 	 * overlap with our spin table code, which is why we have to relocate

@@ -442,7 +442,7 @@ int rk_vop_probe(struct udevice *dev)
 		return ret;
 	}
 
-#if defined(CONFIG_EFI_LOADER)
+#if CONFIG_IS_ENABLED(EFI_LOADER)
 	debug("Adding to EFI map %d @ %lx\n", plat->size, plat->base);
 	efi_add_memory_map(plat->base, plat->size, EFI_RESERVED_MEMORY_TYPE);
 #endif

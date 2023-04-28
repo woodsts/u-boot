@@ -155,7 +155,7 @@ static unsigned	net_ip_id;
 /* Ethernet bcast address */
 const u8 net_bcast_ethaddr[6] = { 0xff, 0xff, 0xff, 0xff, 0xff, 0xff };
 const u8 net_null_ethaddr[6];
-#if defined(CONFIG_API) || defined(CONFIG_EFI_LOADER)
+#if defined(CONFIG_API) || CONFIG_IS_ENABLED(EFI_LOADER)
 void (*push_packet)(void *, int len) = 0;
 #endif
 /* Network loop state */
@@ -1181,7 +1181,7 @@ void net_process_received_packet(uchar *in_packet, int len)
 	if (len < ETHER_HDR_SIZE)
 		return;
 
-#if defined(CONFIG_API) || defined(CONFIG_EFI_LOADER)
+#if defined(CONFIG_API) || CONFIG_IS_ENABLED(EFI_LOADER)
 	if (push_packet) {
 		(*push_packet)(in_packet, len);
 		return;

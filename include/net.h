@@ -240,7 +240,7 @@ int eth_env_get_enetaddr_by_index(const char *base_name, int index,
 int eth_init(void);			/* Initialize the device */
 int eth_send(void *packet, int length);	   /* Send a packet */
 
-#if defined(CONFIG_API) || defined(CONFIG_EFI_LOADER)
+#if defined(CONFIG_API) || CONFIG_IS_ENABLED(EFI_LOADER)
 int eth_receive(void *packet, int length); /* Receive a packet*/
 extern void (*push_packet)(void *packet, int length);
 #endif

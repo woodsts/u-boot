@@ -251,7 +251,7 @@ static int smbios_write_type0(ulong *current, int handle,
 #ifdef CONFIG_GENERATE_ACPI_TABLE
 	t->bios_characteristics_ext1 = BIOS_CHARACTERISTICS_EXT1_ACPI;
 #endif
-#ifdef CONFIG_EFI_LOADER
+#if CONFIG_IS_ENABLED(EFI_LOADER)
 	t->bios_characteristics_ext2 |= BIOS_CHARACTERISTICS_EXT2_UEFI;
 #endif
 	t->bios_characteristics_ext2 |= BIOS_CHARACTERISTICS_EXT2_TARGET;

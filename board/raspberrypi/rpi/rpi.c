@@ -562,7 +562,7 @@ int ft_board_setup(void *blob, struct bd_info *bd)
 	if (node < 0)
 		fdt_simplefb_add_node(blob);
 
-#ifdef CONFIG_EFI_LOADER
+#if CONFIG_IS_ENABLED(EFI_LOADER)
 	/* Reserve the spin table */
 	efi_add_memory_map(0, CONFIG_RPI_EFI_NR_SPIN_PAGES << EFI_PAGE_SHIFT,
 			   EFI_RESERVED_MEMORY_TYPE);

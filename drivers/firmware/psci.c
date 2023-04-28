@@ -227,7 +227,7 @@ static void __maybe_unused do_psci_probe(void)
 	uclass_get_device_by_name(UCLASS_FIRMWARE, DRIVER_NAME, &dev);
 }
 
-#if IS_ENABLED(CONFIG_EFI_LOADER) && IS_ENABLED(CONFIG_PSCI_RESET)
+#if CONFIG_IS_ENABLED(EFI_LOADER) && IS_ENABLED(CONFIG_PSCI_RESET)
 efi_status_t efi_reset_system_init(void)
 {
 	do_psci_probe();
@@ -249,7 +249,7 @@ void __efi_runtime EFIAPI efi_reset_system(enum efi_reset_type reset_type,
 	while (1)
 		;
 }
-#endif /* IS_ENABLED(CONFIG_EFI_LOADER) && IS_ENABLED(CONFIG_PSCI_RESET) */
+#endif /* CONFIG_IS_ENABLED(EFI_LOADER) && IS_ENABLED(CONFIG_PSCI_RESET) */
 
 #ifdef CONFIG_PSCI_RESET
 void reset_misc(void)

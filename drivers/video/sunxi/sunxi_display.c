@@ -1217,7 +1217,7 @@ static int sunxi_de_probe(struct udevice *dev)
 	sunxi_display->fb_addr = plat->base;
 	sunxi_engines_init();
 
-#ifdef CONFIG_EFI_LOADER
+#if CONFIG_IS_ENABLED(EFI_LOADER)
 	efi_add_memory_map(sunxi_display->fb_addr, sunxi_display->fb_size,
 			   EFI_RESERVED_MEMORY_TYPE);
 #endif

@@ -197,7 +197,7 @@ void meson_vpu_rsv_fb(void *fdt)
 	if (!meson_fb.base || !meson_fb.xsize || !meson_fb.ysize)
 		return;
 
-#if defined(CONFIG_EFI_LOADER)
+#if CONFIG_IS_ENABLED(EFI_LOADER)
 	efi_add_memory_map(meson_fb.base, meson_fb.fb_size,
 			   EFI_RESERVED_MEMORY_TYPE);
 #endif

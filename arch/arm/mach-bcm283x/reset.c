@@ -56,7 +56,7 @@ void reset_cpu(void)
 	__reset_cpu(regs, 0);
 }
 
-#ifdef CONFIG_EFI_LOADER
+#if CONFIG_IS_ENABLED(EFI_LOADER)
 
 void __efi_runtime EFIAPI efi_reset_system(
 			enum efi_reset_type reset_type,
