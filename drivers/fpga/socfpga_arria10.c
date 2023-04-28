@@ -538,7 +538,7 @@ static void get_rbf_image_info(struct rbf_info *rbf, u16 *buffer)
 	}
 }
 
-#ifdef CONFIG_FS_LOADER
+#if CONFIG_IS_ENABLED(FS_LOADER)
 static int first_loading_rbf_to_buffer(struct udevice *dev,
 				struct fpga_loadfs_info *fpga_loadfs,
 				u32 *buffer, size_t *buffer_bsize,
