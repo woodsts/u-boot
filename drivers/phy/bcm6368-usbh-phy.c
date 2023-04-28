@@ -115,7 +115,7 @@ static int bcm6368_usbh_probe(struct udevice *dev)
 	struct bcm6368_usbh_priv *priv = dev_get_priv(dev);
 	const struct bcm6368_usbh_hw *hw =
 		(const struct bcm6368_usbh_hw *)dev_get_driver_data(dev);
-#if defined(CONFIG_POWER_DOMAIN)
+#if CONFIG_IS_ENABLED(POWER_DOMAIN)
 	struct power_domain pwr_dom;
 #endif
 	struct reset_ctl rst_ctl;
@@ -139,7 +139,7 @@ static int bcm6368_usbh_probe(struct udevice *dev)
 
 	clk_free(&clk);
 
-#if defined(CONFIG_POWER_DOMAIN)
+#if CONFIG_IS_ENABLED(POWER_DOMAIN)
 	/* enable power domain */
 	ret = power_domain_get(dev, &pwr_dom);
 	if (ret < 0)
