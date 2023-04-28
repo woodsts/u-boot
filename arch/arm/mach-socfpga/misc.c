@@ -144,7 +144,7 @@ int overwrite_console(void)
 }
 #endif
 
-#ifdef CONFIG_FPGA
+#if CONFIG_IS_ENABLED(FPGA)
 /* add device descriptor to FPGA device table */
 void socfpga_fpga_add(void *fpga_desc)
 {

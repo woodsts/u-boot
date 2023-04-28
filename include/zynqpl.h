@@ -53,7 +53,7 @@ extern struct xilinx_fpga_op zynq_op;
 #define XILINX_XC7Z045_NAME	"7z045"
 #define XILINX_XC7Z100_NAME	"7z100"
 
-#if defined(CONFIG_FPGA)
+#if CONFIG_IS_ENABLED(FPGA)
 #define ZYNQ_DESC(name) { \
 	.idcode = XILINX_ZYNQ_XC##name, \
 	.fpga_size = XILINX_XC##name##_SIZE, \

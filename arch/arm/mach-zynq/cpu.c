@@ -28,7 +28,7 @@ xilinx_desc fpga = {
 
 static const struct {
 	u8 idcode;
-#if defined(CONFIG_FPGA)
+#if CONFIG_IS_ENABLED(FPGA)
 	u32 fpga_size;
 #endif
 	char *devicename;
