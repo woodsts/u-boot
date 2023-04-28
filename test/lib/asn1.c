@@ -15,12 +15,12 @@
 #if CONFIG_IS_ENABLED(PKCS7_MESSAGE_PARSER)
 #include <crypto/pkcs7_parser.h>
 #else
-#ifdef CONFIG_X509_CERTIFICATE_PARSER
+#if CONFIG_IS_ENABLED(X509_CERTIFICATE_PARSER)
 #include <crypto/x509_parser.h>
 #endif
 #endif
 
-#ifdef CONFIG_X509_CERTIFICATE_PARSER
+#if CONFIG_IS_ENABLED(X509_CERTIFICATE_PARSER)
 static const unsigned char cert_data[] = {
 	0x30, 0x82, 0x03, 0xc7, 0x30, 0x82, 0x02, 0xaf, 0xa0, 0x03, 0x02, 0x01,
 	0x02, 0x02, 0x09, 0x00, 0xd7, 0x17, 0x0a, 0x76, 0xd5, 0xd3, 0x4d, 0xeb,
