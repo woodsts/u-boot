@@ -60,7 +60,7 @@ static inline void optee_suppl_rpmb_release(struct udevice *dev)
 }
 #endif
 
-#ifdef CONFIG_DM_I2C
+#if CONFIG_IS_ENABLED(DM_I2C)
 /**
  * optee_suppl_cmd_i2c_transfer() - route I2C requests to an I2C chip
  * @arg:	OP-TEE message (layout specified in optee_msg.h) defining the
