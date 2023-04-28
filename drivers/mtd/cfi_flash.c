@@ -176,7 +176,7 @@ __maybe_weak u64 flash_read64(void *addr)
 
 /*-----------------------------------------------------------------------
  */
-#if defined(CONFIG_ENV_IS_IN_FLASH) || defined(CONFIG_ENV_ADDR_REDUND) || \
+#if CONFIG_IS_ENABLED(ENV_IS_IN_FLASH) || defined(CONFIG_ENV_ADDR_REDUND) || \
 	(defined(CONFIG_SYS_MONITOR_BASE) && \
 	(CONFIG_SYS_MONITOR_BASE >= CFG_SYS_FLASH_BASE))
 static flash_info_t *flash_get_info(ulong base)
@@ -2368,7 +2368,7 @@ static void flash_protect_default(void)
 #endif
 
 	/* Environment protection ON by default */
-#ifdef CONFIG_ENV_IS_IN_FLASH
+#if CONFIG_IS_ENABLED(ENV_IS_IN_FLASH)
 	flash_protect(FLAG_PROTECT_SET,
 		      CONFIG_ENV_ADDR,
 		      CONFIG_ENV_ADDR + CONFIG_ENV_SECT_SIZE - 1,

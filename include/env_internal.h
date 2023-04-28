@@ -29,7 +29,7 @@
  *
  *************************************************************************/
 
-#if defined(CONFIG_ENV_IS_IN_FLASH)
+#if CONFIG_IS_ENABLED(ENV_IS_IN_FLASH)
 # if	defined(CONFIG_ENV_ADDR_REDUND) && \
 	((CONFIG_ENV_ADDR >= CONFIG_SYS_MONITOR_BASE) &&		\
 	(CONFIG_ENV_ADDR_REDUND + CONFIG_ENV_SIZE) <=		\

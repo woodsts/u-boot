@@ -21,7 +21,7 @@
 #include <config.h>
 #undef	__ASSEMBLY__
 
-#if defined(CONFIG_ENV_IS_IN_FLASH)
+#if CONFIG_IS_ENABLED(ENV_IS_IN_FLASH)
 # ifndef  CONFIG_ENV_ADDR
 #  define CONFIG_ENV_ADDR	(CFG_SYS_FLASH_BASE + CONFIG_ENV_OFFSET)
 # endif
