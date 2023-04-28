@@ -1319,7 +1319,7 @@
  */
 #define PMCCR1_POWER_OFF		0x00000020
 
-#ifndef CONFIG_RAM
+#if !CONFIG_IS_ENABLED(RAM)
 /*
  * DDRCDR - DDR Control Driver Register
  */
