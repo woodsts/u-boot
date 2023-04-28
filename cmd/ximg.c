@@ -44,7 +44,7 @@ do_imgextract(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 	ulong		count;
 	struct legacy_img_hdr	*hdr = NULL;
 #endif
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	const char	*uname = NULL;
 	const void*	fit_hdr;
 	int		noffset;
@@ -63,7 +63,7 @@ do_imgextract(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 	}
 	if (argc > 2) {
 		part = hextoul(argv[2], NULL);
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 		uname = argv[2];
 #endif
 	}
@@ -125,7 +125,7 @@ do_imgextract(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 		image_multi_getimg(hdr, part, &data, &len);
 		break;
 #endif
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	case IMAGE_FORMAT_FIT:
 		if (uname == NULL) {
 			puts("No FIT subimage unit name\n");
@@ -260,7 +260,7 @@ do_imgextract(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 static char imgextract_help_text[] =
 	"addr part [dest]\n"
 	"    - extract <part> from legacy image at <addr> and copy to <dest>"
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	"\n"
 	"addr uname [dest]\n"
 	"    - extract <uname> subimage from FIT image at <addr> and copy to <dest>"

@@ -35,7 +35,7 @@ static int do_source(struct cmd_tbl *cmdtp, int flag, int argc,
 	if (argc < 2) {
 		addr = CONFIG_SYS_LOAD_ADDR;
 		debug("*  source: default load address = 0x%08lx\n", addr);
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	} else if (fit_parse_subimage(argv[1], image_load_addr, &addr,
 				      &fit_uname)) {
 		debug("*  source: subimage '%s' from FIT image at 0x%08lx\n",
@@ -56,7 +56,7 @@ static int do_source(struct cmd_tbl *cmdtp, int flag, int argc,
 
 #ifdef CONFIG_SYS_LONGHELP
 static char source_help_text[] =
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	"[<addr>][:[<image>]|#[<config>]]\n"
 	"\t- Run script starting at addr\n"
 	"\t- A FIT config name or subimage name may be specified with : or #\n"

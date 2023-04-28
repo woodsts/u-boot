@@ -76,7 +76,7 @@ static int do_bootm_netbsd(int flag, int argc, char *const argv[],
 	if (flag != BOOTM_STATE_OS_GO)
 		return 0;
 
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	if (!images->legacy_hdr_valid) {
 		fit_unsupported_reset("NetBSD");
 		return 1;
@@ -145,7 +145,7 @@ static int do_bootm_rtems(int flag, int argc, char *const argv[],
 	if (flag != BOOTM_STATE_OS_GO)
 		return 0;
 
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	if (!images->legacy_hdr_valid) {
 		fit_unsupported_reset("RTEMS");
 		return 1;
@@ -178,7 +178,7 @@ static int do_bootm_ose(int flag, int argc, char *const argv[],
 	if (flag != BOOTM_STATE_OS_GO)
 		return 0;
 
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	if (!images->legacy_hdr_valid) {
 		fit_unsupported_reset("OSE");
 		return 1;
@@ -212,7 +212,7 @@ static int do_bootm_plan9(int flag, int argc, char *const argv[],
 	if (flag != BOOTM_STATE_OS_GO)
 		return 0;
 
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	if (!images->legacy_hdr_valid) {
 		fit_unsupported_reset("Plan 9");
 		return 1;
@@ -317,7 +317,7 @@ static int do_bootm_vxworks_legacy(int flag, int argc, char *const argv[],
 	if (flag != BOOTM_STATE_OS_GO)
 		return 0;
 
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	if (!images->legacy_hdr_valid) {
 		fit_unsupported_reset("VxWorks");
 		return 1;
@@ -375,7 +375,7 @@ static int do_bootm_qnxelf(int flag, int argc, char *const argv[],
 	if (flag != BOOTM_STATE_OS_GO)
 		return 0;
 
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	if (!images->legacy_hdr_valid) {
 		fit_unsupported_reset("QNX");
 		return 1;
@@ -411,7 +411,7 @@ static int do_bootm_integrity(int flag, int argc, char *const argv[],
 	if (flag != BOOTM_STATE_OS_GO)
 		return 0;
 
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	if (!images->legacy_hdr_valid) {
 		fit_unsupported_reset("INTEGRITY");
 		return 1;

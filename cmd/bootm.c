@@ -194,7 +194,7 @@ static char bootm_help_text[] =
 	"\tuse a '-' for the second argument. If you do not pass a third\n"
 	"\ta bd_info struct will be passed instead\n"
 #endif
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	"\t\nFor the new multi component uImage format (FIT) addresses\n"
 	"\tmust be extended to include component or configuration unit name:\n"
 	"\taddr:<subimg_uname> - direct component image specification\n"
@@ -319,7 +319,7 @@ static int image_info(ulong addr)
 		unmap_sysmem(hdr);
 		return 0;
 #endif
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	case IMAGE_FORMAT_FIT:
 		puts("   FIT image found\n");
 
@@ -398,7 +398,7 @@ static int do_imls_nor(void)
 				}
 				break;
 #endif
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 			case IMAGE_FORMAT_FIT:
 				if (fit_check_format(hdr, IMAGE_SIZE_INVAL))
 					goto next_sector;
@@ -538,7 +538,7 @@ static int do_imls_nand(void)
 				nand_imls_legacyimage(mtd, nand_dev, off, len);
 				break;
 #endif
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 			case IMAGE_FORMAT_FIT:
 				len = fit_get_size(buffer);
 				nand_imls_fitimage(mtd, nand_dev, off, len);

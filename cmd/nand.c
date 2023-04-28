@@ -982,7 +982,7 @@ static int nand_load_image(struct cmd_tbl *cmdtp, struct mtd_info *mtd,
 #if defined(CONFIG_LEGACY_IMAGE_FORMAT)
 	struct legacy_img_hdr *hdr;
 #endif
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	const void *fit_hdr = NULL;
 #endif
 
@@ -1017,7 +1017,7 @@ static int nand_load_image(struct cmd_tbl *cmdtp, struct mtd_info *mtd,
 		cnt = image_get_image_size (hdr);
 		break;
 #endif
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	case IMAGE_FORMAT_FIT:
 		fit_hdr = (const void *)addr;
 		puts ("Fit image detected...\n");
@@ -1041,7 +1041,7 @@ static int nand_load_image(struct cmd_tbl *cmdtp, struct mtd_info *mtd,
 	}
 	bootstage_mark(BOOTSTAGE_ID_NAND_READ);
 
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	/* This cannot be done earlier, we need complete FIT image in RAM first */
 	if (genimg_get_format ((void *)addr) == IMAGE_FORMAT_FIT) {
 		if (fit_check_format(fit_hdr, IMAGE_SIZE_INVAL)) {

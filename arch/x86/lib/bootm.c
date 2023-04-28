@@ -102,7 +102,7 @@ static int boot_prep_linux(struct bootm_headers *images)
 			len = image_get_data_size(hdr);
 		}
 		is_zimage = 1;
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	} else if (images->fit_uname_os && is_zimage) {
 		ret = fit_image_get_data(images->fit_hdr_os,
 				images->fit_noffset_os,

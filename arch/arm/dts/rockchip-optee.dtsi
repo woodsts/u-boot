@@ -5,7 +5,7 @@
 
 #include <config.h>
 
-#if defined(CONFIG_HAS_ROM) && defined(CONFIG_FIT)
+#if defined(CONFIG_HAS_ROM) && CONFIG_IS_ENABLED(FIT)
 &binman {
 	itb {
 		filename = "u-boot.itb";

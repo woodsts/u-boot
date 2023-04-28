@@ -1060,7 +1060,7 @@ int image_locate_script(void *buf, int size, const char *fit_uname,
 		}
 		break;
 	case IMAGE_FORMAT_FIT:
-		if (!IS_ENABLED(CONFIG_FIT)) {
+		if (!CONFIG_IS_ENABLED(FIT)) {
 			goto exit_image_format;
 		} else {
 			fit_hdr = buf;

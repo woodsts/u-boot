@@ -342,7 +342,7 @@ static struct splash_location *select_splash_location(
 	return NULL;
 }
 
-#ifdef CONFIG_FIT
+#if CONFIG_IS_ENABLED(FIT)
 static int splash_load_fit(struct splash_location *location, u32 bmp_load_addr)
 {
 	int res;
@@ -473,7 +473,7 @@ int splash_source_load(struct splash_location *locations, uint size)
 		return splash_load_raw(splash_location, bmp_load_addr);
 	else if (splash_location->flags == SPLASH_STORAGE_FS)
 		return splash_load_fs(splash_location, bmp_load_addr);
-#ifdef CONFIG_FIT
+#if CONFIG_IS_ENABLED(FIT)
 	else if (splash_location->flags == SPLASH_STORAGE_FIT)
 		return splash_load_fit(splash_location, bmp_load_addr);
 #endif

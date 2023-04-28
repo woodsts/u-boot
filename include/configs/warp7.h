@@ -20,7 +20,7 @@
 	"dfu_alt_info=boot raw 0x2 0x1000 mmcpart 1\0" \
 
 /* When booting with FIT specify the node entry containing boot.scr */
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 #define BOOT_SCR_STRING "source ${bootscriptaddr}:${bootscr_fitimage_name}\0"
 #else
 #define BOOT_SCR_STRING "source ${bootscriptaddr}\0"

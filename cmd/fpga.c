@@ -237,7 +237,7 @@ static int do_fpga_loadmk(struct cmd_tbl *cmdtp, int flag, int argc,
 {
 	size_t data_size = 0;
 	void *fpga_data = NULL;
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	const char *fit_uname = NULL;
 	ulong fit_addr;
 #endif
@@ -264,7 +264,7 @@ static int do_fpga_loadmk(struct cmd_tbl *cmdtp, int flag, int argc,
 		datastr = argv[0];
 	}
 
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	if (fit_parse_subimage(datastr, (ulong)fpga_data,
 			       &fit_addr, &fit_uname)) {
 		fpga_data = (void *)fit_addr;
@@ -318,7 +318,7 @@ static int do_fpga_loadmk(struct cmd_tbl *cmdtp, int flag, int argc,
 				  BIT_FULL, 0);
 	}
 #endif
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	case IMAGE_FORMAT_FIT:
 	{
 		const void *fit_hdr = (const void *)fpga_data;
@@ -433,7 +433,7 @@ U_BOOT_CMD(fpga, 6, 1, do_fpga_wrapper,
 #endif
 #if defined(CONFIG_CMD_FPGA_LOADMK)
 	   "  loadmk [dev] [address]\tLoad device generated with mkimage"
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 	   "\n"
 	   "\tFor loadmk operating on FIT format uImage address must include\n"
 	   "\tsubimage unit name in the form of addr:<subimg_uname>"

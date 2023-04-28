@@ -25,7 +25,7 @@
 		"rootfs part 0 1\0" \
 
 /* When booting with FIT specify the node entry containing boot.scr */
-#if defined(CONFIG_FIT)
+#if CONFIG_IS_ENABLED(FIT)
 #define PICO_BOOT_ENV \
 	BOOTENV								\
 	"fdtovaddr=0x83100000\0"					\

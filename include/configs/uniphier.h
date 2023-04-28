@@ -57,7 +57,7 @@
 	"third_image=u-boot.bin\0"
 #endif
 
-#ifdef CONFIG_FIT
+#if CONFIG_IS_ENABLED(FIT)
 #define KERNEL_ADDR_R_OFFSET		"0x05100000"
 #define LINUXBOOT_ENV_SETTINGS \
 	"tftpboot=tftpboot $kernel_addr_r $bootfile &&" \
