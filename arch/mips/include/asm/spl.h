@@ -26,7 +26,7 @@ enum {
 	BOOT_DEVICE_NONE
 };
 
-#ifndef CONFIG_DM
+#if !CONFIG_IS_ENABLED(DM)
 extern gd_t gdata;
 #endif
 

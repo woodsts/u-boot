@@ -13,7 +13,7 @@
 /* ------------------------------------------------------------------------- */
 
 /* legacy #defines for non DM bur-board */
-#ifndef CONFIG_DM
+#if !CONFIG_IS_ENABLED(DM)
 #define CFG_SYS_NS16550_CLK		(48000000)
 #define CFG_SYS_NS16550_COM1		0x44e09000
 

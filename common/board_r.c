@@ -229,7 +229,7 @@ static int initr_of_live(void)
 	return 0;
 }
 
-#ifdef CONFIG_DM
+#if CONFIG_IS_ENABLED(DM)
 static int initr_dm(void)
 {
 	int ret;
@@ -542,7 +542,7 @@ static int dm_announce(void)
 	int device_count;
 	int uclass_count;
 
-	if (IS_ENABLED(CONFIG_DM)) {
+	if (CONFIG_IS_ENABLED(DM)) {
 		dm_get_stats(&device_count, &uclass_count);
 		printf("Core:  %d devices, %d uclasses", device_count,
 		       uclass_count);
@@ -619,7 +619,7 @@ static init_fnc_t init_sequence_r[] = {
 	noncached_init,
 #endif
 	initr_of_live,
-#ifdef CONFIG_DM
+#if CONFIG_IS_ENABLED(DM)
 	initr_dm,
 #endif
 #ifdef CONFIG_ADDR_MAP

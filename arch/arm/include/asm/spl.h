@@ -37,7 +37,7 @@ enum {
 /* Linker symbols. */
 extern char __bss_start[], __bss_end[];
 
-#ifndef CONFIG_DM
+#if !CONFIG_IS_ENABLED(DM)
 extern gd_t gdata;
 #endif
 

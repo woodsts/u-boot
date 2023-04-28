@@ -266,7 +266,7 @@ int dp_plane_set_address(int module, int layer, unsigned int address);
 int dp_plane_wait_vsync(int module, int layer, int fps);
 
 #if defined CONFIG_SPL_BUILD ||	\
-	(!defined(CONFIG_DM) && !defined(CONFIG_OF_CONTROL))
+	(!CONFIG_IS_ENABLED(DM) && !defined(CONFIG_OF_CONTROL))
 int nx_display_probe(struct nx_display_plat *plat);
 #endif
 

@@ -119,7 +119,7 @@ static void mtd_show_device(struct mtd_info *mtd)
 {
 	/* Device */
 	printf("* %s\n", mtd->name);
-#if defined(CONFIG_DM)
+#if CONFIG_IS_ENABLED(DM)
 	if (mtd->dev) {
 		printf("  - device: %s\n", mtd->dev->name);
 		printf("  - parent: %s\n", mtd->dev->parent->name);

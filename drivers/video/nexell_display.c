@@ -24,7 +24,7 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
-#if !defined(CONFIG_DM) && !defined(CONFIG_OF_CONTROL)
+#if !CONFIG_IS_ENABLED(DM) && !defined(CONFIG_OF_CONTROL)
 static struct nx_display_dev *dp_dev;
 #endif
 

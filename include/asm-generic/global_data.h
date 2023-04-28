@@ -190,7 +190,7 @@ struct global_data {
 	 */
 	struct global_data *new_gd;
 
-#ifdef CONFIG_DM
+#if CONFIG_IS_ENABLED(DM)
 	/**
 	 * @dm_root: root instance for Driver Model
 	 */
