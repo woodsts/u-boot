@@ -18,7 +18,7 @@
 #include <errno.h>
 #include <asm/arch/pinmux.h>
 
-#ifdef CONFIG_DM_MMC
+#if CONFIG_IS_ENABLED(DM_MMC)
 struct s5p_sdhci_plat {
 	struct mmc_config cfg;
 	struct mmc mmc;
@@ -190,7 +190,7 @@ static int sdhci_get_config(const void *blob, int node, struct sdhci_host *host)
 	return 0;
 }
 
-#ifdef CONFIG_DM_MMC
+#if CONFIG_IS_ENABLED(DM_MMC)
 static int s5p_sdhci_probe(struct udevice *dev)
 {
 	struct s5p_sdhci_plat *plat = dev_get_plat(dev);

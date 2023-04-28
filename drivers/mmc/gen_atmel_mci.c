@@ -36,7 +36,7 @@
 # define MCI_BUS 0
 #endif
 
-#ifdef CONFIG_DM_MMC
+#if CONFIG_IS_ENABLED(DM_MMC)
 struct atmel_mci_plat {
 	struct mmc		mmc;
 	struct mmc_config	cfg;
@@ -45,13 +45,13 @@ struct atmel_mci_plat {
 #endif
 
 struct atmel_mci_priv {
-#ifndef CONFIG_DM_MMC
+#if !CONFIG_IS_ENABLED(DM_MMC)
 	struct mmc_config	cfg;
 	struct atmel_mci	*mci;
 #endif
 	unsigned int		initialized:1;
 	unsigned int		curr_clk;
-#ifdef CONFIG_DM_MMC
+#if CONFIG_IS_ENABLED(DM_MMC)
 	ulong		bus_clk_rate;
 #endif
 };
@@ -89,7 +89,7 @@ static inline void mci_set_blklen(atmel_mci_t *mci, int blklen)
 }
 
 /* Setup for MCI Clock and Block Size */
-#ifdef CONFIG_DM_MMC
+#if CONFIG_IS_ENABLED(DM_MMC)
 static void mci_set_mode(struct udevice *dev, u32 hz, u32 blklen)
 {
 	struct atmel_mci_plat *plat = dev_get_plat(dev);
@@ -239,7 +239,7 @@ io_fail:
  * Sends a command out on the bus and deals with the block data.
  * Takes the mmc pointer, a command pointer, and an optional data pointer.
  */
-#ifdef CONFIG_DM_MMC
+#if CONFIG_IS_ENABLED(DM_MMC)
 static int atmel_mci_send_cmd(struct udevice *dev, struct mmc_cmd *cmd,
 			      struct mmc_data *data)
 {
@@ -371,7 +371,7 @@ mci_send_cmd(struct mmc *mmc, struct mmc_cmd *cmd, struct mmc_data *data)
 	return 0;
 }
 
-#ifdef CONFIG_DM_MMC
+#if CONFIG_IS_ENABLED(DM_MMC)
 static int atmel_mci_set_ios(struct udevice *dev)
 {
 	struct atmel_mci_plat *plat = dev_get_plat(dev);
@@ -389,7 +389,7 @@ static int mci_set_ios(struct mmc *mmc)
 	int busw;
 
 	/* Set the clock speed */
-#ifdef CONFIG_DM_MMC
+#if CONFIG_IS_ENABLED(DM_MMC)
 	mci_set_mode(dev, mmc->clock, MMC_DEFAULT_BLKLEN);
 #else
 	mci_set_mode(mmc, mmc->clock, MMC_DEFAULT_BLKLEN);
@@ -422,7 +422,7 @@ static int mci_set_ios(struct mmc *mmc)
 	return 0;
 }
 
-#ifdef CONFIG_DM_MMC
+#if CONFIG_IS_ENABLED(DM_MMC)
 static int atmel_mci_hw_init(struct udevice *dev)
 {
 	struct atmel_mci_plat *plat = dev_get_plat(dev);
@@ -447,7 +447,7 @@ static int mci_init(struct mmc *mmc)
 	writel(~0UL, &mci->idr);
 
 	/* Set default clocks and blocklen */
-#ifdef CONFIG_DM_MMC
+#if CONFIG_IS_ENABLED(DM_MMC)
 	mci_set_mode(dev, CFG_SYS_MMC_CLK_OD, MMC_DEFAULT_BLKLEN);
 #else
 	mci_set_mode(mmc, CFG_SYS_MMC_CLK_OD, MMC_DEFAULT_BLKLEN);
@@ -456,7 +456,7 @@ static int mci_init(struct mmc *mmc)
 	return 0;
 }
 
-#ifndef CONFIG_DM_MMC
+#if !CONFIG_IS_ENABLED(DM_MMC)
 static const struct mmc_ops atmel_mci_ops = {
 	.send_cmd	= mci_send_cmd,
 	.set_ios	= mci_set_ios,
@@ -518,7 +518,7 @@ int atmel_mci_init(void *regs)
 }
 #endif
 
-#ifdef CONFIG_DM_MMC
+#if CONFIG_IS_ENABLED(DM_MMC)
 static const struct dm_mmc_ops atmel_mci_mmc_ops = {
 	.send_cmd = atmel_mci_send_cmd,
 	.set_ios = atmel_mci_set_ios,

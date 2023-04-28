@@ -696,7 +696,7 @@ static int sh_sdhi_initialize_common(struct sh_sdhi_host *host)
 	return ret;
 }
 
-#ifndef CONFIG_DM_MMC
+#if !CONFIG_IS_ENABLED(DM_MMC)
 static void *mmc_priv(struct mmc *mmc)
 {
 	return (void *)mmc->priv;

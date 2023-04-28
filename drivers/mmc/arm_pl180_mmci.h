@@ -191,7 +191,7 @@ struct pl180_mmc_host {
 	unsigned int pwr_init;
 	int version2;
 	struct mmc_config cfg;
-#ifdef CONFIG_DM_MMC
+#if CONFIG_IS_ENABLED(DM_MMC)
 	struct gpio_desc cd_gpio;
 #endif
 };

@@ -23,7 +23,7 @@
 #define	DWMMC_MMC0_SDR_TIMING_VAL	0x03030001
 #define	DWMMC_MMC2_SDR_TIMING_VAL	0x03020001
 
-#ifdef CONFIG_DM_MMC
+#if CONFIG_IS_ENABLED(DM_MMC)
 #include <dm.h>
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -35,7 +35,7 @@ struct exynos_mmc_plat {
 
 /* Exynos implmentation specific drver private data */
 struct dwmci_exynos_priv_data {
-#ifdef CONFIG_DM_MMC
+#if CONFIG_IS_ENABLED(DM_MMC)
 	struct dwmci_host host;
 #endif
 	u32 sdr_timing;
@@ -47,7 +47,7 @@ struct dwmci_exynos_priv_data {
  */
 static int exynos_dwmci_clksel(struct dwmci_host *host)
 {
-#ifdef CONFIG_DM_MMC
+#if CONFIG_IS_ENABLED(DM_MMC)
 	struct dwmci_exynos_priv_data *priv =
 		container_of(host, struct dwmci_exynos_priv_data, host);
 #else
@@ -125,7 +125,7 @@ static int exynos_dwmci_core_init(struct dwmci_host *host)
 	host->clksel = exynos_dwmci_clksel;
 	host->get_mmc_clk = exynos_dwmci_get_clk;
 
-#ifndef CONFIG_DM_MMC
+#if !CONFIG_IS_ENABLED(DM_MMC)
 	/* Add the mmc channel to be registered with mmc core */
 	if (add_dwmci(host, DWMMC_MAX_FREQ, DWMMC_MIN_FREQ)) {
 		printf("DWMMC%d registration failed\n", host->dev_index);
@@ -207,7 +207,7 @@ static int exynos_dwmci_get_config(const void *blob, int node,
 	return 0;
 }
 
-#ifdef CONFIG_DM_MMC
+#if CONFIG_IS_ENABLED(DM_MMC)
 static int exynos_dwmmc_probe(struct udevice *dev)
 {
 	struct exynos_mmc_plat *plat = dev_get_plat(dev);

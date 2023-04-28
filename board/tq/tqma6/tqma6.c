@@ -62,7 +62,7 @@ int dram_init(void)
 
 static const uint16_t tqma6_emmc_dsr = 0x0100;
 
-#ifndef CONFIG_DM_MMC
+#if !CONFIG_IS_ENABLED(DM_MMC)
 /* eMMC on USDHCI3 always present */
 static iomux_v3_cfg_t const tqma6_usdhc3_pads[] = {
 	NEW_PAD_CTRL(MX6_PAD_SD3_CLK__SD3_CLK,		USDHC_PAD_CTRL),

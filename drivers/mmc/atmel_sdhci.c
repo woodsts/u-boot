@@ -15,7 +15,7 @@
 #define ATMEL_SDHC_MIN_FREQ	400000
 #define ATMEL_SDHC_GCK_RATE	240000000
 
-#ifndef CONFIG_DM_MMC
+#if !CONFIG_IS_ENABLED(DM_MMC)
 int atmel_sdhci_init(void *regbase, u32 id)
 {
 	struct sdhci_host *host;

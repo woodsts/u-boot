@@ -25,7 +25,7 @@
 #define set_bit(addr, val)	set_val((addr), (get_val(addr) | (val)))
 #define clear_bit(addr, val)	set_val((addr), (get_val(addr) & ~(val)))
 
-#ifdef CONFIG_DM_MMC
+#if CONFIG_IS_ENABLED(DM_MMC)
 /* Davinci MMC board definitions */
 struct davinci_mmc_priv {
 	struct davinci_mmc_regs *reg_base;	/* Register base address */

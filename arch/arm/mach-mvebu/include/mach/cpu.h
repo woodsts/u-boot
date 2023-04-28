@@ -154,7 +154,7 @@ u32 mvebu_get_nand_clock(void);
 
 void __noreturn return_to_bootrom(void);
 
-#ifndef CONFIG_DM_MMC
+#if !CONFIG_IS_ENABLED(DM_MMC)
 int mv_sdh_init(unsigned long regbase, u32 max_clk, u32 min_clk, u32 quirks);
 #endif
 

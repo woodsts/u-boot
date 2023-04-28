@@ -570,7 +570,7 @@ static int sh_mmcif_initialize_common(struct sh_mmcif_host *host)
 	return 0;
 }
 
-#ifndef CONFIG_DM_MMC
+#if !CONFIG_IS_ENABLED(DM_MMC)
 static void *mmc_priv(struct mmc *mmc)
 {
 	return (void *)mmc->priv;

@@ -25,7 +25,7 @@
 #include "arm_pl180_mmci.h"
 #include <linux/delay.h>
 
-#ifdef CONFIG_DM_MMC
+#if CONFIG_IS_ENABLED(DM_MMC)
 #include <dm.h>
 #define MMC_CLOCK_MAX	48000000
 #define MMC_CLOCK_MIN	400000
@@ -358,7 +358,7 @@ static int  host_set_ios(struct mmc *dev)
 	return 0;
 }
 
-#ifndef CONFIG_DM_MMC
+#if !CONFIG_IS_ENABLED(DM_MMC)
 /* MMC uses open drain drivers in the enumeration phase */
 static int mmc_host_reset(struct mmc *dev)
 {
@@ -416,7 +416,7 @@ int arm_pl180_mmci_init(struct pl180_mmc_host *host, struct mmc **mmc)
 }
 #endif
 
-#ifdef CONFIG_DM_MMC
+#if CONFIG_IS_ENABLED(DM_MMC)
 static void arm_pl180_mmc_init(struct pl180_mmc_host *host)
 {
 	u32 sdi_u32;
