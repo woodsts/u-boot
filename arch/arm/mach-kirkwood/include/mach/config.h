@@ -50,7 +50,7 @@
 #endif /* CONFIG_IDE */
 
 /* Use common timer */
-#ifndef CONFIG_TIMER
+#if !CONFIG_IS_ENABLED(TIMER)
 #define CFG_SYS_TIMER_COUNTER	(MVEBU_TIMER_BASE + 0x14)
 #define CFG_SYS_TIMER_RATE		CFG_SYS_TCLK
 #endif

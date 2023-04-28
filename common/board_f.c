@@ -1031,7 +1031,7 @@ void board_init_f_r(void)
 	 * Do the same with log drivers since the memory may not be available.
 	 */
 	gd->flags &= ~(GD_FLG_SERIAL_READY | GD_FLG_LOG_READY);
-#ifdef CONFIG_TIMER
+#if CONFIG_IS_ENABLED(TIMER)
 	gd->timer = NULL;
 #endif
 

@@ -239,7 +239,7 @@ static int initr_dm(void)
 	/* Save the pre-reloc driver model and start a new one */
 	gd->dm_root_f = gd->dm_root;
 	gd->dm_root = NULL;
-#ifdef CONFIG_TIMER
+#if CONFIG_IS_ENABLED(TIMER)
 	gd->timer = NULL;
 #endif
 	bootstage_start(BOOTSTAGE_ID_ACCUM_DM_R, "dm_r");

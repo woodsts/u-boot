@@ -232,7 +232,7 @@ struct global_data {
 	void *dm_priv_base;
 # endif
 #endif
-#ifdef CONFIG_TIMER
+#if CONFIG_IS_ENABLED(TIMER)
 	/**
 	 * @timer: timer instance for Driver Model
 	 */

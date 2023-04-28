@@ -83,7 +83,7 @@ U_BOOT_DRVINFO(gpio_sandbox) = {
 };
 #endif
 
-#ifndef CONFIG_TIMER
+#if !CONFIG_IS_ENABLED(TIMER)
 /* system timer offset in ms */
 static unsigned long sandbox_timer_offset;
 

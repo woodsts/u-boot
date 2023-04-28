@@ -158,7 +158,7 @@ int do_reset(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 /*
  * Get timebase clock frequency (like cpu_clk in Hz)
  */
-#ifndef CONFIG_TIMER
+#if !CONFIG_IS_ENABLED(TIMER)
 unsigned long get_tbclk(void)
 {
 	return (gd->bus_clk + 3L) / 4L;
