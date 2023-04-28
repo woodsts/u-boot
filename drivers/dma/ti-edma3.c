@@ -508,7 +508,7 @@ void __edma3_fill(unsigned long edma3_base_addr, unsigned int edma_slot_num,
 	dma_unmap_single(source, len, DMA_FROM_DEVICE);
 }
 
-#ifndef CONFIG_DMA
+#if !CONFIG_IS_ENABLED(DMA)
 
 void edma3_transfer(unsigned long edma3_base_addr, unsigned int edma_slot_num,
 		    void *dst, void *src, size_t len)

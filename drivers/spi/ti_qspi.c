@@ -261,7 +261,7 @@ static int ti_qspi_xfer(struct udevice *dev, unsigned int bitlen,
 /* TODO: control from sf layer to here through dm-spi */
 static void ti_qspi_copy_mmap(void *data, void *offset, size_t len)
 {
-#if defined(CONFIG_TI_EDMA3) && !defined(CONFIG_DMA)
+#if defined(CONFIG_TI_EDMA3) && !CONFIG_IS_ENABLED(DMA)
 	unsigned int			addr = (unsigned int) (data);
 	unsigned int			edma_slot_num = 1;
 

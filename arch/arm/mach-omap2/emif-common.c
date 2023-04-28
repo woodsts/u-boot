@@ -339,7 +339,7 @@ static void dra7_ddr3_leveling(u32 base, const struct emif_regs *regs)
 
 static void dra7_reset_ddr_data(u32 base, u32 size)
 {
-#if defined(CONFIG_TI_EDMA3) && !defined(CONFIG_DMA)
+#if defined(CONFIG_TI_EDMA3) && !CONFIG_IS_ENABLED(DMA)
 	enable_edma3_clocks();
 
 	edma3_fill(EDMA3_BASE, 1, (void *)base, 0, size);
