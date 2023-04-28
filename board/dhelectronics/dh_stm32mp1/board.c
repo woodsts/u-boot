@@ -369,7 +369,7 @@ int g_dnl_bind_fixup(struct usb_device_descriptor *dev, const char *name)
 
 #endif /* CONFIG_USB_GADGET */
 
-#ifdef CONFIG_LED
+#if CONFIG_IS_ENABLED(LED)
 static int get_led(struct udevice **dev, char *led_string)
 {
 	const char *led_name;
@@ -406,7 +406,7 @@ static int setup_led(enum led_state_t cmd)
 
 static void __maybe_unused led_error_blink(u32 nb_blink)
 {
-#ifdef CONFIG_LED
+#if CONFIG_IS_ENABLED(LED)
 	int ret;
 	struct udevice *led;
 	u32 i;
@@ -415,7 +415,7 @@ static void __maybe_unused led_error_blink(u32 nb_blink)
 	if (!nb_blink)
 		return;
 
-#ifdef CONFIG_LED
+#if CONFIG_IS_ENABLED(LED)
 	ret = get_led(&led, "u-boot,error-led");
 	if (!ret) {
 		/* make u-boot,error-led blinking */
@@ -672,7 +672,7 @@ int board_late_init(void)
 
 void board_quiesce_devices(void)
 {
-#ifdef CONFIG_LED
+#if CONFIG_IS_ENABLED(LED)
 	setup_led(LEDST_OFF);
 #endif
 }
