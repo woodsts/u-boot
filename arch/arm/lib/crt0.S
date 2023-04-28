@@ -68,7 +68,7 @@
 .macro CLEAR_BSS
 	ldr	r0, =__bss_start	/* this is auto-relocated! */
 
-#ifdef CONFIG_USE_ARCH_MEMSET
+#if CONFIG_IS_ENABLED(USE_ARCH_MEMSET)
 	ldr	r3, =__bss_end		/* this is auto-relocated! */
 	mov	r1, #0x00000000		/* prepare zero to clear BSS */
 
