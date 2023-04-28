@@ -178,7 +178,7 @@ int bootdev_find_in_blk(struct udevice *dev, struct udevice *blk,
 			return log_msg_ret("fs", ret);
 
 		/* Use an #ifdef due to info.sys_ind */
-#ifdef CONFIG_DOS_PARTITION
+#if CONFIG_IS_ENABLED(DOS_PARTITION)
 		log_debug("%s: Found partition %x type %x fstype %d\n",
 			  blk->name, bflow->part, info.sys_ind,
 			  ret ? -1 : fs_get_type());

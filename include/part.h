@@ -75,7 +75,7 @@ struct disk_partition {
 #ifdef CONFIG_PARTITION_TYPE_GUID
 	char	type_guid[UUID_STR_LEN + 1];	/* type GUID as string, if exists	*/
 #endif
-#ifdef CONFIG_DOS_PARTITION
+#if CONFIG_IS_ENABLED(DOS_PARTITION)
 	uchar	sys_ind;	/* partition type			*/
 #endif
 };
