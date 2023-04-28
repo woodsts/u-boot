@@ -95,7 +95,7 @@ int board_early_init_f(void)
 }
 #endif
 
-#if defined(CONFIG_MULTI_DTB_FIT)
+#if CONFIG_IS_ENABLED(MULTI_DTB_FIT)
 int board_fit_config_name_match(const char *name)
 {
 	if (!strcmp(name, "keystone-k2l-evm"))

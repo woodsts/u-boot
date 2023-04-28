@@ -83,7 +83,7 @@ void reset_cpu(void)
 #endif
 }
 
-#ifdef CONFIG_MULTI_DTB_FIT
+#if CONFIG_IS_ENABLED(MULTI_DTB_FIT)
 int board_fit_config_name_match(const char *name)
 {
 	/* PRR driver is not available yet */

@@ -238,7 +238,7 @@ int board_mmc_init(struct bd_info *bis)
 }
 #endif
 
-#if defined(CONFIG_MULTI_DTB_FIT)
+#if CONFIG_IS_ENABLED(MULTI_DTB_FIT)
 int board_fit_config_name_match(const char *name)
 {
 	bool eeprom_read = board_ti_was_eeprom_read();

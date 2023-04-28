@@ -59,7 +59,7 @@ static void do_board_detect(void)
 	mscc_phy_wr(1, 16, 31, 0x0);
 }
 
-#if defined(CONFIG_MULTI_DTB_FIT)
+#if CONFIG_IS_ENABLED(MULTI_DTB_FIT)
 int board_fit_config_name_match(const char *name)
 {
 	if (gd->board_type == BOARD_TYPE_PCB106 &&

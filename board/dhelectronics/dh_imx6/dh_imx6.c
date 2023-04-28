@@ -205,7 +205,7 @@ int checkboard(void)
 	return 0;
 }
 
-#ifdef CONFIG_MULTI_DTB_FIT
+#if CONFIG_IS_ENABLED(MULTI_DTB_FIT)
 static int strcmp_prefix(const char *s1, const char *s2)
 {
 	size_t n;

@@ -91,7 +91,7 @@ struct pll_init_data *get_pll_init_data(int pll)
 	return data;
 }
 
-#if defined(CONFIG_MULTI_DTB_FIT)
+#if CONFIG_IS_ENABLED(MULTI_DTB_FIT)
 int board_fit_config_name_match(const char *name)
 {
 	if (!strcmp(name, "keystone-k2e-evm"))

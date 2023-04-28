@@ -16,7 +16,7 @@ void reset_phy(void)
 }
 #endif /* CONFIG_RESET_PHY_R */
 
-#if defined(CONFIG_MULTI_DTB_FIT)
+#if CONFIG_IS_ENABLED(MULTI_DTB_FIT)
 
 /* Structure to hold SERDES protocols supported (network interfaces are
  * described in the DTS).

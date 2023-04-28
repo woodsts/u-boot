@@ -78,7 +78,7 @@ void reset_cpu(void)
 		writel(RST_CA57_CODE, RST_CA57RESCNT);
 }
 
-#if defined(CONFIG_MULTI_DTB_FIT)
+#if CONFIG_IS_ENABLED(MULTI_DTB_FIT)
 /* If the firmware passed a device tree, use it for board identification. */
 extern u64 rcar_atf_boot_args[];
 

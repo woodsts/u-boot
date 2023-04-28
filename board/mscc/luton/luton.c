@@ -54,7 +54,7 @@ static void do_board_detect(void)
 		gd->board_type = BOARD_TYPE_PCB090;    // Lu26
 }
 
-#if defined(CONFIG_MULTI_DTB_FIT)
+#if CONFIG_IS_ENABLED(MULTI_DTB_FIT)
 int board_fit_config_name_match(const char *name)
 {
 	if (gd->board_type == BOARD_TYPE_PCB090 &&
