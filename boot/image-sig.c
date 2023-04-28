@@ -40,7 +40,7 @@ struct checksum_algo checksum_algos[] = {
 		.calculate = hash_calculate,
 	},
 #endif
-#ifdef CONFIG_SHA512
+#if CONFIG_IS_ENABLED(SHA512)
 	{
 		.name = "sha512",
 		.checksum_len = SHA512_SUM_LEN,
