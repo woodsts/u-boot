@@ -24,3 +24,7 @@ which are specific to creating a new board port.
 
   Kconfig fragments should reside in the board directory itself rather than in
   the top-level `configs/` directory.
+
+* A board may list device tree overlay files in `arch/$(ARCH)/dts/Makfile` but
+  all device trees themselves should be listed in `CONFIG_DEFAULT_DEVICE_TREE`
+  or `CONFIG_OF_LIST`.
