@@ -253,7 +253,7 @@ config MACH_SUN4I
 	select SUNXI_GEN_SUN4I
 	select SUPPORT_SPL
 	imply SPL_SYS_I2C_LEGACY
-	imply SYS_I2C_LEGACY
+	imply DM_I2C
 
 config MACH_SUN5I
 	bool "sun5i (Allwinner A13)"
@@ -262,7 +262,7 @@ config MACH_SUN5I
 	select SUNXI_GEN_SUN4I
 	select SUPPORT_SPL
 	imply SPL_SYS_I2C_LEGACY
-	imply SYS_I2C_LEGACY
+	imply DM_I2C
 
 config MACH_SUN6I
 	bool "sun6i (Allwinner A31)"
@@ -291,7 +291,7 @@ config MACH_SUN7I
 	select SUPPORT_SPL
 	select ARMV7_BOOT_SEC_DEFAULT if OLD_SUNXI_KERNEL_COMPAT
 	imply SPL_SYS_I2C_LEGACY
-	imply SYS_I2C_LEGACY
+	imply DM_I2C
 
 config MACH_SUN8I_A23
 	bool "sun8i (Allwinner A23)"

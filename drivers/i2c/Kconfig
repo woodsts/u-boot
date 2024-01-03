@@ -10,7 +10,7 @@ menuconfig I2C
 	  This is a stand-in for an option to enable I2C support. In fact this
 	  simply enables building of the I2C directory for U-Boot. The actual
 	  I2C feature is enabled by DM_I2C (for driver model) and
-	  the #define CONFIG_SYS_I2C_LEGACY (for the legacy I2C stack).
+	  SPL_SYS_I2C_LEGACY (for the legacy I2C stack in SPL).
 
 	  So at present there is no need to ever disable this option.
 
@@ -67,14 +67,6 @@ config VPL_DM_I2C
 	  which provide methods for bus setting and data transfer. Each chip
 	  device (bus child) info is kept as parent platdata. The interface
 	  is defined in include/i2c.h.
-
-config SYS_I2C_LEGACY
-	bool "Enable legacy I2C subsystem and drivers"
-	depends on !DM_I2C
-	help
-	  Enable the legacy I2C subsystem and drivers.  While this is
-	  deprecated in U-Boot itself, this can be useful in some situations
-	  in SPL or TPL.
 
 config SPL_SYS_I2C_LEGACY
 	bool "Enable legacy I2C subsystem and drivers in SPL"
@@ -178,7 +170,7 @@ config SYS_I2C_FSL
 	  Add support for Freescale I2C busses as used on MPC8240, MPC8245, and
 	  MPC85xx processors.
 
-if SYS_I2C_FSL && (SYS_I2C_LEGACY || SPL_SYS_I2C_LEGACY)
+if SYS_I2C_FSL && SPL_SYS_I2C_LEGACY
 config SYS_FSL_I2C_OFFSET
 	hex "Offset from the IMMR of the address of the first I2C controller"
 
@@ -312,7 +304,7 @@ config SYS_I2C_MXC
 	  channels and operating on standard mode up to 100 kbits/s and fast
 	  mode up to 400 kbits/s.
 
-if SYS_I2C_MXC && (SYS_I2C_LEGACY || SPL_SYS_I2C_LEGACY)
+if SYS_I2C_MXC && SPL_SYS_I2C_LEGACY
 config SYS_I2C_MXC_I2C1
 	bool "NXP MXC I2C1"
 	help
@@ -542,54 +534,6 @@ config SPL_SYS_I2C_SANDBOX
 	  bus. Devices can be attached to the bus using the device tree
 	  which specifies the driver to use.  See sandbox.dts as an example.
 
-config SYS_I2C_SH
-	bool "Legacy SuperH I2C interface"
-	depends on ARCH_RMOBILE && SYS_I2C_LEGACY
-	help
-	  Enable the legacy SuperH I2C interface.
-
-if SYS_I2C_SH
-config SYS_I2C_SH_NUM_CONTROLLERS
-	int
-	default 5
-
-config SYS_I2C_SH_BASE0
-	hex
-	default 0xE6820000
-
-config SYS_I2C_SH_BASE1
-	hex
-	default 0xE6822000
-
-config SYS_I2C_SH_BASE2
-	hex
-	default 0xE6824000
-
-config SYS_I2C_SH_BASE3
-	hex
-	default 0xE6826000
-
-config SYS_I2C_SH_BASE4
-	hex
-	default 0xE6828000
-
-config SH_I2C_8BIT
-	bool
-	default y
-
-config SH_I2C_DATA_HIGH
-	int
-	default 4
-
-config SH_I2C_DATA_LOW
-	int
-	default 5
-
-config SH_I2C_CLOCK
-	int
-	default 104000000
-endif
-
 config SYS_I2C_SOFT
 	bool "Legacy software I2C interface"
 	help
@@ -733,7 +677,7 @@ config TEGRA186_BPMP_I2C
 
 config SYS_I2C_SLAVE
 	hex "I2C Slave address channel (all buses)"
-	depends on SYS_I2C_LEGACY || SPL_SYS_I2C_LEGACY || TPL_SYS_I2C_LEGACY
+	depends on SPL_SYS_I2C_LEGACY || TPL_SYS_I2C_LEGACY
 	default 0xfe
 	help
 	  I2C Slave address channel 0 for all buses in the legacy drivers.
@@ -745,7 +689,7 @@ config SYS_I2C_SLAVE
 
 config SYS_I2C_SPEED
 	int "I2C Slave channel 0 speed (all buses)"
-	depends on SYS_I2C_LEGACY || SPL_SYS_I2C_LEGACY || TPL_SYS_I2C_LEGACY
+	depends on SPL_SYS_I2C_LEGACY || TPL_SYS_I2C_LEGACY
 	default 100000
 	help
 	  I2C Slave speed channel 0 for all buses in the legacy drivers.

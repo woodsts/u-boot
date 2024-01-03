@@ -32,7 +32,7 @@ config DDR_SPD
 
 config SYS_SPD_BUS_NUM
 	int "I2C bus number for DDR SPD"
-	depends on DDR_SPD || SYS_I2C_LEGACY || SPL_SYS_I2C_LEGACY
+	depends on DDR_SPD || SPL_SYS_I2C_LEGACY
 	default 0
 
 source "drivers/ddr/altera/Kconfig"
