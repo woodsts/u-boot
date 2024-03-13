@@ -67,12 +67,14 @@ static char *delete_char (char *buffer, char *p, int *colp, int *np, int plen)
 #define CTL_BACKSPACE		('\b')
 #define DEL			((char)255)
 #define DEL7			((char)127)
-#define CREAD_HIST_CHAR		('!')
 
 #define getcmd_putch(ch)	putc(ch)
 #define getcmd_getch()		getchar()
 #define getcmd_cbeep()		getcmd_putch('\a')
 
+#ifdef CONFIG_CMD_HISTORY
+
+#define CREAD_HIST_CHAR		('!')
 #ifdef CONFIG_SPL_BUILD
 #define HIST_MAX		3
 #define HIST_SIZE		32
@@ -86,34 +88,35 @@ static int hist_add_idx;
 static int hist_cur = -1;
 static unsigned hist_num;
 
+#ifndef CONFIG_CMD_HISTORY_USE_CALLOC
+static char hist_data[HIST_MAX][HIST_SIZE + 1];
+#endif
 static char *hist_list[HIST_MAX];
 
 #define add_idx_minus_one() ((hist_add_idx == 0) ? hist_max : hist_add_idx-1)
 
-static void getcmd_putchars(int count, int ch)
-{
-	int i;
-
-	for (i = 0; i < count; i++)
-		getcmd_putch(ch);
-}
-
 static int hist_init(void)
 {
-	unsigned char *hist;
 	int i;
+
+#ifndef CONFIG_CMD_HISTORY_USE_CALLOC
+	for (i = 0; i < HIST_MAX; i++) {
+		hist_list[i] = hist_data[i];
+		hist_list[i][0] = '\0';
+	}
+#else
+	unsigned char *hist = calloc(HIST_MAX, HIST_SIZE + 1);
+	if (!hist)
+		panic("%s: calloc: out of memory!\n", __func__);
+
+	for (i = 0; i < HIST_MAX; i++)
+		hist_list[i] = hist + (i * (HIST_SIZE + 1));
+#endif
 
 	hist_max = 0;
 	hist_add_idx = 0;
 	hist_cur = -1;
 	hist_num = 0;
-
-	hist = calloc(HIST_MAX, HIST_SIZE + 1);
-	if (!hist)
-		return -ENOMEM;
-
-	for (i = 0; i < HIST_MAX; i++)
-		hist_list[i] = hist + (i * (HIST_SIZE + 1));
 
 	return 0;
 }
@@ -191,6 +194,15 @@ void cread_print_hist_list(void)
 		n++;
 		i++;
 	}
+}
+#endif /* CONFIG_CMD_HISTORY */
+
+static void getcmd_putchars(int count, int ch)
+{
+	int i;
+
+	for (i = 0; i < count; i++)
+		getcmd_putch(ch);
 }
 
 #define BEGINNING_OF_LINE() {			\
@@ -365,6 +377,7 @@ int cread_line_process_ch(struct cli_line_state *cls, char ichar)
 			cls->eol_num--;
 		}
 		break;
+#ifdef CONFIG_CMD_HISTORY
 	case CTL_CH('p'):
 	case CTL_CH('n'):
 		if (cls->history) {
@@ -394,6 +407,7 @@ int cread_line_process_ch(struct cli_line_state *cls, char ichar)
 			break;
 		}
 		break;
+#endif
 	case '\t':
 		if (IS_ENABLED(CONFIG_AUTO_COMPLETE) && cls->cmd_complete) {
 			int num2, col;
@@ -490,19 +504,23 @@ static int cread_line(const char *const prompt, char *buf, unsigned int *len,
 	}
 	*len = cls->eol_num;
 
+#ifdef CONFIG_CMD_HISTORY
 	if (buf[0] && buf[0] != CREAD_HIST_CHAR)
 		cread_add_to_hist(buf);
 	hist_cur = hist_add_idx;
+#endif
 
 	return 0;
 }
 
 #else /* !CONFIG_CMDLINE_EDITING */
 
+#ifdef CONFIG_CMD_HISTORY
 static inline int hist_init(void)
 {
 	return 0;
 }
+#endif
 
 static int cread_line(const char *const prompt, char *buf, unsigned int *len,
 		      int timeout)
@@ -640,20 +658,29 @@ int cli_readline_into_buffer(const char *const prompt, char *buffer,
 	char *p = buffer;
 	uint len = CONFIG_SYS_CBSIZE;
 	int rc;
-	static int initted;
+#ifdef CONFIG_CMD_HISTORY
+	static int hist_initted;
+#endif
 
 	/*
-	 * History uses a global array which is not
-	 * writable until after relocation to RAM.
-	 * Revert to non-history version if still
-	 * running from flash.
+	 * Say N to CMD_HISTORY_USE_CALLOC will skip runtime
+	 * allocation for the history buffer and directly
+	 * use an uninitialized static array as the buffer.
+	 * Doing this might have better performance and not
+	 * increase the binary file's size, as it only marks
+	 * the size. However, the array is only writable after
+	 * relocation to RAM. If u-boot is running from ROM
+	 * all the time, consider say Y to CMD_HISTORY_USE_CALLOC
+	 * or disable CMD_HISTORY.
 	 */
 	if (IS_ENABLED(CONFIG_CMDLINE_EDITING) && (gd->flags & GD_FLG_RELOC)) {
-		if (!initted) {
+#ifdef CONFIG_CMD_HISTORY
+		if (!hist_initted) {
 			rc = hist_init();
 			if (rc == 0)
-				initted = 1;
+				hist_initted = 1;
 		}
+#endif
 
 		if (prompt)
 			puts(prompt);
