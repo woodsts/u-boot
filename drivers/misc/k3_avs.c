@@ -184,6 +184,22 @@ static struct vd_data j721e_vd_data[] = {
 	{ .id = -1 },
 };
 
+static struct vd_data j721s2_vd_data[] = {
+	{
+		.id = J721E_VDD_MPU,
+		.opp = AM6_OPP_NOM,
+		.dev_id = 202, /* J721S2_DEV_A72SS0_CORE0 */
+		.clk_id = 0, /* ARM clock */
+		.opps = {
+			[AM6_OPP_NOM] = {
+				.volt = 880000, /* TBD in DM */
+				.freq = 2000000000,
+			},
+		},
+	},
+	{ .id = -1 },
+};
+
 static struct vd_config j721e_vd_config = {
 	.efuse_xlate = am6_efuse_xlate,
 	.vds = j721e_vd_data,
@@ -194,10 +210,16 @@ static struct vd_config am654_vd_config = {
 	.vds = am654_vd_data,
 };
 
+static struct vd_config j721s2_vd_config = {
+	.efuse_xlate = am6_efuse_xlate,
+	.vds = j721s2_vd_data,
+};
+
 const struct soc_attr vtm_soc_list[] = {
 	{ .family = "AM65X", .data = (void *)&am654_vd_config },
 	{ .family = "J721E", .data = (void *)&j721e_vd_config },
 	{ .family = "J7200", .data = (void *)&j721e_vd_config },
+	{ .family = "J721S2", .data = (void *)&j721s2_vd_config },
 	{}
 };
 
