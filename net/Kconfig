@@ -4,6 +4,7 @@
 
 menuconfig NET
 	bool "Networking support"
+	default y
 	imply NETDEVICES
 	depends on !NET_LWIP
 

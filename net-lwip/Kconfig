@@ -4,7 +4,6 @@
 
 menuconfig NET_LWIP
 	bool "Networking support (lwIP stack) -- EXPERIMENTAL"
-	default y
 	imply NETDEVICES
 	help
 	  Include networking support based on the lwIP (lightweight IP)
