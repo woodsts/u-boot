@@ -10,7 +10,7 @@
 #include <net-lwip.h>
 #include <time.h>
 
-#define DHCP_TIMEOUT_MS 2000
+#define DHCP_TIMEOUT_MS 20000
 
 #ifdef CONFIG_CMD_TFTPBOOT
 /* Boot file obtained from DHCP (if present) */
