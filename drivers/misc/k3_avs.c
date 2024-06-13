@@ -12,6 +12,7 @@
 #include <asm/io.h>
 #include <i2c.h>
 #include <k3-avs.h>
+#include <soc.h>
 #include <dm/device_compat.h>
 #include <linux/bitops.h>
 #include <linux/delay.h>
@@ -110,6 +111,117 @@ static u32 am6_efuse_xlate(struct k3_avs_privdata *priv, int idx, int opp)
 
 	return 300000 + 20000 * val;
 }
+
+static struct vd_data am654_vd_data[] = {
+	{
+		.id = AM6_VDD_CORE,
+		.dev_id = 82, /* AM6_DEV_CBASS0 */
+		.clk_id = 0, /* main sysclk0 */
+		.opp = AM6_OPP_NOM,
+		.opps = {
+			[AM6_OPP_NOM] = {
+				.volt = 1000000,
+				.freq = 250000000, /* CBASS0 */
+			},
+		},
+	},
+	{
+		.id = AM6_VDD_MPU0,
+		.dev_id = 202, /* AM6_DEV_COMPUTE_CLUSTER_A53_0 */
+		.clk_id = 0, /* ARM clock */
+		.opp = AM6_OPP_NOM,
+		.opps = {
+			[AM6_OPP_NOM] = {
+				.volt = 1100000,
+				.freq = 800000000,
+			},
+			[AM6_OPP_OD] = {
+				.volt = 1200000,
+				.freq = 1000000000,
+			},
+			[AM6_OPP_TURBO] = {
+				.volt = 1240000,
+				.freq = 1100000000,
+			},
+		},
+	},
+	{
+		.id = AM6_VDD_MPU1,
+		.opp = AM6_OPP_NOM,
+		.dev_id = 204, /* AM6_DEV_COMPUTE_CLUSTER_A53_2 */
+		.clk_id = 0, /* ARM clock */
+		.opps = {
+			[AM6_OPP_NOM] = {
+				.volt = 1100000,
+				.freq = 800000000,
+			},
+			[AM6_OPP_OD] = {
+				.volt = 1200000,
+				.freq = 1000000000,
+			},
+			[AM6_OPP_TURBO] = {
+				.volt = 1240000,
+				.freq = 1100000000,
+			},
+		},
+	},
+	{ .id = -1 },
+};
+
+static struct vd_data j721e_vd_data[] = {
+	{
+		.id = J721E_VDD_MPU,
+		.opp = AM6_OPP_NOM,
+		.dev_id = 202, /* J721E_DEV_A72SS0_CORE0 */
+		.clk_id = 2, /* ARM clock */
+		.opps = {
+			[AM6_OPP_NOM] = {
+				.volt = 880000, /* TBD in DM */
+				.freq = 2000000000,
+			},
+		},
+	},
+	{ .id = -1 },
+};
+
+static struct vd_data j721s2_vd_data[] = {
+	{
+		.id = J721E_VDD_MPU,
+		.opp = AM6_OPP_NOM,
+		.dev_id = 202, /* J721S2_DEV_A72SS0_CORE0 */
+		.clk_id = 0, /* ARM clock */
+		.opps = {
+			[AM6_OPP_NOM] = {
+				.volt = 880000, /* TBD in DM */
+				.freq = 2000000000,
+			},
+		},
+	},
+	{ .id = -1 },
+};
+
+static struct vd_config j721e_vd_config = {
+	.efuse_xlate = am6_efuse_xlate,
+	.vds = j721e_vd_data,
+};
+
+static struct vd_config am654_vd_config = {
+	.efuse_xlate = am6_efuse_xlate,
+	.vds = am654_vd_data,
+};
+
+static struct vd_config j721s2_vd_config = {
+	.efuse_xlate = am6_efuse_xlate,
+	.vds = j721s2_vd_data,
+};
+
+const struct soc_attr vtm_soc_list[] = {
+	{ .family = "AM65X", .data = (void *)&am654_vd_config },
+	{ .family = "J721E", .data = (void *)&j721e_vd_config },
+	{ .family = "J7200", .data = (void *)&j721e_vd_config },
+	{ .family = "J721S2", .data = (void *)&j721s2_vd_config },
+	{}
+};
 
 static int k3_avs_program_voltage(struct k3_avs_privdata *priv,
 				  struct vd_data *vd,
@@ -234,8 +346,16 @@ static int k3_avs_configure(struct udevice *dev, struct k3_avs_privdata *priv)
 	int ret;
 	char pname[20];
 	struct vd_data *vd;
+	const struct soc_attr *soc;
 
-	conf = (void *)dev_get_driver_data(dev);
+	soc = soc_device_match(vtm_soc_list);
+	if (soc && soc->data)
+		conf = (void *)soc->data;
+
+	if (!conf) {
+		printf("No SoC support for AVS\n");
+		return -ENOSYS;
+	}
 
 	priv->vd_config = conf;
 
@@ -391,7 +511,10 @@ static int k3_avs_probe(struct udevice *dev)
 		if (vd->flags & VD_FLAG_INIT_DONE)
 			continue;
 
-		k3_avs_program_voltage(priv, vd, vd->opp);
+		ret = k3_avs_program_voltage(priv, vd, vd->opp);
+		if (ret)
+			dev_warn(dev, "Could not program AVS voltage for VD%d\n",
+				 vd->id);
 	}
 
 	if (!device_is_compatible(priv->dev, "ti,am654-avs"))
@@ -400,93 +523,12 @@ static int k3_avs_probe(struct udevice *dev)
 	return 0;
 }
 
-static struct vd_data am654_vd_data[] = {
-	{
-		.id = AM6_VDD_CORE,
-		.dev_id = 82, /* AM6_DEV_CBASS0 */
-		.clk_id = 0, /* main sysclk0 */
-		.opp = AM6_OPP_NOM,
-		.opps = {
-			[AM6_OPP_NOM] = {
-				.volt = 1000000,
-				.freq = 250000000, /* CBASS0 */
-			},
-		},
-	},
-	{
-		.id = AM6_VDD_MPU0,
-		.dev_id = 202, /* AM6_DEV_COMPUTE_CLUSTER_A53_0 */
-		.clk_id = 0, /* ARM clock */
-		.opp = AM6_OPP_NOM,
-		.opps = {
-			[AM6_OPP_NOM] = {
-				.volt = 1100000,
-				.freq = 800000000,
-			},
-			[AM6_OPP_OD] = {
-				.volt = 1200000,
-				.freq = 1000000000,
-			},
-			[AM6_OPP_TURBO] = {
-				.volt = 1240000,
-				.freq = 1100000000,
-			},
-		},
-	},
-	{
-		.id = AM6_VDD_MPU1,
-		.opp = AM6_OPP_NOM,
-		.dev_id = 204, /* AM6_DEV_COMPUTE_CLUSTER_A53_2 */
-		.clk_id = 0, /* ARM clock */
-		.opps = {
-			[AM6_OPP_NOM] = {
-				.volt = 1100000,
-				.freq = 800000000,
-			},
-			[AM6_OPP_OD] = {
-				.volt = 1200000,
-				.freq = 1000000000,
-			},
-			[AM6_OPP_TURBO] = {
-				.volt = 1240000,
-				.freq = 1100000000,
-			},
-		},
-	},
-	{ .id = -1 },
-};
-
-static struct vd_data j721e_vd_data[] = {
-	{
-		.id = J721E_VDD_MPU,
-		.opp = AM6_OPP_NOM,
-		.dev_id = 202, /* J721E_DEV_A72SS0_CORE0 */
-		.clk_id = 2, /* ARM clock */
-		.opps = {
-			[AM6_OPP_NOM] = {
-				.volt = 880000, /* TBD in DM */
-				.freq = 2000000000,
-			},
-		},
-	},
-	{ .id = -1 },
-};
-
-static struct vd_config j721e_vd_config = {
-	.efuse_xlate = am6_efuse_xlate,
-	.vds = j721e_vd_data,
-};
-
-static struct vd_config am654_vd_config = {
-	.efuse_xlate = am6_efuse_xlate,
-	.vds = am654_vd_data,
-};
 
 static const struct udevice_id k3_avs_ids[] = {
-	{ .compatible = "ti,am654-avs", .data = (ulong)&am654_vd_config },
-	{ .compatible = "ti,j721e-avs", .data = (ulong)&j721e_vd_config },
-	{ .compatible = "ti,j721e-vtm", .data = (ulong)&j721e_vd_config },
-	{ .compatible = "ti,j7200-vtm", .data = (ulong)&j721e_vd_config },
+	{ .compatible = "ti,am654-avs" },
+	{ .compatible = "ti,j721e-avs" },
+	{ .compatible = "ti,j721e-vtm" },
+	{ .compatible = "ti,j7200-vtm" },
 	{}
 };
 
