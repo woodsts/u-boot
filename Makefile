@@ -862,6 +862,7 @@ libs-y += env/
 libs-y += lib/
 libs-y += fs/
 libs-$(CONFIG_NET) += net/
+libs-$(CONFIG_NET_LWIP) += net-lwip/
 libs-y += disk/
 libs-y += drivers/
 libs-$(CONFIG_SYS_FSL_DDR) += drivers/ddr/fsl/
@@ -2135,6 +2136,11 @@ etags:
 cscope:
 		$(FIND) $(FINDFLAGS) $(TAG_SUBDIRS) -name '*.[chS]' -print > \
 						cscope.files
+ifdef CONFIG_NET_LWIP
+		echo net/eth-uclass.c net/eth_common.c net/eth_bootdev.c \
+		     net/mdio-uclass.c net/mdio-mux-uclass.c >> \
+						cscope.files
+endif
 		@find $(TAG_SUBDIRS) -name '*.[chS]' -type l -print | \
 			grep -xvf - cscope.files > cscope.files.no-symlinks; \
 		mv cscope.files.no-symlinks cscope.files
