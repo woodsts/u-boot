@@ -4,6 +4,7 @@
  * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
  */
 
+#include <cyclic.h>
 #include <status_led.h>
 #include <linux/types.h>
 
@@ -23,6 +24,7 @@ typedef struct {
 	int state;
 	int period;
 	int cnt;
+	struct cyclic_info *cyclic;
 } led_dev_t;
 
 led_dev_t led_dev[] = {
@@ -103,17 +105,26 @@ void status_led_tick(ulong timestamp)
 	}
 }
 
-void status_led_set(int led, int state)
+static led_dev_t *status_get_led_dev(int led)
 {
-	led_dev_t *ld;
-
-	if (led < 0 || led >= MAX_LED_DEV)
-		return;
+	if (led < 0 || led >= MAX_LED_DEV) {
+		printf("Invalid Status LED ID %d.", led)
+		return NULL;
+	}
 
 	if (!status_led_init_done)
 		status_led_init();
 
-	ld = &led_dev[led];
+	return &led_dev[led];
+}
+
+void status_led_set(int led, int state)
+{
+	led_dev_t *ld;
+
+	ld = status_get_led_dev(led);
+	if (!ld)
+		return;
 
 	ld->state = state;
 	if (state == CONFIG_LED_STATUS_BLINKING) {
@@ -121,4 +132,56 @@ void status_led_set(int led, int state)
 		state = CONFIG_LED_STATUS_ON;	/* always start with LED _ON_ */
 	}
 	__led_set (ld->mask, state);
+}
+
+void status_led_toggle(int led)
+{
+	led_dev_t *ld;
+
+	ld = status_get_led_dev(led);
+	if (!ld)
+		return;
+
+	__led_toggle(ld->mask);
+}
+
+static void status_led_activity_toggle(void *ctx)
+{
+	__led_toggle(*(led_id_t *)ctx);
+}
+
+void status_led_activity_start(int led)
+{
+	led_dev_t *ld;
+
+	ld = status_get_led_dev(led);
+	if (!ld)
+		return;
+
+	if (ld->cyclic) {
+		printf("Cyclic for activity status LED %d already registered. THIS IS AN ERROR.\n",
+		       led);
+		cyclic_unregister(ld->cyclic);
+	}
+
+	status_led_set(led, CONFIG_LED_STATUS_BLINKING);
+
+	ld->cyclic = cyclic_register(status_led_activity_toggle,
+				     ld->period * 500, "activity", &ld->mask);
+	if (!ld->cyclic)
+		printf("Registering of cyclic function for activity status LED %d failed\n",
+		       led);
+}
+
+void status_led_activity_stop(int led)
+{
+	led_dev_t *ld;
+
+	ld = status_get_led_dev(led);
+	if (!ld)
+		return;
+
+	cyclic_unregister(ld->cyclic);
+	ld->cyclic = NULL
+	status_led_set(led, CONFIG_LED_STATUS_OFF);
 }
