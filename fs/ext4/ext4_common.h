@@ -43,8 +43,14 @@
 
 static inline void *zalloc(size_t size)
 {
-	void *p = memalign(ARCH_DMA_MINALIGN, size);
-	memset(p, 0, size);
+	void *p = NULL;
+
+	if (size < CONFIG_SYS_MALLOC_LEN)
+		p = memalign(ARCH_DMA_MINALIGN, size);
+
+	if (p)
+		memset(p, 0, size);
+
 	return p;
 }
 
