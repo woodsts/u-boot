@@ -92,10 +92,10 @@ void board_init_f(ulong dummy)
 int board_return_to_bootrom(struct spl_image_info *spl_image,
 			    struct spl_boot_device *bootdev)
 {
-#ifdef CONFIG_BOOTSTAGE_STASH
-	int ret;
+	int __maybe_unused ret;
 
 	bootstage_mark_name(BOOTSTAGE_ID_END_TPL, "end tpl");
+#if IS_ENABLED(CONFIG_BOOTSTAGE_STASH)
 	ret = bootstage_stash((void *)CONFIG_BOOTSTAGE_STASH_ADDR,
 			      CONFIG_BOOTSTAGE_STASH_SIZE);
 	if (ret)

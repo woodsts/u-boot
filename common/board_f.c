@@ -809,6 +809,7 @@ static int initf_bootstage(void)
 	ret = bootstage_init(!from_spl);
 	if (ret)
 		return ret;
+#if IS_ENABLED(CONFIG_BOOTSTAGE_STASH)
 	if (from_spl) {
 		const void *stash = map_sysmem(CONFIG_BOOTSTAGE_STASH_ADDR,
 					       CONFIG_BOOTSTAGE_STASH_SIZE);
@@ -819,6 +820,7 @@ static int initf_bootstage(void)
 			return ret;
 		}
 	}
+#endif
 
 	bootstage_mark_name(BOOTSTAGE_ID_START_UBOOT_F, "board_init_f");
 

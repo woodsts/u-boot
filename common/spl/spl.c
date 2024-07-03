@@ -472,11 +472,13 @@ static int spl_common_init(bool setup_malloc)
 		      ret);
 		return ret;
 	}
+#if CONFIG_IS_ENABLED(BOOTSTAGE)
 	if (!u_boot_first_phase()) {
 		ret = bootstage_unstash_default();
 		if (ret)
 			log_debug("Failed to unstash bootstage: ret=%d\n", ret);
 	}
+#endif
 	bootstage_mark_name(get_bootstage_id(true),
 			    spl_phase_name(spl_phase()));
 #if CONFIG_IS_ENABLED(LOG)
