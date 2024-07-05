@@ -193,6 +193,17 @@ online
     device resources such as power, clock, interrupts, dma etc. This firmware
     runs on a dedicated or multi-use microcontroller outside the security
     enclave.
+  * **TIFS Stub** - A small piece of code that helps restore the remaining
+    context and resume the TIFS firmware when resuming from Low Power Modes
+    like Suspend-to-RAM/ Deep Sleep. It is loaded into the ATCM (Tightly
+    Coupled Memory 'A' of the DM R5) during DM startup. The reason it isn't
+    merged with DM is because in HS devices we need to sign the tifs-stub with
+    customer key. The DM cannot have a component signed using a customer key
+    because a HS device customer owns the customer key and only customer
+    has the access for the customer key. Since TIFS Stub signing has to happen
+    from the customer side but DM is released by TI, we need to allow binman to
+    sign the TIFS Stub and only then package it alongside other firmwares.
+    This applies only to AM62x, AM62A and AM62P based devices.
 
  OR
 
