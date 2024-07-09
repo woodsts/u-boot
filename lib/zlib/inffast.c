@@ -26,9 +26,11 @@
 #ifdef POSTINC
 #  define OFF 0
 #  define PUP(a) *(a)++
+#  define UP_UNALIGNED(a) get_unaligned((a)++)
 #else
 #  define OFF 1
 #  define PUP(a) *++(a)
+#  define UP_UNALIGNED(a) get_unaligned(++(a))
 #endif
 
 /*
@@ -270,14 +272,14 @@ void inflate_fast(z_streamp strm, unsigned start)
 			sfrom = (unsigned short *)(from - OFF);
 			loops = len >> 1;
 			do
-			    PUP(sout) = get_unaligned(++sfrom);
+			    PUP(sout) = UP_UNALIGNED(sfrom);
 			while (--loops);
 			out = (unsigned char *)sout + OFF;
 			from = (unsigned char *)sfrom + OFF;
 		    } else { /* dist == 1 or dist == 2 */
 			unsigned short pat16;
 
-			pat16 = *(sout-2+2*OFF);
+			pat16 = *(sout - 1 + OFF);
 			if (dist == 1)
 #if defined(__BIG_ENDIAN)
 			    pat16 = (pat16 & 0xff) | ((pat16 & 0xff ) << 8);
