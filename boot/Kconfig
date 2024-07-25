@@ -497,7 +497,7 @@ config BOOTMETH_GLOBAL
 config BOOTMETH_ANDROID
 	bool "Bootdev support for Android"
 	depends on X86 || ARM || SANDBOX
-	depends on CMDLINE
+	depends on CMDLINE && FASTBOOT
 	select ANDROID_AB
 	select ANDROID_BOOT_IMAGE
 	select CMD_BCB
