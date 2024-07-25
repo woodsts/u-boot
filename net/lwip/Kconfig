@@ -11,8 +11,6 @@ config LWIP_ASSERT
 config PROT_DHCP_LWIP
 	bool "DHCP support in lwIP"
 	depends on PROT_UDP_LWIP
-	help
-	  Enable support for the DHCP protocol in lwIP.
 
 config PROT_DNS_LWIP
 	bool
