@@ -2108,6 +2108,7 @@ config CMD_TFTPBOOT
 	bool "tftp"
 	select PROT_UDP_LWIP if NET_LWIP
 	default n
+	default y
 	help
 	  tftpboot - load file via network using TFTP protocol
 	  Currently a placeholder (not implemented) when NET_LWIP=y.
