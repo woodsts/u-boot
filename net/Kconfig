@@ -2,11 +2,6 @@
 # Network configuration
 #
 
-menuconfig NET
-	bool "Networking support"
-	default y
-	imply NETDEVICES
-
 if NET
 
 config ARP_TIMEOUT
@@ -25,15 +20,6 @@ config PROT_UDP
 	help
 	  Enable a generic udp framework that allows defining a custom
 	  handler for udp protocol.
-
-config BOOTDEV_ETH
-	bool "Enable bootdev for ethernet"
-	depends on BOOTSTD
-	default y
-	help
-	  Provide a bootdev for ethernet so that is it possible to boot
-	  an operationg system over the network, using the PXE (Preboot
-	  Execution Environment) protocol.
 
 config BOOTP_SEND_HOSTNAME
 	bool "Send hostname to DNS server"
@@ -255,6 +241,19 @@ config IPV6
 
 endif   # if NET
 
+source "net/lwip/Kconfig"
+
+if NET || NET_LWIP
+
+config BOOTDEV_ETH
+	bool "Enable bootdev for ethernet"
+	depends on BOOTSTD
+	default y
+	help
+	  Provide a bootdev for ethernet so that is it possible to boot
+	  an operating system over the network, using the PXE (Preboot
+	  Execution Environment) protocol.
+
 config SYS_RX_ETH_BUFFER
 	int "Number of receive packet buffers"
 	default 4
@@ -263,3 +262,5 @@ config SYS_RX_ETH_BUFFER
 	  controllers it is recommended to set this value to 8 or even higher,
 	  since all buffers can be full shortly after enabling the interface on
 	  high Ethernet traffic.
+
+endif   # if NET || NET_LWIP
