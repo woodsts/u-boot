@@ -36,6 +36,7 @@ DECLARE_GLOBAL_DATA_PTR;
 #include <bootm.h>
 #include <image.h>
 #include <bootstage.h>
+#include <upl.h>
 #include <u-boot/crc.h>
 
 /*****************************************************************************/
@@ -2293,6 +2294,9 @@ int fit_image_load(struct bootm_headers *images, ulong addr,
 	}
 
 	bootstage_mark(bootstage_id + BOOTSTAGE_SUB_LOAD);
+
+	upl_add_image(noffset, load, len,
+		      fdt_getprop(fit, noffset, FIT_DESC_PROP, NULL));
 
 	*datap = load;
 	*lenp = len;
