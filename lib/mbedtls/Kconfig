@@ -151,17 +151,41 @@ config SHA1_MBEDTLS
 config SHA256_MBEDTLS
 	bool "Enable SHA256 support with MbedTLS crypto library"
 	depends on MBEDTLS_LIB_CRYPTO && SHA256
+	select SHA256_SMALLER
 	help
 	  This option enables support of hashing using SHA256 algorithm
 	  with MbedTLS crypto library.
+
+if SHA256_MBEDTLS
+
+config SHA256_SMALLER
+	bool "Enable SHA256 smaller implementation with MbedTLS crypto library"
+	depends on SHA256_MBEDTLS
+	help
+	  This option enables support of hashing using SHA256 algorithm
+	  smaller implementation with MbedTLS crypto library.
+
+endif
 
 config SHA512_MBEDTLS
 	bool "Enable SHA512 support with MbedTLS crypto library"
 	depends on MBEDTLS_LIB_CRYPTO && SHA512
 	default y if TI_SECURE_DEVICE && FIT_SIGNATURE
+	select SHA512_SMALLER
 	help
 	  This option enables support of hashing using SHA512 algorithm
 	  with MbedTLS crypto library.
+
+if SHA512_MBEDTLS
+
+config SHA512_SMALLER
+	bool "Enable SHA512 smaller implementation with MbedTLS crypto library"
+	depends on SHA512_MBEDTLS
+	help
+	  This option enables support of hashing using SHA512 algorithm
+	  smaller implementation with MbedTLS crypto library.
+
+endif
 
 config SHA384_MBEDTLS
 	bool "Enable SHA384 support with MbedTLS crypto library"
