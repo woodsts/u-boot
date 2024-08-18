@@ -1,6 +1,6 @@
 choice
 	prompt "Select crypto libraries"
-	default LEGACY_CRYPTO
+	default MBEDTLS_LIB
 	help
 	  Select crypto libraries.
 	  LEGACY_CRYPTO for legacy crypto libraries,
