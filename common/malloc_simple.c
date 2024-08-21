@@ -18,12 +18,13 @@ DECLARE_GLOBAL_DATA_PTR;
 
 static void *alloc_simple(size_t bytes, int align)
 {
-	ulong addr, new_ptr;
+	ulong addr;
+	uint new_ptr;
 	void *ptr;
 
 	addr = ALIGN(gd->malloc_base + gd->malloc_ptr, align);
 	new_ptr = addr + bytes - gd->malloc_base;
-	log_debug("size=%lx, ptr=%lx, limit=%lx: ", (ulong)bytes, new_ptr,
+	log_debug("size=%lx, ptr=%x, limit=%x: ", (ulong)bytes, new_ptr,
 		  gd->malloc_limit);
 	if (new_ptr > gd->malloc_limit) {
 		log_err("alloc space exhausted\n");
@@ -87,6 +88,6 @@ void free_simple(void *ptr)
 
 void malloc_simple_info(void)
 {
-	log_info("malloc_simple: %lx bytes used, %lx remain\n", gd->malloc_ptr,
+	log_info("malloc_simple: %x bytes used, %x remain\n", gd->malloc_ptr,
 		 CONFIG_VAL(SYS_MALLOC_F_LEN) - gd->malloc_ptr);
 }
