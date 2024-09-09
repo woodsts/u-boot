@@ -32,6 +32,7 @@ static err_t linkoutput(struct netif *netif, struct pbuf *p)
 	void *pp = NULL;
 	int err;
 
+	printf("[OUT|%d]", p->len);
 	if ((unsigned long)p->payload % PKTALIGN) {
 		/*
 		 * Some net drivers have strict alignment requirements and may
@@ -249,12 +250,16 @@ int net_lwip_rx(struct udevice *udev, struct netif *netif)
 	int len;
 	int i;
 
-	if (!eth_is_active(udev))
+	printf("[IN]");
+	if (!eth_is_active(udev)) {
+		printf("ERR: !eth_is_active()\n");
 		return -EINVAL;
+	}
 
 	flags = ETH_RECV_CHECK_DEVICE;
 	for (i = 0; i < ETH_PACKETS_BATCH_RECV; i++) {
 		len = eth_get_ops(udev)->recv(udev, flags, &packet);
+		printf("[IN|%d]", len);
 		flags = 0;
 
 		if (len > 0) {
