@@ -309,7 +309,7 @@ struct spl_load_info {
 	spl_load_reader read;
 	void *priv;
 #if IS_ENABLED(CONFIG_SPL_LOAD_BLOCK)
-	int bl_len;
+	u16 bl_len;
 #endif
 };
 
