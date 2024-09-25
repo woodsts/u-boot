@@ -280,7 +280,7 @@ void spl_set_header_raw_uboot(struct spl_image_info *spl_image)
 		spl_image->load_addr = CONFIG_TEXT_BASE;
 	}
 	spl_image->os = IH_OS_U_BOOT;
-	spl_image->name = "U-Boot";
+	spl_image->name = spl_phase_name(spl_next_phase());
 }
 
 __weak int spl_parse_board_header(struct spl_image_info *spl_image,
