@@ -272,6 +272,15 @@ struct spl_image_info {
 	ulong dcrc_length;
 	ulong dcrc;
 #endif
+#if CONFIG_IS_ENABLED(RELOC_LOADER)
+	void *buf;
+	void *fdt_buf;
+	void *fdt_start;
+	void *rcode_buf;
+	uint *stack_prot;
+	ulong reloc_offset;
+	u32 fdt_size;
+#endif
 };
 
 /* function to jump to an image from SPL */
@@ -354,6 +363,22 @@ static inline enum image_phase_t spl_get_phase(struct spl_load_info *info)
 	return info->phase;
 #else
 	return IH_PHASE_NONE;
+#endif
+}
+
+static inline void spl_set_fdt_size(struct spl_image_info *img, uint fdt_size)
+{
+#if CONFIG_IS_ENABLED(RELOC_LOADER)
+	img->fdt_size = fdt_size;
+#endif
+}
+
+static inline uint spl_get_fdt_size(struct spl_image_info *img)
+{
+#if CONFIG_IS_ENABLED(RELOC_LOADER)
+	return img->fdt_size;
+#else
+	return 0;
 #endif
 }
 
@@ -1126,5 +1151,9 @@ int spl_write_upl_handoff(struct spl_image_info *spl_image);
  * This must be called before upl_add_image(), etc.
  */
 void spl_upl_init(void);
+
+int spl_reloc_prepare(struct spl_image_info *image, ulong *addrp);
+
+int spl_reloc_jump(struct spl_image_info *image, spl_jump_to_image_t func);
 
 #endif

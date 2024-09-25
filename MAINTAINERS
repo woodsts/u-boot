@@ -1591,6 +1591,12 @@ F:	include/spi_flash.h
 F:	include/linux/mtd/cfi.h
 F:	include/linux/mtd/spi-nor.h
 
+SPL RELOC
+M:	Simon Glass <sjg@chromium.org>
+S:	Maintained
+T:	git https://source.denx.de/u-boot/custodians/u-boot-dm.git
+F:	common/spl/spl_reloc.c
+
 SPMI
 M:	Mateusz Kulikowski <mateusz.kulikowski@gmail.com>
 S:	Maintained

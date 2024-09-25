@@ -203,3 +203,38 @@ end of RAM as per the bloblists received, before carrying out further
 reservations or updating the relocation address. For e.g, U-boot proper uses
 function "setup_relocaddr_from_bloblist" to parse the bloblists passed from
 previous stage and skip the memory reserved from previous stage accordingly.
+
+
+Relocating loader
+-----------------
+
+When one xPL phase wants to jump to the next, the next phase must be loaded into
+its required address. This means that the TEXT_BASE for the two phases must be
+different and there cannot be any memory overlap between the phases. It also can
+mean that phases need to be moved around to accommodate any size growth.
+
+Having two xPL phases in SRAM at the same time can be tricky if SRAM is limited,
+which it often is. It would be better if the second phase could be loaded
+somewhere else, then decompressed into place over the top of the first phase.
+
+The relocating loader (CONFIG_SPL_RELOC_LOADER) provides this feature. Itselects
+a suitable place to load the (typically compressed) next phase, copies some
+decompression code out of the first phase, then jumps to this code to decompress
+and start the next phase.
+
+This feature makes it much easier to support Verified Boot for Embedded (VBE) on
+RK3399 boards, for example, which have 192KB of SRAM.
+
+To use this feature:
+
+#. Enable xPL_RELOC_LOADER for the phase which wants to use it. It will then be
+   used to load the next phase
+#. Create an SPL_LOAD_IMAGE_METHOD() function to perform the load. Insert a call
+   to spl_reloc_prepare, passing the image information within
+   ``struct spl_image_info`` (``size`` and ``fdt_size``). This will return
+   the address of the temporary place to which the image should be loaded
+#. Load the image to that address
+#. Set the required ``load_addr`` and ``entry_point``
+#. Return 0 from the SPL_LOAD_IMAGE_METHOD() function, indicating success
+#. The common SPL code will then copy / decompress your image to the provided
+   ``load_addr`` and then jump to it at the ``entry_point`` address
