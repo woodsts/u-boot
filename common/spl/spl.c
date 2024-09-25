@@ -276,12 +276,17 @@ void spl_set_header_raw_uboot(struct spl_image_info *spl_image)
 		spl_image->entry_point = spl_get_image_text_base();
 		spl_image->load_addr = spl_get_image_text_base();
 		/* if needed: spl_image->size = spl_get_image_size(); */
+		log_debug("Next load addr %lx\n", spl_image->load_addr);
 	} else {
 		spl_image->entry_point = CONFIG_SYS_UBOOT_START;
 		spl_image->load_addr = CONFIG_TEXT_BASE;
+		log_debug("Default load addr %x (u_boot_pos=%lx)\n",
+			  CONFIG_TEXT_BASE, u_boot_pos);
 	}
 	spl_image->os = IH_OS_U_BOOT;
 	spl_image->name = spl_phase_name(spl_next_phase());
+	log_debug("Next phase: %s at %lx size %lx\n", spl_image->name,
+		  spl_image->load_addr, (ulong)spl_image->size);
 }
 
 __weak int spl_parse_board_header(struct spl_image_info *spl_image,
