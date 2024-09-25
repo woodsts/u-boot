@@ -1043,6 +1043,8 @@ config ARCH_QEMU
 	select DM_SERIAL
 	select OF_CONTROL
 	select PL01X_SERIAL
+	select SUPPORT_SPL
+	select SUPPORT_TPL
 	imply CMD_DM
 	imply DM_RNG
 	imply DM_RTC
