@@ -50,15 +50,19 @@ u32 *boot_params_ptr = NULL;
 
 #if CONFIG_IS_ENABLED(BINMAN_UBOOT_SYMBOLS)
 /* See spl.h for information about this */
+#if defined(CONFIG_SPL_BUILD) && !defined(CONFIG_TPL_BUILD) && !defined(CONFIG_VPL_BUILD)
 binman_sym_declare(ulong, u_boot_any, image_pos);
 binman_sym_declare(ulong, u_boot_any, size);
+#endif
 
-#ifdef CONFIG_TPL
+#if defined(CONFIG_TPL)
+/* TPL jumps straight to SPL */
 binman_sym_declare(ulong, u_boot_spl_any, image_pos);
 binman_sym_declare(ulong, u_boot_spl_any, size);
 #endif
 
 #ifdef CONFIG_VPL
+/* TPL jumps to VPL */
 binman_sym_declare(ulong, u_boot_vpl_any, image_pos);
 binman_sym_declare(ulong, u_boot_vpl_any, size);
 #endif
@@ -179,9 +183,15 @@ ulong spl_get_image_pos(void)
 	if (spl_next_phase() == PHASE_VPL)
 		return binman_sym(ulong, u_boot_vpl_any, image_pos);
 #endif
-	return spl_next_phase() == PHASE_SPL ?
-		binman_sym(ulong, u_boot_spl_any, image_pos) :
-		binman_sym(ulong, u_boot_any, image_pos);
+#if defined(CONFIG_TPL) && !defined(CONFIG_VPL)
+	if (spl_next_phase() == PHASE_SPL)
+		return binman_sym(ulong, u_boot_spl_any, image_pos);
+#endif
+#if defined(CONFIG_SPL_BUILD) && !defined(CONFIG_TPL_BUILD) && !defined(CONFIG_VPL_BUILD)
+	return binman_sym(ulong, u_boot_any, image_pos);
+#endif
+
+	return BINMAN_SYM_MISSING;
 }
 
 ulong spl_get_image_size(void)
@@ -263,8 +273,8 @@ void spl_set_header_raw_uboot(struct spl_image_info *spl_image)
 	 */
 	if (u_boot_pos && u_boot_pos != BINMAN_SYM_MISSING) {
 		/* Binman does not support separated entry addresses */
-		spl_image->entry_point = u_boot_pos;
-		spl_image->load_addr = u_boot_pos;
+		spl_image->entry_point = spl_get_image_text_base();
+		spl_image->load_addr = spl_get_image_text_base();
 	} else {
 		spl_image->entry_point = CONFIG_SYS_UBOOT_START;
 		spl_image->load_addr = CONFIG_TEXT_BASE;
