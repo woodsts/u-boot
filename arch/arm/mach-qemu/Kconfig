@@ -25,6 +25,26 @@ config TARGET_QEMU_ARM_64BIT
 	select ARM64
 	select BOARD_LATE_INIT
 
+config TARGET_QEMU_ARM_64BIT_TPL
+	bool "ARMv8, 64bit, with TPL"
+	select ARM64
+	select BOARD_LATE_INIT
+	select SPL
+	select TPL
+	select SPL_LIBCOMMON_SUPPORT
+	select TPL_LIBCOMMON_SUPPORT
+	select SPL_LIBGENERIC_SUPPORT
+	select TPL_LIBGENERIC_SUPPORT
+	select SPL_OF_CONTROL
+	select TPL_OF_CONTROL
+	select SPL_DM
+	select TPL_DM
+	select BINMAN
+	select SPL_SERIAL
+	select TPL_SERIAL
+	imply SPL_FRAMEWORK_BOARD_INIT_F
+	imply RPL_FRAMEWORK_BOARD_INIT_F
+
 endchoice
 
 endif

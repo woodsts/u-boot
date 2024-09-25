@@ -6,3 +6,8 @@ F:	board/emulation/common/
 F:	include/configs/qemu-arm.h
 F:	configs/qemu_arm_defconfig
 F:	configs/qemu_arm64_defconfig
+
+QEMU ARM 'VIRT' TPL BOARD
+M:	Simon Glass <sjg@chromium.org>
+S:	Maintained
+F:	configs/qemu_arm64_tpl_defconfig

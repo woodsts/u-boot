@@ -8,4 +8,22 @@
 /dts-v1/;
 
 / {
+#ifdef CONFIG_BINMAN
+	binman {
+		u-boot-tpl {
+		};
+
+		u-boot-spl {
+			symbols-base = <0>;
+			offset = <CONFIG_SPL_TEXT_BASE>;
+		};
+
+		u-boot {
+			offset = <CONFIG_TEXT_BASE>;
+		};
+
+		fdtmap {
+		};
+	};
+#endif
 };
