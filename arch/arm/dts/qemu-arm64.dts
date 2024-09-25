@@ -15,7 +15,6 @@
 
 		u-boot-spl {
 			symbols-base = <0>;
-			offset = <CONFIG_SPL_TEXT_BASE>;
 		};
 
 		u-boot {
