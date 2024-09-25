@@ -275,6 +275,7 @@ void spl_set_header_raw_uboot(struct spl_image_info *spl_image)
 		/* Binman does not support separated entry addresses */
 		spl_image->entry_point = spl_get_image_text_base();
 		spl_image->load_addr = spl_get_image_text_base();
+		/* if needed: spl_image->size = spl_get_image_size(); */
 	} else {
 		spl_image->entry_point = CONFIG_SYS_UBOOT_START;
 		spl_image->load_addr = CONFIG_TEXT_BASE;
