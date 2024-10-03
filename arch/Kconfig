@@ -45,7 +45,7 @@ config SYS_CACHELINE_SIZE
 config LINKER_LIST_ALIGN
 	int
 	default 32 if SANDBOX
-	default 8 if ARM64 || X86
+	default 8 if ARM64 || X86 || CPU_MIPS64
 	default 4
 	help
 	  Force the each linker list to be aligned to this boundary. This
