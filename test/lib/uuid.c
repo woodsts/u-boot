@@ -84,7 +84,6 @@ static int lib_test_uuid_bits(struct unit_test_state *uts)
 LIB_TEST(lib_test_uuid_bits, 0);
 #endif
 
-#ifdef CONFIG_SANDBOX
 struct dynamic_uuid_test_data {
 	const char *compatible;
 	const u16 *images[4];
@@ -160,4 +159,3 @@ static int lib_test_dynamic_uuid(struct unit_test_state *uts)
 }
 
 LIB_TEST(lib_test_dynamic_uuid, 0);
-#endif
