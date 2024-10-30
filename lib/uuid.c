@@ -35,6 +35,9 @@
 #ifdef USE_HOSTCC
 /* polyfill hextoul to avoid pulling in strto.c */
 #define hextoul(cp, endp) strtoul(cp, endp, 16)
+#define hextoull(cp, endp) strtoull(cp, endp, 16)
+#else
+#define hextoull(cp, endp) simple_strtoull(cp, endp, 16)
 #endif
 
 int uuid_str_valid(const char *uuid)
@@ -290,7 +293,7 @@ int uuid_str_to_bin(const char *uuid_str, unsigned char *uuid_bin,
 	}
 
 	if (str_format == UUID_STR_FORMAT_STD) {
-		tmp32 = cpu_to_be32(hextoul(uuid_str, NULL));
+		tmp32 = cpu_to_be32(hextoull(uuid_str, NULL));
 		memcpy(uuid_bin, &tmp32, 4);
 
 		tmp16 = cpu_to_be16(hextoul(uuid_str + 9, NULL));
@@ -327,7 +330,7 @@ int uuid_str_to_le_bin(const char *uuid_str, unsigned char *uuid_bin)
 	if (!uuid_str_valid(uuid_str) || !uuid_bin)
 		return -EINVAL;
 
-	tmp32 = cpu_to_le32(hextoul(uuid_str, NULL));
+	tmp32 = cpu_to_le32(hextoull(uuid_str, NULL));
 	memcpy(uuid_bin, &tmp32, 4);
 
 	tmp16 = cpu_to_le16(hextoul(uuid_str + 9, NULL));
