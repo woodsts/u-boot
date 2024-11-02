@@ -1694,12 +1694,20 @@ int fdtdec_setup(void)
 			gd->fdt_src = FDTSRC_EMBED;
 		}
 
-		/* Allow the board to override the fdt address. */
-		if (IS_ENABLED(CONFIG_OF_BOARD)) {
-			gd->fdt_blob = board_fdt_blob_setup(&ret);
-			if (ret)
+	}
+
+	/* Allow the board to override the fdt address. */
+	if (IS_ENABLED(CONFIG_OF_BOARD)) {
+		void *blob;
+
+		blob = (void *)gd->fdt_blob;
+		ret = board_fdt_blob_setup(&blob);
+		if (ret) {
+			if (ret != -EEXIST)
 				return ret;
+		} else {
 			gd->fdt_src = FDTSRC_BOARD;
+			gd->fdt_blob = blob;
 		}
 	}
 
