@@ -166,12 +166,6 @@ config LED_STATUS_GPIO
 	  The status LED can be connected to a GPIO pin. In such cases, the
 	  gpio_led driver can be used as a status LED backend implementation.
 
-config LED_STATUS_BOARD_SPECIFIC
-	bool "Specific board"
-	default y
-	help
-	  LED support is only for a specific board.
-
 comment "LEDs parameters"
 
 config LED_STATUS0
