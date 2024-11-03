@@ -9,6 +9,8 @@ config LED
 	  can provide access to board-specific LEDs. Use of the device tree
 	  for configuration is encouraged.
 
+if LED
+
 config LED_BOOT
 	bool "Enable LED boot support"
 	help
@@ -35,7 +37,7 @@ config LED_ACTIVITY
 
 config LED_BCM6328
 	bool "LED Support for BCM6328"
-	depends on LED && ARCH_BMIPS
+	depends on ARCH_BMIPS
 	help
 	  This option enables support for LEDs connected to the BCM6328
 	  LED HW controller accessed via MMIO registers.
@@ -46,7 +48,7 @@ config LED_BCM6328
 
 config LED_BCM6358
 	bool "LED Support for BCM6358"
-	depends on LED && ARCH_BMIPS
+	depends on ARCH_BMIPS
 	help
 	  This option enables support for LEDs connected to the BCM6358
 	  LED HW controller accessed via MMIO registers.
@@ -54,28 +56,28 @@ config LED_BCM6358
 
 config LED_BCM6753
 	bool "LED Support for BCM6753"
-	depends on LED && BCM6855
+	depends on BCM6855
 	help
 	  This option enables support for LEDs connected to the BCM6753
 	  HW has blinking and fading capabilities and up to 32 LEDs can be controlled.
 
 config LED_BCM6858
 	bool "LED Support for BCM6858"
-	depends on LED && (BCM6856 || BCM6858 || BCM63158)
+	depends on BCM6856 || BCM6858 || BCM63158
 	help
 	  This option enables support for LEDs connected to the BCM6858
 	  HW has blinking capabilities and up to 32 LEDs can be controlled.
 
 config LED_CORTINA
 	bool "LED Support for Cortina Access CAxxxx SoCs"
-	depends on LED && (CORTINA_PLATFORM)
+	depends on CORTINA_PLATFORM
 	help
 	  This option enables support for LEDs connected to the Cortina
 	  Access CAxxxx SOCs.
 
 config LED_LP5562
 	bool "LED Support for LP5562"
-	depends on LED && DM_I2C
+	depends on DM_I2C
 	help
 	  This option enables support for LEDs connected to the TI LP5562
 	  4 channel I2C LED controller.  Driver fully supports blink on the
@@ -83,14 +85,13 @@ config LED_LP5562
 
 config LED_PWM
 	bool "LED PWM"
-	depends on LED && DM_PWM
+	depends on DM_PWM
 	help
 	  Enable support for LEDs connected to PWM.
 	  Linux compatible ofdata.
 
 config LED_BLINK
 	bool "Support hardware LED blinking"
-	depends on LED
 	help
 	  Some drivers can support automatic blinking of LEDs with a given
 	  period, without needing timers or extra code to handle the timing.
@@ -99,7 +100,6 @@ config LED_BLINK
 
 config LED_SW_BLINK
 	bool "Support software LED blinking"
-	depends on LED
 	select CYCLIC
 	help
 	  Turns on led blinking implemented in the software, useful when
@@ -122,7 +122,7 @@ config SPL_LED
 
 config LED_GPIO
 	bool "LED support for GPIO-connected LEDs"
-	depends on LED && DM_GPIO
+	depends on DM_GPIO
 	help
 	  Enable support for LEDs which are connected to GPIO lines. These
 	  GPIOs may be on the SoC or some other device which provides GPIOs.
@@ -135,6 +135,8 @@ config SPL_LED_GPIO
 	help
 	  This option is an SPL-variant of the LED_GPIO option.
 	  See the help of LED_GPIO for details.
+
+endif # LED
 
 config LED_STATUS
 	bool "Enable status LED API"
