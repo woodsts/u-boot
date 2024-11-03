@@ -11,9 +11,6 @@
 #include <irq_func.h>
 #include <asm/processor.h>
 #include <watchdog.h>
-#ifdef CONFIG_LED_STATUS
-#include <status_led.h>
-#endif
 #include <asm/ptrace.h>
 
 #ifndef CONFIG_MPC83XX_TIMER
@@ -83,9 +80,6 @@ void timer_interrupt(struct pt_regs *regs)
 		schedule();
 #endif    /* CONFIG_WATCHDOG || CONFIG_HW_WATCHDOG */
 
-#ifdef CONFIG_LED_STATUS
-	status_led_tick(timestamp);
-#endif /* CONFIG_LED_STATUS */
 }
 
 ulong get_timer (ulong base)
