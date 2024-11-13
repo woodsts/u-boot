@@ -582,7 +582,7 @@ config BOOTMETH_EFI_BOOTMGR
 	bool "Bootdev support for EFI boot manager"
 	depends on EFI_BOOTMGR
 	select BOOTMETH_GLOBAL
-	default y
+	default y if !ARCH_SUNXI  # Temporary work-around for sunxi
 	help
 	  Enable booting via the UEFI boot manager. Based on the EFI variables
 	  the EFI binary to be launched is determined. To set the EFI variables
