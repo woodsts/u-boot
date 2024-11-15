@@ -10,10 +10,12 @@
 #define __bootstd_h
 
 #include <alist.h>
+#include <bootflow.h>
 #include <dm/ofnode_decl.h>
 #include <linux/list.h>
 #include <linux/types.h>
 
+struct blk_desc;
 struct udevice;
 
 /**
@@ -33,6 +35,7 @@ struct udevice;
  * @cur_bootflow: Currently selected bootflow (for commands)
  * @bootflows: (struct bootflow) Global list of all bootflows across all
  *	bootdevs
+ * @adhoc_bflow: Index of ad-hoc bootflow in bootflows (-1 if none)
  * @bootmeth_count: Number of bootmeth devices in @bootmeth_order
  * @bootmeth_order: List of bootmeth devices to use, in order, NULL-terminated
  * @vbe_bootmeth: Currently selected VBE bootmeth, NULL if none
@@ -47,6 +50,7 @@ struct bootstd_priv {
 	struct udevice *cur_bootdev;
 	struct bootflow *cur_bootflow;
 	struct alist bootflows;
+	int adhoc_bflow;
 	int bootmeth_count;
 	struct udevice **bootmeth_order;
 	struct udevice *vbe_bootmeth;
@@ -150,5 +154,20 @@ int bootstd_add_bootflow(struct bootflow *bflow);
  * @dev: bootdev device to update
  */
 int bootstd_clear_bootflows_for_bootdev(struct udevice *dev);
+
+/**
+ * bootstd_img_add() - Add an image to the ad-hoc bootflow
+ *
+ * @desc: Block descriptor for the device from which the file was loaded, or
+ *	NULL if not a block device
+ * @part: Partition number within the block device
+ * @fname: Filename of loaded file
+ * @type: File type, IH_TYPE_INVALID if not known
+ * @addr: Address where the file was loaded
+ * @size: Size of the file
+ * Return: 0 if OK, or -ve error code
+ */
+int bootstd_img_add(struct blk_desc *desc, int fs_type, const char *fname,
+		    enum bootflow_img_t type, ulong addr, ulong size);
 
 #endif
