@@ -7,6 +7,8 @@
  */
 
 #include <alist.h>
+#include <blk.h>
+#include <bootdev.h>
 #include <bootflow.h>
 #include <bootstd.h>
 #include <dm.h>
@@ -161,11 +163,53 @@ int bootstd_get_priv(struct bootstd_priv **stdp)
 	return 0;
 }
 
+int bootstd_img_add(struct blk_desc *desc, int part, const char *fname,
+		    enum bootflow_img_t type, ulong addr, ulong size)
+{
+	struct udevice *bootdev = NULL;
+	struct bootstd_priv *std;
+	struct bootflow *bflow, bflow_s;
+	int ret;
+
+	ret = bootstd_get_priv(&std);
+	if (ret)
+		return ret;
+
+	if (desc) {
+		ret = bootdev_get_from_blk(desc->bdev, &bootdev);
+		if (ret)
+			return log_msg_ret("iad", ret);
+	}
+
+	bflow = alist_getw(&std->bootflows, std->adhoc_bflow, struct bootflow);
+	if (!bflow) {
+		bflow = &bflow_s;
+
+		bootflow_init(bflow, bootdev, NULL);
+		bflow->name = strdup("ad-hoc");
+		if (!bflow->name)
+			return log_msg_ret("ian", -ENOMEM);
+	}
+
+	if (!bootflow_img_add(bflow, fname, type, addr, size))
+		return log_msg_ret("iaf", -ENOMEM);
+
+	if (bflow == &bflow_s) {
+		ret = bootstd_add_bootflow(bflow);
+		if (ret < 0)
+			return log_msg_ret("iab", ret);
+		std->adhoc_bflow = ret;
+	}
+
+	return 0;
+}
+
 static int bootstd_probe(struct udevice *dev)
 {
 	struct bootstd_priv *std = dev_get_priv(dev);
 
 	alist_init_struct(&std->bootflows, struct bootflow);
+	std->adhoc_bflow = -1;
 
 	return 0;
 }

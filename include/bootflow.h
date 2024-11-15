@@ -68,7 +68,8 @@ enum bootflow_flags_t {
  * @fs_type: Filesystem type (FS_TYPE...) if this is fixed by the media, else 0.
  *	For example, the sandbox host-filesystem bootdev sets this to
  *	FS_TYPE_SANDBOX
- * @method: Bootmethod device used to perform the boot and read files
+ * @method: Bootmethod device used to perform the boot and read files; NULL for
+ *	ad-hoc bootflows
  * @name: Name of bootflow (allocated)
  * @state: Current state (enum bootflow_state_t)
  * @subdir: Subdirectory to fetch files from (with trailing /), or NULL if none

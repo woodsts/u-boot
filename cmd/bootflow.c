@@ -68,7 +68,8 @@ static void report_bootflow_err(struct bootflow *bflow, int err)
 static void show_bootflow(int index, struct bootflow *bflow, bool errors)
 {
 	printf("%3x  %-11s  %-6s  %-9.9s %4x  %-25.25s %s\n", index,
-	       bflow->method->name, bootflow_state_get_name(bflow->state),
+	       bflow->method ? bflow->method->name : "(none)",
+	       bootflow_state_get_name(bflow->state),
 	       bflow->dev ? dev_get_uclass_name(dev_get_parent(bflow->dev)) :
 	       "(none)", bflow->part, bflow->name, bflow->fname ?: "");
 	if (errors)
@@ -388,7 +389,7 @@ static int do_bootflow_info(struct cmd_tbl *cmdtp, int flag, int argc,
 	printf("Name:      %s\n", bflow->name);
 	printf("Device:    %s\n", bflow->dev->name);
 	printf("Block dev: %s\n", bflow->blk ? bflow->blk->name : "(none)");
-	printf("Method:    %s\n", bflow->method->name);
+	printf("Method:    %s\n", bflow->method ? bflow->method->name : "(none)");
 	printf("State:     %s\n", bootflow_state_get_name(bflow->state));
 	printf("Partition: %d\n", bflow->part);
 	printf("Subdir:    %s\n", bflow->subdir ? bflow->subdir : "(none)");
