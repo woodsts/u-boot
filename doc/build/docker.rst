@@ -4,8 +4,8 @@ GitLab CI / U-Boot runner container
 In order to have a reproducible and portable build environment for CI we use a container for building in.  This means that developers can also reproduce the CI environment, to a large degree at least, locally.  This file is located in the tools/docker directory.
 
 The docker image supports both amd64 and arm64. Ensure that the
-'docker-buildx' Debian package is installed (or the equivalent on another
-distribution).
+`buildx` Docker CLI plugin is installed. This is often available in your
+distribution via the 'docker-buildx' or 'docker-buildx-plugin' package.
 
 You will need a multi-platform container, otherwise this error is shown::
 
