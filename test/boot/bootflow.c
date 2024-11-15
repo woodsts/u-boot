@@ -1390,3 +1390,23 @@ static int bootstd_images(struct unit_test_state *uts)
 	return 0;
 }
 BOOTSTD_TEST(bootstd_images, UTF_CONSOLE);
+
+/* Check creation of ad-hoc images */
+static int bootstd_adhoc(struct unit_test_state *uts)
+{
+	ut_assertok(run_command("load mmc 1:1 1000 /extlinux/extlinux.conf",
+				0));
+	ut_assert_nextlinen("595 bytes read");
+	ut_assertok(run_command("bootstd images", 0));
+	ut_assert_nextlinen("Seq");
+	ut_assert_nextlinen("---");
+	ut_assert_nextline(
+		"  0  ad-hoc               invalid             1000       253  /extlinux/extlinux.conf");
+	ut_assert_nextlinen("---");
+	ut_assert_nextline("(1 image)");
+
+	ut_assert_console_end();
+
+	return 0;
+}
+BOOTSTD_TEST(bootstd_adhoc, UTF_CONSOLE);

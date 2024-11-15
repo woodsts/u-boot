@@ -486,6 +486,9 @@ be visible.
 Once a bootflow has been selected, images for those that are not selected can
 potentially be dropped from the memory map. For now, this is not implemented.
 
+In cases where images are loaded outside the context of standard boot, an ad-hoc
+bootflow is used to keep track of these. They is visible with the
+``bootstd images`` command (see :doc:`/usage/cmd/bootstd`).
 
 .. _BootflowStates:
 
