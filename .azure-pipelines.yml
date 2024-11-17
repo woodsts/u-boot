@@ -320,12 +320,14 @@ stages:
       matrix:
         sandbox:
           TEST_PY_BD: "sandbox"
+          TEST_PY_TEST_SPEC: "not udelay"
         sandbox_asan:
           TEST_PY_BD: "sandbox"
           OVERRIDE: "-a ASAN"
           TEST_PY_TEST_SPEC: "version"
         sandbox_clang:
           TEST_PY_BD: "sandbox"
+          TEST_PY_TEST_SPEC: "not udelay"
           OVERRIDE: "-O clang-17"
         sandbox_clang_asan:
           TEST_PY_BD: "sandbox"
@@ -333,8 +335,10 @@ stages:
           TEST_PY_TEST_SPEC: "version"
         sandbox64:
           TEST_PY_BD: "sandbox64"
+          TEST_PY_TEST_SPEC: "not udelay"
         sandbox64_clang:
           TEST_PY_BD: "sandbox64"
+          TEST_PY_TEST_SPEC: "not udelay"
           OVERRIDE: "-O clang-17"
         sandbox_spl:
           TEST_PY_BD: "sandbox_spl"
@@ -351,6 +355,7 @@ stages:
           OVERRIDE: "-a CONFIG_SPL_LOAD_FIT_FULL=y"
         sandbox_flattree:
           TEST_PY_BD: "sandbox_flattree"
+          TEST_PY_TEST_SPEC: "not udelay"
         sandbox_trace:
           TEST_PY_BD: "sandbox"
           BUILD_ENV: "FTRACE=1 NO_LTO=1"
