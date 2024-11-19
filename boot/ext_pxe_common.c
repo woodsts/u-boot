@@ -75,27 +75,19 @@ int extlinux_set_property(struct udevice *dev, const char *property,
 	return 0;
 }
 
-static int extlinux_process(struct udevice *dev, struct bootflow *bflow,
-			    pxe_getfile_func getfile, bool no_boot)
+static int extlinux_setup(struct udevice *dev, struct bootflow *bflow,
+			  pxe_getfile_func getfile, struct pxe_context *ctx)
 {
 	struct extlinux_plat *plat = dev_get_plat(dev);
-	ulong addr;
 	int ret;
-
-	addr = map_to_sysmem(bflow->buf);
 
 	plat->info.dev = dev;
 	plat->info.bflow = bflow;
 
-	ret = pxe_setup_ctx(&plat->ctx, getfile, &plat->info, true,
-			    bflow->fname, false, plat->use_fallback, bflow);
+	ret = pxe_setup_ctx(ctx, getfile, &plat->info, true, bflow->fname,
+			    false, plat->use_fallback, bflow);
 	if (ret)
-		return log_msg_ret("ctx", -EINVAL);
-	plat->ctx.no_boot = no_boot;
-
-	ret = pxe_process(&plat->ctx, addr, false);
-	if (ret)
-		return log_msg_ret("bread", -EINVAL);
+		return log_msg_ret("ctx", ret);
 
 	return 0;
 }
@@ -103,17 +95,40 @@ static int extlinux_process(struct udevice *dev, struct bootflow *bflow,
 int extlinux_boot(struct udevice *dev, struct bootflow *bflow,
 		  pxe_getfile_func getfile)
 {
-	return extlinux_process(dev, bflow, getfile, false);
+	struct extlinux_plat *plat = dev_get_plat(dev);
+	ulong addr;
+	int ret;
+
+	/* if we have already selected a label, just boot it */
+	if (plat->ctx.label) {
+		ret = pxe_do_boot(&plat->ctx);
+	} else {
+		ret = extlinux_setup(dev, bflow, getfile, &plat->ctx);
+		if (ret)
+			return log_msg_ret("elb", ret);
+		addr = map_to_sysmem(bflow->buf);
+		ret = pxe_process(&plat->ctx, addr, false);
+	}
+	if (ret)
+		return log_msg_ret("elb", -EFAULT);
+
+	return 0;
 }
 
 int extlinux_read_all(struct udevice *dev, struct bootflow *bflow,
 		      pxe_getfile_func getfile)
 {
+	struct extlinux_plat *plat = dev_get_plat(dev);
+	ulong addr;
 	int ret;
 
-	ret = extlinux_process(dev, bflow, getfile, true);
+	ret = extlinux_setup(dev, bflow, getfile, &plat->ctx);
 	if (ret)
-		return log_msg_ret("era", -EINVAL);
+		return log_msg_ret("era", ret);
+	addr = map_to_sysmem(bflow->buf);
+	ret = pxe_probe(&plat->ctx, addr, false);
+	if (ret)
+		return log_msg_ret("elb", -EFAULT);
 
 	return 0;
 }
