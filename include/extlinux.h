@@ -49,4 +49,15 @@ struct extlinux_plat {
 int extlinux_set_property(struct udevice *dev, const char *property,
 			  const char *value);
 
+/**
+ * extlinux_boot() - Boot a bootflow
+ *
+ * @dev: bootmeth device
+ * @bflow: Bootflow to boot
+ * @getfile: Function to use to read files
+ * Return: 0 if OK, -ve error code on failure
+ */
+int extlinux_boot(struct udevice *dev, struct bootflow *bflow,
+		  pxe_getfile_func getfile);
+
 #endif
