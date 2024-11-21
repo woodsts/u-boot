@@ -17,6 +17,7 @@ stages:
   - testsuites
   - test.py
   - world build
+  - jumbo
 
 .buildman_and_testpy_template: &buildman_and_testpy_dfn
   stage: test.py
@@ -147,6 +148,20 @@ build all other platforms:
     - ret=0;
       git config --global --add safe.directory "${CI_PROJECT_DIR}";
       ./tools/buildman/buildman -o /tmp -PEWM -x arm,powerpc || ret=$?;
+      if [[ $ret -ne 0 ]]; then
+        ./tools/buildman/buildman -o /tmp -seP;
+        exit $ret;
+      fi;
+
+build all platforms in a single job:
+  stage: jumbo
+  rules:
+    - when: always
+  script:
+    - ret=0;
+      git config --global --add safe.directory "${CI_PROJECT_DIR}";
+      pip install -r tools/buildman/requirements.txt;
+      ./tools/buildman/buildman -o /tmp -PEWM || ret=$?;
       if [[ $ret -ne 0 ]]; then
         ./tools/buildman/buildman -o /tmp -seP;
         exit $ret;
