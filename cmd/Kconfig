@@ -1538,6 +1538,16 @@ config CMD_PART
 	  Read and display information about the partition table on
 	  various media.
 
+config CMD_PART_FIND
+	bool "part_find"
+	depends on PARTITIONS
+	select HAVE_BLOCK_DEVICE
+	select PARTITION_UUIDS
+	select PARTITION_TYPE_GUID
+	help
+	  Find a partition with a given type GUID and set the target_part
+	  environment variable if located.
+
 config CMD_PCI
 	bool "pci - Access PCI devices"
 	help
