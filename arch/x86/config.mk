@@ -45,7 +45,7 @@ LDFLAGS_EFI_PAYLOAD := -Bsymbolic -Bsymbolic-functions -shared --no-undefined \
 		       -s -zexecstack
 
 OBJCOPYFLAGS_EFI := -j .text -j .sdata -j .data -j .dynamic -j .dynsym \
-	-j .rel -j .rela -j .reloc --strip-all
+	-j .rel -j .rela -j .reloc -j .embedded_dtb --strip-all
 
 # Compiler flags to be added when building UEFI applications
 CFLAGS_EFI := -fpic -fshort-wchar

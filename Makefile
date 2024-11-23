@@ -1067,6 +1067,10 @@ quiet_cmd_objcopy = OBJCOPY $@
 cmd_objcopy = $(OBJCOPY) --gap-fill=0xff $(OBJCOPYFLAGS) \
 	$(OBJCOPYFLAGS_$(@F)) $< $@
 
+# Inject the DTB into u-boot
+quiet_cmd_embeddtb = OBJCOPY $@
+cmd_embeddtb = $(OBJCOPY) --update-section .embedded_dtb=dts/dt.dtb --set-section-flags .embedded_dtb=contents,alloc,load,data $<
+
 # Provide a version which does not do this, for use by EFI
 quiet_cmd_zobjcopy = OBJCOPY $@
 cmd_zobjcopy = $(OBJCOPY) $(OBJCOPYFLAGS) $(OBJCOPYFLAGS_$(@F)) $< $@
@@ -1673,7 +1677,8 @@ u-boot-x86-reset16.bin: u-boot FORCE
 endif # CONFIG_X86
 
 OBJCOPYFLAGS_u-boot-app.efi := $(OBJCOPYFLAGS_EFI)
-u-boot-app.efi: u-boot FORCE
+u-boot-app.efi: u-boot dts/dt.dtb FORCE
+	$(call if_changed,embeddtb)
 	$(call if_changed,zobjcopy)
 
 u-boot.bin.o: u-boot.bin FORCE
