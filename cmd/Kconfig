@@ -761,6 +761,10 @@ config CMD_NVEDIT_SELECT
 	help
 	  Select the compiled-in persistent storage of environment variables.
 
+config CMD_EFI_GET_ENV
+	bool "efi get env"
+	help
+	  Set an environment variable to the contents of an EFI variable
 endmenu
 
 menu "Memory commands"
