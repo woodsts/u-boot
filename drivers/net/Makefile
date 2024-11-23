@@ -30,6 +30,7 @@ obj-$(CONFIG_DWC_ETH_QOS_STM32) += dwc_eth_qos_stm32.o
 obj-$(CONFIG_E1000) += e1000.o
 obj-$(CONFIG_E1000_SPI) += e1000_spi.o
 obj-$(CONFIG_EEPRO100) += eepro100.o
+obj-$(CONFIG_EFI_NET) += efi_net.o
 obj-$(CONFIG_ESSEDMA) += essedma.o
 obj-$(CONFIG_ETHOC) += ethoc.o
 obj-$(CONFIG_ETH_DESIGNWARE) += designware.o

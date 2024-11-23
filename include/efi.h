@@ -19,6 +19,9 @@
 #include <linux/linkage.h>
 #include <linux/string.h>
 #include <linux/types.h>
+#ifndef USE_HOSTCC
+#include <net.h>
+#endif
 
 /* Type INTN in UEFI specification */
 #define efi_intn_t ssize_t
@@ -493,6 +496,19 @@ struct efi_media_plat {
 	struct efi_block_io *blkio;
 	struct efi_device_path *device_path;
 };
+
+#ifndef USE_HOSTCC
+/*
+ * EFI attributes of the udevice handled by efi_net driver
+ *
+ * @handle: handle of the controller on which this driver is installed
+ */
+struct efi_net_plat {
+	struct eth_pdata eth_pdata;
+	efi_handle_t handle;
+	struct efi_simple_network *snp;
+};
+#endif
 
 /* Base address of the EFI image */
 extern char image_base[];

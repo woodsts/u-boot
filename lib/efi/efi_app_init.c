@@ -184,6 +184,70 @@ static int setup_block(void)
 }
 
 /**
+ * setup_net() - Find all network devices and setup EFI devices for them
+ *
+ * Return: 0 if found, -ENOSYS if there is no boot-services table, -ENOTSUPP
+ *	if a required protocol is not supported
+ */
+static int setup_net(void)
+{
+	efi_guid_t efi_snp_guid = EFI_SIMPLE_NETWORK_PROTOCOL_GUID;
+	struct efi_boot_services *boot = efi_get_boot();
+	efi_uintn_t num_handles;
+	efi_handle_t *handle;
+	int ret, i;
+
+	if (!boot)
+		return log_msg_ret("sys", -ENOSYS);
+
+	/* Find all devices which support the simple network protocol */
+	ret = boot->locate_handle_buffer(BY_PROTOCOL, &efi_snp_guid, NULL,
+				  &num_handles, &handle);
+
+	if (ret)
+		return 0;
+	log_debug("Found %d net handles:\n", (int)num_handles);
+
+	for (i = 0; i < num_handles; i++) {
+		struct efi_simple_network *snp;
+		struct efi_net_plat *plat;
+		struct udevice *dev;
+		char name[18];
+
+		ret = boot->handle_protocol(handle[i], &efi_snp_guid,
+					    (void **)&snp);
+
+		if (ret != EFI_SUCCESS) {
+			log_warning("- snp %d failed (ret=0x%x\n", i, ret);
+			continue;
+		}
+
+		plat = malloc(sizeof(*plat));
+		if (!plat) {
+			log_warning("- snp %d failed to alloc platform data", i);
+			continue;
+		}
+		plat->handle = handle[i];
+		plat->snp = snp;
+		ret = device_bind(dm_root(), DM_DRIVER_GET(efi_net), "efi_net",
+				  plat, ofnode_null(), &dev);
+		if (ret) {
+			log_warning("- bind snp %d failed (ret=0x%x)\n", i,
+				    ret);
+			continue;
+		}
+
+		snprintf(name, sizeof(name), "efi_net_%x", dev_seq(dev));
+		device_set_name(dev, name);
+
+		printf("%2d: %-12s\n", i, dev->name);
+	}
+	boot->free_pool(handle);
+
+	return 0;
+}
+
+/**
  * board_early_init_r() - Scan for UEFI devices that should be available
  *
  * This sets up block devices within U-Boot for those found in UEFI. With this,
@@ -197,6 +261,9 @@ int board_early_init_r(void)
 		int ret;
 
 		ret = setup_block();
+		if (ret)
+			return ret;
+		ret = setup_net();
 		if (ret)
 			return ret;
 	}
