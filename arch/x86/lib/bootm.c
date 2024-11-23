@@ -73,6 +73,7 @@ int arch_fixup_memory_node(void *blob)
 /* Subcommand: PREP */
 static int boot_prep_linux(struct bootm_headers *images)
 {
+	ulong initrd_start, initrd_size;
 	char *cmd_line_dest = NULL;
 	struct legacy_img_hdr *hdr;
 	int is_zimage = 0;
@@ -135,10 +136,16 @@ static int boot_prep_linux(struct bootm_headers *images)
 		goto error;
 	}
 
+	if (IS_ENABLED(CONFIG_SYS_BOOT_RAMDISK_HIGH)) {
+		initrd_start = images->initrd_start;
+		initrd_size = images->initrd_end - images->initrd_start;
+	} else {
+		initrd_start = images->rd_start;
+		initrd_size = images->rd_end - images->rd_start;
+	}
 	printf("Setup at %#08lx\n", images->ep);
 	ret = setup_zimage((void *)images->ep, cmd_line_dest,
-			0, images->rd_start,
-			images->rd_end - images->rd_start, 0);
+			   0, initrd_start, initrd_size, 0);
 
 	if (ret) {
 		printf("## Setting up boot parameters failed ...\n");
