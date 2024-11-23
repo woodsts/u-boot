@@ -11,6 +11,7 @@
 #include <bootstage.h>
 #include <command.h>
 #include <efi.h>
+#include <efi_api.h>
 #include <hang.h>
 #include <log.h>
 #include <asm/global_data.h>
@@ -150,6 +151,38 @@ error:
 	return 1;
 }
 
+typedef void(*handover_func)(void *, struct efi_system_table *sys_table, struct
+boot_params *params);
+
+int efi_boot(ulong setup_base, ulong entry, bool image_64bit)
+{
+	struct boot_params *params = (struct boot_params *)setup_base;
+	struct setup_header *hdr = &params->hdr;
+	struct efi_priv *priv = efi_get_priv();
+	handover_func hf;
+	int offset = 0;
+
+	if (IS_ENABLED(CONFIG_EFI_APP_64BIT)) {
+		if (!image_64bit) {
+			printf("## Can only boot 64-bit kernels\n");
+			return 1;
+		}
+		offset = 512;
+	} else if (image_64bit) {
+		printf("# Can only boot 32-bit kernels\n");
+		return 1;
+	}
+
+	hdr->code32_start = (int)entry;
+	hdr->type_of_loader = 0x80; /* U-Boot, from Linux Documentation/x86/boot.rst */
+
+	hf = (handover_func)(entry + hdr->handover_offset + offset);
+	asm volatile ("cli");
+	priv->loaded_image->image_base = (char *)entry;
+	hf(priv->parent_image, priv->sys_table, params);
+	return -EFAULT;
+}
+
 int boot_linux_kernel(ulong setup_base, ulong entry, bool image_64bit)
 {
 	bootm_announce_and_cleanup();
@@ -158,21 +191,8 @@ int boot_linux_kernel(ulong setup_base, ulong entry, bool image_64bit)
 	timestamp_add_now(TS_U_BOOT_START_KERNEL);
 #endif
 
-	/*
-	 * Exit EFI boot services just before jumping, after all console
-	 * output, since the console won't be available afterwards.
-	 */
-	if (IS_ENABLED(CONFIG_EFI_APP)) {
-		int ret;
-
-		ret = efi_store_memory_map(efi_get_priv());
-		if (ret)
-			return ret;
-		printf("Exiting EFI boot services\n");
-		ret = efi_call_exit_boot_services();
-		if (ret)
-			return ret;
-	}
+	if (IS_ENABLED(CONFIG_EFI_APP))
+		return efi_boot(setup_base, entry, image_64bit);
 
 	if (image_64bit) {
 		if (!cpu_has_64bit()) {

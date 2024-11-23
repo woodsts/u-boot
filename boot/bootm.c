@@ -49,6 +49,10 @@ __weak void board_quiesce_devices(void)
 {
 }
 
+__weak void board_fixup_os(struct image_info *os)
+{
+}
+
 #if CONFIG_IS_ENABLED(LEGACY_IMAGE_FORMAT)
 /**
  * image_get_kernel - verify legacy format kernel image
@@ -999,6 +1003,7 @@ int bootm_run_states(struct bootm_info *bmi, int states)
 	/* Load the OS */
 	if (!ret && (states & BOOTM_STATE_LOADOS)) {
 		iflag = bootm_disable_interrupts();
+		board_fixup_os(&images->os);
 		ret = bootm_load_os(images, 0);
 		if (ret && ret != BOOTM_ERR_OVERLAP)
 			goto err;

@@ -113,6 +113,7 @@ int efi_init(struct efi_priv *priv, const char *banner, efi_handle_t image,
 		efi_puts(priv, "Failed to get loaded image protocol\n");
 		return ret;
 	}
+	priv->loaded_image = loaded_image;
 	priv->image_data_type = loaded_image->image_data_type;
 
 	return 0;
