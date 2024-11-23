@@ -30,6 +30,11 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
+int efi_init_obj_list(void)
+{
+	return EFI_SUCCESS;
+}
+
 int efi_info_get(enum efi_entry_t type, void **datap, int *sizep)
 {
 	return -ENOSYS;
