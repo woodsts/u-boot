@@ -510,6 +510,17 @@ struct efi_net_plat {
 };
 #endif
 
+/*
+ * EFI attributes of the udevice handled by efi_tpm driver
+ *
+ * @handle: handle of the controller on which this driver is installed
+ * @proto: pointer to the TCG2 EFI protocol
+ */
+struct efi_tpm_plat {
+	efi_handle_t handle;
+	struct efi_tcg2_protocol *proto;
+};
+
 /* Base address of the EFI image */
 extern char image_base[];
 

@@ -9,6 +9,7 @@
 #include <dm.h>
 #include <efi.h>
 #include <efi_api.h>
+#include <efi_tcg2.h>
 #include <errno.h>
 #include <malloc.h>
 #include <asm/global_data.h>
@@ -248,6 +249,71 @@ static int setup_net(void)
 }
 
 /**
+ * setup_tpm() - Find all TPMs and setup EFI devices for them
+ *
+ * Return: 0 if found, -ENOSYS if there is no boot-services table, -ENOTSUPP
+ *	if a required protocol is not supported
+ */
+static int setup_tpm(void)
+{
+	efi_guid_t efi_tcg2_guid = EFI_TCG2_PROTOCOL_GUID;
+	struct efi_boot_services *boot = efi_get_boot();
+	efi_uintn_t num_handles;
+	efi_handle_t *handle;
+	int ret, i;
+
+	if (!boot)
+		return log_msg_ret("sys", -ENOSYS);
+
+	/* Find all devices which support the TCG2 protocol */
+	ret = boot->locate_handle_buffer(BY_PROTOCOL, &efi_tcg2_guid, NULL,
+				  &num_handles, &handle);
+
+	if (ret)
+		return 0;
+	log_debug("Found %d TPM handles:\n", (int)num_handles);
+
+	for (i = 0; i < num_handles; i++) {
+		struct efi_tcg2_protocol *proto;
+		struct efi_tpm_plat *plat;
+		struct udevice *dev;
+		char name[18];
+
+		ret = boot->handle_protocol(handle[i], &efi_tcg2_guid,
+					    (void **)&proto);
+
+		if (ret != EFI_SUCCESS) {
+			log_warning("- TPM %d failed (ret=0x%x)\n", i, ret);
+			continue;
+		}
+
+		plat = malloc(sizeof(*plat));
+		if (!plat) {
+			log_warning("- TPM %d failed to alloc platform data", i);
+			continue;
+		}
+
+		plat->handle = handle[i];
+		plat->proto = proto;
+		ret = device_bind(dm_root(), DM_DRIVER_GET(efi_net), "efi_tpm",
+				  plat, ofnode_null(), &dev);
+		if (ret) {
+			log_warning("- bind TPM %d failed (ret=0x%x)\n", i,
+				    ret);
+			continue;
+		}
+
+		snprintf(name, sizeof(name), "efi_tpm_%x", dev_seq(dev));
+		device_set_name(dev, name);
+
+		printf("%2d: %-12s\n", i, dev->name);
+	}
+	boot->free_pool(handle);
+
+	return 0;
+}
+
+/**
  * board_early_init_r() - Scan for UEFI devices that should be available
  *
  * This sets up block devices within U-Boot for those found in UEFI. With this,
@@ -264,6 +330,9 @@ int board_early_init_r(void)
 		if (ret)
 			return ret;
 		ret = setup_net();
+		if (ret)
+			return ret;
+		ret = setup_tpm();
 		if (ret)
 			return ret;
 	}
