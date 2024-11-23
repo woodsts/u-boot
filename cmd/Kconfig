@@ -128,6 +128,13 @@ config CMD_ACPI
 	  between the firmware and OS, and is particularly useful when you
 	  want to make hardware changes without the OS needing to be adjusted.
 
+config CMD_ADDR_FIND
+        bool "addr_find"
+	help
+	  This command searches for an unused region of address space
+	  sufficiently large to hold a file. If successful, it sets the
+	  loadaddr variable to this address.
+
 config CMD_ADDRMAP
 	bool "addrmap"
 	depends on ADDR_MAP
