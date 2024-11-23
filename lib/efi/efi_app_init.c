@@ -19,6 +19,15 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
+static size_t device_path_length(const struct efi_device_path *device_path)
+{
+	const struct efi_device_path *d;
+
+	for (d = device_path; d->type != DEVICE_PATH_TYPE_END; d = (void *)d + d->length) {
+	}
+	return (void *)d - (void *)device_path + d->length;
+}
+
 /**
  * efi_bind_block() - bind a new block device to an EFI device
  *
@@ -39,19 +48,23 @@ int efi_bind_block(efi_handle_t handle, struct efi_block_io *blkio,
 		   struct efi_device_path *device_path, int len,
 		   struct udevice **devp)
 {
-	struct efi_media_plat plat;
+	struct efi_media_plat *plat;
 	struct udevice *dev;
 	char name[18];
 	int ret;
+	size_t device_path_len = device_path_length(device_path);
 
-	plat.handle = handle;
-	plat.blkio = blkio;
-	plat.device_path = malloc(device_path->length);
-	if (!plat.device_path)
+	plat = malloc(sizeof(struct efi_media_plat));
+	if (!plat)
+		return log_msg_ret("plat", -ENOMEM);
+	plat->handle = handle;
+	plat->blkio = blkio;
+	plat->device_path = malloc(device_path_len);
+	if (!plat->device_path)
 		return log_msg_ret("path", -ENOMEM);
-	memcpy(plat.device_path, device_path, device_path->length);
+	memcpy(plat->device_path, device_path, device_path_len);
 	ret = device_bind(dm_root(), DM_DRIVER_GET(efi_media), "efi_media",
-			  &plat, ofnode_null(), &dev);
+			  plat, ofnode_null(), &dev);
 	if (ret)
 		return log_msg_ret("bind", ret);
 
