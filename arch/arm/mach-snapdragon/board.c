@@ -87,7 +87,7 @@ int board_fdt_blob_setup(void **fdtp)
 	 * Parse the /memory node while we're here,
 	 * this makes it easy to do other things early.
 	 */
-	qcom_parse_memory();
+	qcom_parse_memory(internal_valid);
 
 	return ret;
 }
