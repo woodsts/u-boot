@@ -2,8 +2,12 @@
 #ifndef __QCOM_SMEM_H__
 #define __QCOM_SMEM_H__
 
+#include <linux/err.h>
+#include <stdbool.h>
+
 #define QCOM_SMEM_HOST_ANY -1
 
+#if defined(CONFIG_QCOM_SMEM)
 int qcom_smem_init(void);
 int qcom_socinfo_init(void);
 
@@ -12,5 +16,24 @@ int qcom_smem_alloc(unsigned host, unsigned item, size_t size);
 void *qcom_smem_get(unsigned host, unsigned item, size_t *size);
 
 int qcom_smem_get_free_space(unsigned host);
+#else
+static inline int qcom_smem_init(void) { return -ENOSYS; }
+static inline int qcom_socinfo_init(void) { return -ENOSYS; }
+static inline bool qcom_smem_is_available(void) { return false; }
+static inline int qcom_smem_alloc(unsigned host, unsigned item, size_t size)
+{
+	return -ENOSYS;
+}
+
+static inline void *qcom_smem_get(unsigned host, unsigned item, size_t *size)
+{
+	return ERR_PTR(-ENOSYS);
+}
+
+static inline int qcom_smem_get_free_space(unsigned host)
+{
+	return -ENOSYS;
+}
+#endif
 
 #endif
