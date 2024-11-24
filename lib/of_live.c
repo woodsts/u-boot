@@ -11,6 +11,7 @@
 #define LOG_CATEGORY	LOGC_DT
 
 #include <abuf.h>
+#include <efi_stub.h>
 #include <log.h>
 #include <linux/libfdt.h>
 #include <of_live.h>
@@ -334,6 +335,16 @@ int of_live_build(const void *fdt_blob, struct device_node **rootp)
 		return ret;
 	}
 	debug("%s: stop\n", __func__);
+
+	/*
+	 * When booting with EFI_STUB we can automatically generate a framebuffer
+	 * node based on the EFI data.
+	 */
+	if (IS_ENABLED(CONFIG_ARM) && IS_ENABLED(CONFIG_EFI_STUB)) {
+		ret = of_populate_from_efi(*rootp);
+		if (ret)
+			debug("Failed to populate live tree nodes from EFI: err=%d\n", ret);
+	}
 
 	return ret;
 }
