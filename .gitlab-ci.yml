@@ -588,10 +588,11 @@ pcduino3_nano:
     ROLE: pcduino3_nano
   <<: *lab_dfn
 
-samus:
-  variables:
-    ROLE: samus
-  <<: *lab_dfn
+# samus has a hardware failure 30-Nov-24
+#samus:
+#  variables:
+#    ROLE: samus
+#  <<: *lab_dfn
 
 link:
   variables:
@@ -643,25 +644,28 @@ rpi3z:
     ROLE: rpi3z
   <<: *lab_dfn
 
-bbb:
-  variables:
-    ROLE: bbb
-  <<: *lab_dfn
+# bbb has a hardware failure 30-Nov-24
+#bbb:
+#  variables:
+#    ROLE: bbb
+#  <<: *lab_dfn
 
 kevin:
   variables:
     ROLE: kevin
   <<: *lab_dfn
 
-pine64:
-  variables:
-    ROLE: pine64
-  <<: *lab_dfn
+# pine64 has a hardware failure 30-Nov-24
+#pine64:
+#  variables:
+#    ROLE: pine64
+#  <<: *lab_dfn
 
-c4:
-  variables:
-    ROLE: c4
-  <<: *lab_dfn
+# c4 needs binman supported added, so signing works
+#c4:
+#  variables:
+#    ROLE: c4
+#  <<: *lab_dfn
 
 rpi4:
   variables:
