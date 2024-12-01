@@ -546,9 +546,6 @@ coreboot test.py:
       allow_failure: true
   tags: [ 'lab' ]
   script:
-    - if [[ -z "${SJG_LAB}" ]]; then
-        exit 0;
-      fi
     # Environment:
     #   SRC  - source tree
     #   OUT  - output directory for builds
