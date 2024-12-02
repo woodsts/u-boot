@@ -787,7 +787,8 @@ void *efi_alloc(size_t len);
  * @align:		alignment in bytes
  * Return:		aligned memory or NULL
  */
-void *efi_alloc_aligned_pages(u64 len, int memory_type, size_t align);
+void *efi_alloc_aligned_pages(u64 len, enum efi_memory_type memory_type,
+			      size_t align);
 
 /**
  * efi_allocate_pages - allocate memory pages

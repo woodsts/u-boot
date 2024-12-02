@@ -15,7 +15,39 @@
 
 /* names for enum efil_tag (abbreviated to keep output to a single line) */
 static const char *tag_name[EFILT_COUNT] = {
+	"alloc_pages",
+	"free_pages",
+	"alloc_pool",
+	"free_pool",
+
 	"testing",
+};
+
+/* names for enum efi_allocate_type  */
+static const char *allocate_type_name[EFI_MAX_ALLOCATE_TYPE] = {
+	"any-pages",
+	"max-addr",
+	"alloc-addr",
+};
+
+/* names for enum efi_memory_type */
+static const char *memory_type_name[EFI_MAX_MEMORY_TYPE] = {
+	"reserved",
+	"ldr-code",
+	"ldr-data",
+	"bt-code",
+	"bt-data",
+	"rt-code",
+	"rt-data",
+	"convent",
+	"unusable",
+	"acpi-rec",
+	"acpi-nvs",
+	"mmap-io",
+	"mmap-iop",
+	"pal-code",
+	"persist",
+	"unaccept",
 };
 
 /* names for error codes, trying to keep them short */
@@ -152,6 +184,119 @@ int efi_loge_testing(int ofs, efi_status_t efi_ret)
 	return 0;
 }
 
+int efi_logs_allocate_pages(enum efi_allocate_type type,
+			    enum efi_memory_type memory_type, efi_uintn_t pages,
+			    u64 *memory)
+{
+	struct efil_allocate_pages *rec;
+	int ret;
+
+	ret = prep_rec(EFILT_ALLOCATE_PAGES, sizeof(*rec), (void **)&rec);
+	if (ret < 0)
+		return ret;
+
+	rec->type = type;
+	rec->memory_type = memory_type;
+	rec->pages = pages;
+	rec->memory = memory;
+	rec->e_memory = 0;
+
+	return ret;
+}
+
+int efi_loge_allocate_pages(int ofs, efi_status_t efi_ret)
+{
+	struct efil_allocate_pages *rec;
+
+	rec = finish_rec(ofs, efi_ret);
+	if (!rec)
+		return -ENOSPC;
+	rec->e_memory = *rec->memory;
+
+	return 0;
+}
+
+int efi_logs_free_pages(u64 memory, efi_uintn_t pages)
+{
+	struct efil_free_pages *rec;
+	int ret;
+
+	ret = prep_rec(EFILT_FREE_PAGES, sizeof(*rec), (void **)&rec);
+	if (ret < 0)
+		return ret;
+
+	rec->memory = memory;
+	rec->pages = pages;
+
+	return ret;
+}
+
+int efi_loge_free_pages(int ofs, efi_status_t efi_ret)
+{
+	struct efil_allocate_pages *rec;
+
+	rec = finish_rec(ofs, efi_ret);
+	if (!rec)
+		return -ENOSPC;
+
+	return 0;
+}
+
+int efi_logs_allocate_pool(enum efi_memory_type pool_type, efi_uintn_t size,
+			   void **buffer)
+{
+	struct efil_allocate_pool *rec;
+	int ret;
+
+	ret = prep_rec(EFILT_ALLOCATE_POOL, sizeof(*rec), (void **)&rec);
+	if (ret < 0)
+		return ret;
+
+	rec->pool_type = pool_type;
+	rec->size = size;
+	rec->buffer = buffer;
+	rec->e_buffer = NULL;
+
+	return ret;
+}
+
+int efi_loge_allocate_pool(int ofs, efi_status_t efi_ret)
+{
+	struct efil_allocate_pool *rec;
+
+	rec = finish_rec(ofs, efi_ret);
+	if (!rec)
+		return -ENOSPC;
+	rec->e_buffer = *rec->buffer;
+
+	return 0;
+}
+
+int efi_logs_free_pool(void *buffer)
+{
+	struct efil_free_pool *rec;
+	int ret;
+
+	ret = prep_rec(EFILT_FREE_POOL, sizeof(*rec), (void **)&rec);
+	if (ret < 0)
+		return ret;
+
+	rec->buffer = buffer;
+
+	return ret;
+}
+
+int efi_loge_free_pool(int ofs, efi_status_t efi_ret)
+{
+	struct efil_free_pool *rec;
+
+	rec = finish_rec(ofs, efi_ret);
+	if (!rec)
+		return -ENOSPC;
+
+	return 0;
+}
+
 static void show_enum(const char *type_name[], int type)
 {
 	printf("%s ", type_name[type]);
@@ -187,6 +332,50 @@ void show_rec(int seq, struct efil_rec_hdr *rec_hdr)
 
 	printf("%3d %12s ", seq, tag_name[rec_hdr->tag]);
 	switch (rec_hdr->tag) {
+	case EFILT_ALLOCATE_PAGES: {
+		struct efil_allocate_pages *rec = start;
+
+		show_enum(allocate_type_name, rec->type);
+		show_enum(memory_type_name, rec->memory_type);
+		show_ulong("pgs", (ulong)rec->pages);
+		show_addr("mem", (ulong)rec->memory);
+		if (rec_hdr->ended) {
+			show_addr("*mem",
+				  (ulong)map_to_sysmem((void *)rec->e_memory));
+			show_ret(rec_hdr->e_ret);
+		}
+		break;
+	}
+	case EFILT_FREE_PAGES: {
+		struct efil_free_pages *rec = start;
+
+		show_addr("mem", map_to_sysmem((void *)rec->memory));
+		show_ulong("pag", (ulong)rec->pages);
+		if (rec_hdr->ended)
+			show_ret(rec_hdr->e_ret);
+		break;
+	}
+	case EFILT_ALLOCATE_POOL: {
+		struct efil_allocate_pool *rec = start;
+
+		show_enum(memory_type_name, rec->pool_type);
+		show_ulong("size", (ulong)rec->size);
+		show_addr("buf", (ulong)rec->buffer);
+		if (rec_hdr->ended) {
+			show_addr("*buf",
+				  (ulong)map_to_sysmem((void *)rec->e_buffer));
+			show_ret(rec_hdr->e_ret);
+		}
+		break;
+	}
+	case EFILT_FREE_POOL: {
+		struct efil_free_pool *rec = start;
+
+		show_addr("buf", map_to_sysmem(rec->buffer));
+		if (rec_hdr->ended)
+			show_ret(rec_hdr->e_ret);
+		break;
+	}
 	case EFILT_TESTING: {
 		struct efil_testing *rec = start;
 

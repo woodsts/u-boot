@@ -16,6 +16,11 @@
  * enum efil_tag - Types of logging records which can be created
  */
 enum efil_tag {
+	EFILT_ALLOCATE_PAGES,
+	EFILT_FREE_PAGES,
+	EFILT_ALLOCATE_POOL,
+	EFILT_FREE_POOL,
+
 	EFILT_TESTING,
 
 	EFILT_COUNT,
@@ -80,6 +85,28 @@ struct efil_allocate_pages {
 	u64 e_memory;
 };
 
+/** struct efil_free_pages - holds info from efi_free_pages() call */
+struct efil_free_pages {
+	u64 memory;
+	efi_uintn_t pages;
+};
+
+/** struct efil_allocate_pool - holds info from efi_allocate_pool() call
+ *
+ * @e_buffer: Contains the value of *@buffer on return from the EFI function
+ */
+struct efil_allocate_pool {
+	enum efi_memory_type pool_type;
+	efi_uintn_t size;
+	void **buffer;
+	void *e_buffer;
+};
+
+/** struct efil_free_pool - holds log-info from efi_free_pool() call */
+struct efil_free_pool {
+	void *buffer;
+};
+
 /*
  * The functions below are in pairs, with a 'start' and 'end' call for each EFI
  * function. The 'start' function (efi_logs_...) is called when the function is
@@ -123,7 +150,127 @@ int efi_logs_testing(enum efil_test_t enum_val, efi_uintn_t int_value,
  */
 int efi_loge_testing(int ofs, efi_status_t efi_ret);
 
+/**
+ * efi_logs_allocate_pages() - Record a call to efi_allocate_pages()
+ *
+ * @type:		type of allocation to be performed
+ * @memory_type:	usage type of the allocated memory
+ * @pages:		number of pages to be allocated
+ * @memory:		place to write address of allocated memory
+ * Return:		log-offset of this new record, or -ve error code
+ */
+int efi_logs_allocate_pages(enum efi_allocate_type type,
+			    enum efi_memory_type memory_type, efi_uintn_t pages,
+			    u64 *memory);
+
+/**
+ * efi_loge_allocate_pages() - Record a return from efi_allocate_pages()
+ *
+ * This stores the value of the memory pointer also
+ *
+ * ofs: Offset of the record to end
+ * efi_ret: status code to record
+ */
+int efi_loge_allocate_pages(int ofs, efi_status_t efi_ret);
+
+/**
+ * efi_logs_free_pages() - Record a call to efi_free_pages()
+ *
+ * @memory:	start of the memory area to be freed
+ * @pages:	number of pages to be freed
+ * Return:	log-offset of this new record, or -ve error code
+ */
+int efi_logs_free_pages(u64 memory, efi_uintn_t pages);
+
+/**
+ * efi_loge_free_pages() - Record a return from efi_free_pages()
+ *
+ * ofs: Offset of the record to end
+ * efi_ret: status code to record
+ */
+int efi_loge_free_pages(int ofs, efi_status_t efi_ret);
+
+/**
+ * efi_logs_allocate_pool() - Record a call to efi_allocate_pool()
+ *
+ * @pool_type:	type of the pool from which memory is to be allocated
+ * @size:	number of bytes to be allocated
+ * @buffer:	place to hold pointer to allocated memory
+ * Return:	log-offset of this new record, or -ve error code
+ */
+int efi_logs_allocate_pool(enum efi_memory_type pool_type, efi_uintn_t size,
+			   void **buffer);
+
+/**
+ * efi_loge_allocate_pool() - Record a return from efi_allocate_pool()
+ *
+ * This stores the value of the buffer pointer also
+ *
+ * ofs: Offset of the record to end
+ * efi_ret: status code to record
+ */
+int efi_loge_allocate_pool(int ofs, efi_status_t efi_ret);
+
+/**
+ * efi_logs_free_pool() - Record a call to efi_free_pool()
+ *
+ * @buffer:	start of memory to be freed
+ * Return:	log-offset of this new record, or -ve error code
+ */
+int efi_logs_free_pool(void *buffer);
+
+/**
+ * efi_loge_free_pool() - Record a return from efi_free_pool()
+ *
+ * ofs: Offset of the record to end
+ * efi_ret: status code to record
+ */
+int efi_loge_free_pool(int ofs, efi_status_t efi_ret);
+
 #else /* !EFI_LOG */
+
+static inline int efi_logs_allocate_pages(enum efi_allocate_type type,
+					  enum efi_memory_type memory_type,
+					  efi_uintn_t pages, u64 *memory)
+{
+	return -ENOSYS;
+}
+
+static inline int efi_loge_allocate_pages(int ofs, efi_status_t efi_ret)
+{
+	return -ENOSYS;
+}
+
+static inline int efi_logs_free_pages(u64 memory, efi_uintn_t pages)
+{
+	return -ENOSYS;
+}
+
+static inline int efi_loge_free_pages(int ofs, efi_status_t efi_ret)
+{
+	return -ENOSYS;
+}
+
+static inline int efi_logs_allocate_pool(enum efi_memory_type pool_type,
+					 efi_uintn_t size, void **buffer)
+{
+	return -ENOSYS;
+}
+
+static inline int efi_loge_allocate_pool(int ofs, efi_status_t efi_ret)
+{
+	return -ENOSYS;
+}
+
+static inline int efi_logs_free_pool(void *buffer)
+{
+	return -ENOSYS;
+}
+
+static inline int efi_loge_free_pool(int ofs, efi_status_t efi_ret)
+{
+	return -ENOSYS;
+}
 
 static inline int efi_logs_testing(enum efil_test_t enum_val,
 				   efi_uintn_t int_value, void *buffer,
