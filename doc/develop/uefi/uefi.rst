@@ -1004,6 +1004,28 @@ This driver is only available if U-Boot is configured with::
     CONFIG_BLK=y
     CONFIG_PARTITIONS=y
 
+Logging
+-------
+
+The EFI subsystem supports logging of boot-services calls to a memory area. The
+log can then be shown using the ``efidebug log`` command. Note that only a few
+calls are logged at present.
+
+To enable this feature::
+
+    CONFIG_EFI_LOG=y
+    CONFIG_EFI_LOG_SIZE=0x4000
+    CONFIG_BLOBLIST_SIZE_RELOC=0x5000
+
+The bloblist size must be set to larger than the EFI size. For now the log size
+is fixed at the start.
+
+Logging is performed within the internal U-Boot functions, not at the
+boot-services interface. This makes it possible to log EFI calls made by U-Boot
+itself, such as memory allocations.
+
+See the :doc:`/usage/cmd/efidebug` (*log* subcommand) for more information.
+
 Miscellaneous
 -------------
 
