@@ -8,6 +8,7 @@
 #define LOG_CATEGORY LOGC_EFI
 
 #include <efi_loader.h>
+#include <efi_log.h>
 #include <efi_variable.h>
 #include <log.h>
 #include <asm-generic/unaligned.h>
@@ -185,6 +186,12 @@ int efi_init_early(void)
 
 	/* Allow unaligned memory access */
 	allow_unaligned();
+
+	if (IS_ENABLED(CONFIG_EFI_LOG)) {
+		ret = efi_log_init();
+		if (ret)
+			return -ENOSPC;
+	}
 
 	/* Initialize root node */
 	ret = efi_root_node_register();
