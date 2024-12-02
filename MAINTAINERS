@@ -1080,6 +1080,7 @@ M:	Simon Glass <sjg@chromium.org>
 S:	Maintained
 F:	include/efi_log.h
 F:	lib/efi_loader/efi_log.c
+F:	test/lib/efi_log.c
 
 EFI PAYLOAD
 M:	Heinrich Schuchardt <xypron.glpk@gmx.de>

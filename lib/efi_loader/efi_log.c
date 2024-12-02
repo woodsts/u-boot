@@ -129,6 +129,7 @@ int efi_logs_testing(enum efil_test_t enum_val, efi_uintn_t int_val,
 	if (ret < 0)
 		return ret;
 
+	rec->enum_val = enum_val;
 	rec->int_val = int_val;
 	rec->buffer = buffer;
 	rec->memory = memory;
@@ -194,10 +195,8 @@ void show_rec(int seq, struct efil_rec_hdr *rec_hdr)
 		show_addr("buf", map_to_sysmem(rec->buffer));
 		show_addr("mem", map_to_sysmem(rec->memory));
 		if (rec_hdr->ended) {
-			show_addr("*buf",
-				  (ulong)map_to_sysmem((void *)rec->e_buffer));
-			show_addr("*mem",
-				  (ulong)rec->e_memory);
+			show_addr("*buf", (ulong)map_to_sysmem(rec->e_buffer));
+			show_addr("*mem", (ulong)rec->e_memory);
 			show_ret(rec_hdr->e_ret);
 		}
 	}
