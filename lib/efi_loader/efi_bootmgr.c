@@ -1186,7 +1186,8 @@ out:
 			free(opt[i].lo);
 	}
 	free(opt);
-	efi_free_pool(handles);
+	if (handles)
+		efi_free_pool(handles);
 
 	if (ret == EFI_NOT_FOUND)
 		return EFI_SUCCESS;
