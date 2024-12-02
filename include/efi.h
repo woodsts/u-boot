@@ -130,6 +130,7 @@ static inline void *guidcpy(void *dst, const void *src)
 #define EFI_COMPROMISED_DATA		(EFI_ERROR_MASK | 33)
 #define EFI_IP_ADDRESS_CONFLICT		(EFI_ERROR_MASK | 34)
 #define EFI_HTTP_ERROR			(EFI_ERROR_MASK | 35)
+#define EFI_ERROR_COUNT			36
 
 #define EFI_WARN_UNKNOWN_GLYPH		1
 #define EFI_WARN_DELETE_FAILURE		2

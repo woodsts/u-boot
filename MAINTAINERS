@@ -1075,6 +1075,12 @@ F:	lib/efi/efi_app.c
 F:	scripts/build-efi.sh
 F:	test/dm/efi_media.c
 
+EFI LOGGING
+M:	Simon Glass <sjg@chromium.org>
+S:	Maintained
+F:	include/efi_log.h
+F:	lib/efi_loader/efi_log.c
+
 EFI PAYLOAD
 M:	Heinrich Schuchardt <xypron.glpk@gmx.de>
 M:	Ilias Apalodimas <ilias.apalodimas@linaro.org>
