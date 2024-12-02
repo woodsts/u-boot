@@ -61,6 +61,7 @@ Shell commands
    cmd/echo
    cmd/efi
    cmd/eficonfig
+   cmd/efidebug
    cmd/env
    cmd/event
    cmd/exception
