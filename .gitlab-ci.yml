@@ -110,6 +110,8 @@ stages:
 
 build all 32bit ARM platforms:
   extends: .world_build
+  tags:
+    - single
   script:
     - ret=0;
       git config --global --add safe.directory "${CI_PROJECT_DIR}";
@@ -122,6 +124,8 @@ build all 32bit ARM platforms:
 
 build all 64bit ARM platforms:
   extends: .world_build
+  tags:
+    - single
   script:
     - virtualenv -p /usr/bin/python3 /tmp/venv
     - . /tmp/venv/bin/activate
@@ -136,6 +140,8 @@ build all 64bit ARM platforms:
 
 build all PowerPC platforms:
   extends: .world_build
+  tags:
+    - single
   script:
     - ret=0;
       git config --global --add safe.directory "${CI_PROJECT_DIR}";
@@ -147,6 +153,8 @@ build all PowerPC platforms:
 
 build all other platforms:
   extends: .world_build
+  tags:
+    - single
   script:
     - ret=0;
       git config --global --add safe.directory "${CI_PROJECT_DIR}";
@@ -192,6 +200,8 @@ Check for configs without MAINTAINERS entry:
 # Ensure host tools build
 Build tools-only and envtools:
   extends: .testsuites
+  tags:
+    - single
   script:
     - make tools-only_config tools-only -j$(nproc);
       make mrproper;
@@ -224,6 +234,8 @@ Run binman, buildman, dtoc, Kconfig and patman testsuites:
 # Check for any pylint regressions
 Run pylint:
   extends: .testsuites
+  tags:
+    - single
   script:
     - git config --global --add safe.directory "${CI_PROJECT_DIR}"
     - pip install -r test/py/requirements.txt
