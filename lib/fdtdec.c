@@ -1666,35 +1666,23 @@ static void setup_multi_dtb_fit(void)
 
 int fdtdec_setup(void)
 {
-	int ret = -ENOENT;
+	int ret;
 
-	/*
-	 * If allowing a bloblist, check that first. There was discussion about
-	 * adding an OF_BLOBLIST Kconfig, but this was rejected.
-	 *
-	 * The necessary test is whether the previous phase passed a bloblist,
-	 * not whether this phase creates one.
-	 */
-	if (CONFIG_IS_ENABLED(BLOBLIST) &&
-	    (xpl_prev_phase() != PHASE_TPL ||
-	     !IS_ENABLED(CONFIG_TPL_BLOBLIST))) {
+	/* The devicetree is typically appended to U-Boot */
+	if (CONFIG_IS_ENABLED(OF_BLOBLIST)) {
 		ret = bloblist_maybe_init();
-		if (!ret) {
-			gd->fdt_blob = bloblist_find(BLOBLISTT_CONTROL_FDT, 0);
-			if (gd->fdt_blob) {
-				gd->fdt_src = FDTSRC_BLOBLIST;
-				log_debug("Devicetree is in bloblist at %p\n",
-					  gd->fdt_blob);
-				ret = 0;
-			} else {
-				log_debug("No FDT found in bloblist\n");
-				ret = -ENOENT;
-			}
+		if (ret)
+			return ret;
+		gd->fdt_blob = bloblist_find(BLOBLISTT_CONTROL_FDT, 0);
+		if (!gd->fdt_blob) {
+			printf("Not FDT found in bloblist\n");
+			bloblist_show_list();
+			return -ENOENT;
 		}
-	}
-
-	/* Otherwise, the devicetree is typically appended to U-Boot */
-	if (ret) {
+		gd->fdt_src = FDTSRC_BLOBLIST;
+		bloblist_show_list();
+		log_debug("Devicetree is in bloblist at %p\n", gd->fdt_blob);
+	} else {
 		if (IS_ENABLED(CONFIG_OF_SEPARATE)) {
 			gd->fdt_blob = fdt_find_separate();
 			gd->fdt_src = FDTSRC_SEPARATE;
@@ -1702,15 +1690,14 @@ int fdtdec_setup(void)
 			gd->fdt_blob = dtb_dt_embedded();
 			gd->fdt_src = FDTSRC_EMBED;
 		}
-	}
 
-	/* Allow the board to override the fdt address. */
-	if (IS_ENABLED(CONFIG_OF_BOARD)) {
-		gd->fdt_blob = board_fdt_blob_setup(&ret);
-		if (!ret)
+		/* Allow the board to override the fdt address. */
+		if (IS_ENABLED(CONFIG_OF_BOARD)) {
+			gd->fdt_blob = board_fdt_blob_setup(&ret);
+			if (ret)
+				return ret;
 			gd->fdt_src = FDTSRC_BOARD;
-		else if (ret != -EEXIST)
-			return ret;
+		}
 	}
 
 	/* Allow the early environment to override the fdt address */

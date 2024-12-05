@@ -1191,8 +1191,7 @@ int fdtdec_resetup(int *rescan);
  *
  * The existing devicetree is available at gd->fdt_blob
  *
- * @err: 0 on success, -EEXIST if the devicetree is already correct, or other
- * internal error code if we fail to setup a DTB
+ * @err internal error code if we fail to setup a DTB
  * @returns new devicetree blob pointer
  */
 void *board_fdt_blob_setup(int *err);

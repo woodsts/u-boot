@@ -6,6 +6,9 @@
  * Written by Simon Glass <sjg@chromium.org>
  */
 
+#include <alist.h>
+#include <blk.h>
+#include <bootdev.h>
 #include <bootflow.h>
 #include <bootstd.h>
 #include <dm.h>
@@ -42,13 +45,11 @@ static int bootstd_of_to_plat(struct udevice *dev)
 
 static void bootstd_clear_glob_(struct bootstd_priv *priv)
 {
-	while (!list_empty(&priv->glob_head)) {
-		struct bootflow *bflow;
+	struct bootflow *bflow;
 
-		bflow = list_first_entry(&priv->glob_head, struct bootflow,
-					 glob_node);
+	alist_for_each(bflow, &priv->bootflows)
 		bootflow_remove(bflow);
-	}
+	alist_empty(&priv->bootflows);
 }
 
 void bootstd_clear_glob(void)
@@ -59,6 +60,44 @@ void bootstd_clear_glob(void)
 		return;
 
 	bootstd_clear_glob_(std);
+}
+
+int bootstd_add_bootflow(struct bootflow *bflow)
+{
+	struct bootstd_priv *std;
+	int ret;
+
+	ret = bootstd_get_priv(&std);
+	if (ret)
+		return ret;
+
+	ret = std->bootflows.count;
+	bflow = alist_add(&std->bootflows, *bflow);
+	if (!bflow)
+		return log_msg_ret("bf2", -ENOMEM);
+
+	return ret;
+}
+
+int bootstd_clear_bootflows_for_bootdev(struct udevice *dev)
+{
+	struct bootstd_priv *std = bootstd_try_priv();
+	struct bootflow *from, *to;
+
+	/* if bootstd does not exist we cannot have any bootflows */
+	if (!std)
+		return 0;
+
+	/* Drop any bootflows that mention this dev */
+	alist_for_each_filter(from, to, &std->bootflows) {
+		if (from->dev == dev)
+			bootflow_remove(from);
+		else
+			*to++ = *from;
+	}
+	alist_update_end(&std->bootflows, to);
+
+	return 0;
 }
 
 static int bootstd_remove(struct udevice *dev)
@@ -100,6 +139,17 @@ const char *const *const bootstd_get_prefixes(struct udevice *dev)
 	return std->prefixes ? std->prefixes : default_prefixes;
 }
 
+struct bootstd_priv *bootstd_try_priv(void)
+{
+	struct udevice *dev;
+
+	dev = uclass_try_first_device(UCLASS_BOOTSTD);
+	if (!dev || !device_active(dev))
+		return NULL;
+
+	return dev_get_priv(dev);
+}
+
 int bootstd_get_priv(struct bootstd_priv **stdp)
 {
 	struct udevice *dev;
@@ -113,11 +163,53 @@ int bootstd_get_priv(struct bootstd_priv **stdp)
 	return 0;
 }
 
+int bootstd_img_add(struct blk_desc *desc, int part, const char *fname,
+		    enum bootflow_img_t type, ulong addr, ulong size)
+{
+	struct udevice *bootdev = NULL;
+	struct bootstd_priv *std;
+	struct bootflow *bflow, bflow_s;
+	int ret;
+
+	ret = bootstd_get_priv(&std);
+	if (ret)
+		return ret;
+
+	if (desc) {
+		ret = bootdev_get_from_blk(desc->bdev, &bootdev);
+		if (ret)
+			return log_msg_ret("iad", ret);
+	}
+
+	bflow = alist_getw(&std->bootflows, std->adhoc_bflow, struct bootflow);
+	if (!bflow) {
+		bflow = &bflow_s;
+
+		bootflow_init(bflow, bootdev, NULL);
+		bflow->name = strdup("ad-hoc");
+		if (!bflow->name)
+			return log_msg_ret("ian", -ENOMEM);
+	}
+
+	if (!bootflow_img_add(bflow, fname, type, addr, size))
+		return log_msg_ret("iaf", -ENOMEM);
+
+	if (bflow == &bflow_s) {
+		ret = bootstd_add_bootflow(bflow);
+		if (ret < 0)
+			return log_msg_ret("iab", ret);
+		std->adhoc_bflow = ret;
+	}
+
+	return 0;
+}
+
 static int bootstd_probe(struct udevice *dev)
 {
 	struct bootstd_priv *std = dev_get_priv(dev);
 
-	INIT_LIST_HEAD(&std->glob_head);
+	alist_init_struct(&std->bootflows, struct bootflow);
+	std->adhoc_bflow = -1;
 
 	return 0;
 }

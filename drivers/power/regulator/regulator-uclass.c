@@ -433,8 +433,6 @@ static int regulator_post_bind(struct udevice *dev)
 	const char *property = "regulator-name";
 
 	uc_pdata = dev_get_uclass_plat(dev);
-	uc_pdata->always_on = dev_read_bool(dev, "regulator-always-on");
-	uc_pdata->boot_on = dev_read_bool(dev, "regulator-boot-on");
 
 	/* Regulator's mandatory constraint */
 	uc_pdata->name = dev_read_string(dev, property);
@@ -446,21 +444,13 @@ static int regulator_post_bind(struct udevice *dev)
 			return -EINVAL;
 	}
 
-	if (!regulator_name_is_unique(dev, uc_pdata->name)) {
-		debug("'%s' of dev: '%s', has nonunique value: '%s\n",
-		      property, dev->name, uc_pdata->name);
-		return -EINVAL;
-	}
+	if (regulator_name_is_unique(dev, uc_pdata->name))
+		return 0;
 
-	/*
-	 * In case the regulator has regulator-always-on or
-	 * regulator-boot-on DT property, trigger probe() to
-	 * configure its default state during startup.
-	 */
-	if (uc_pdata->always_on || uc_pdata->boot_on)
-		dev_or_flags(dev, DM_FLAG_PROBE_AFTER_BIND);
+	debug("'%s' of dev: '%s', has nonunique value: '%s\n",
+	      property, dev->name, uc_pdata->name);
 
-	return 0;
+	return -EINVAL;
 }
 
 static int regulator_pre_probe(struct udevice *dev)
@@ -483,6 +473,8 @@ static int regulator_pre_probe(struct udevice *dev)
 						-ENODATA);
 	uc_pdata->max_uA = dev_read_u32_default(dev, "regulator-max-microamp",
 						-ENODATA);
+	uc_pdata->always_on = dev_read_bool(dev, "regulator-always-on");
+	uc_pdata->boot_on = dev_read_bool(dev, "regulator-boot-on");
 	uc_pdata->ramp_delay = dev_read_u32_default(dev, "regulator-ramp-delay",
 						    0);
 	uc_pdata->force_off = dev_read_bool(dev, "regulator-force-boot-off");
