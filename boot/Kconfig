@@ -582,11 +582,25 @@ config BOOTMETH_EFI_BOOTMGR
 	bool "Bootdev support for EFI boot manager"
 	depends on EFI_BOOTMGR
 	select BOOTMETH_GLOBAL
-	default y
+	default y if !ARCH_SUNXI  # Temporary work-around for sunxi
 	help
 	  Enable booting via the UEFI boot manager. Based on the EFI variables
 	  the EFI binary to be launched is determined. To set the EFI variables
 	  use the eficonfig command.
+
+config BOOTMETH_FEL
+	bool "Bootdev support for Sunxi FEL"
+	depends on ARCH_SUNXI
+	default y
+	help
+	  Enables support for executing an explicit boot script uploaded before
+	  via the USB FEL protocol. The 'fel_scriptaddr' environment variable
+	  holds the address of this script, taken from the SPL header.
+
+	  This method is only available if booting from FEL, i.e. the
+	  'fel_booted' environment variable is set.
+
+	  See https://linux-sunxi.org/FEL/Protocol for more information.
 
 config BOOTMETH_QFW
 	bool "Boot method using QEMU parameters"
