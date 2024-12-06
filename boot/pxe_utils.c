@@ -802,8 +802,31 @@ static int label_boot(struct pxe_context *ctx, struct pxe_label *label)
 	if (ctx->bflow)
 		ctx->bflow->fdt_addr = hextoul(conf_fdt, NULL);
 
-	if (ctx->no_boot)
+	if (IS_ENABLED(CONFIG_BOOTSTD_FULL) && ctx->no_boot) {
+		ctx->label = label;
+		ctx->kernel_addr = strdup(kernel_addr);
+		if (initrd_addr_str) {
+			ctx->initrd_addr_str = strdup(initrd_addr_str);
+			ctx->initrd_filesize = strdup(initrd_filesize);
+			ctx->initrd_str = strdup(initrd_str);
+		}
+		ctx->conf_fdt = strdup(conf_fdt);
+		log_debug("Saving label '%s':\n", label->name);
+		log_debug("- kernel_addr '%s' conf_fdt '%s'\n",
+			  ctx->kernel_addr, ctx->conf_fdt);
+		if (initrd_addr_str) {
+			log_debug("- initrd addr '%s' filesize '%s' str '%s'\n",
+				  ctx->initrd_addr_str, ctx->initrd_filesize,
+				  ctx->initrd_str);
+		}
+		if (!ctx->kernel_addr || !ctx->conf_fdt ||
+		    (initrd_addr_str && (!ctx->initrd_addr_str ||
+		     !ctx->initrd_filesize || !ctx->initrd_str))) {
+			printf("malloc fail (saving label)\n");
+			return 1;
+		}
 		return 0;
+	}
 
 	label_run_boot(ctx, label, kernel_addr, initrd_addr_str,
 		       initrd_filesize, initrd_str, conf_fdt);
@@ -1695,22 +1718,61 @@ void pxe_destroy_ctx(struct pxe_context *ctx)
 	free(ctx->bootdir);
 }
 
-int pxe_process(struct pxe_context *ctx, ulong pxefile_addr_r, bool prompt)
+struct pxe_menu *pxe_prepare(struct pxe_context *ctx, ulong pxefile_addr_r,
+			     bool prompt)
 {
 	struct pxe_menu *cfg;
 
 	cfg = parse_pxefile(ctx, pxefile_addr_r);
 	if (!cfg) {
 		printf("Error parsing config file\n");
-		return 1;
+		return NULL;
 	}
 
-	if (prompt)
-		cfg->prompt = 1;
+	cfg->prompt = prompt;
+
+	return cfg;
+}
+
+int pxe_process(struct pxe_context *ctx, ulong pxefile_addr_r, bool prompt)
+{
+	struct pxe_menu *cfg;
+
+	cfg = pxe_prepare(ctx, pxefile_addr_r, prompt);
+	if (!cfg)
+		return 1;
 
 	handle_pxe_menu(ctx, cfg);
 
 	destroy_pxe_menu(cfg);
+
+	return 0;
+}
+
+int pxe_probe(struct pxe_context *ctx, ulong pxefile_addr_r, bool prompt)
+{
+	ctx->cfg = pxe_prepare(ctx, pxefile_addr_r, prompt);
+	if (!ctx->cfg)
+		return -EINVAL;
+	ctx->no_boot = true;
+
+	handle_pxe_menu(ctx, ctx->cfg);
+
+	return 0;
+}
+
+int pxe_do_boot(struct pxe_context *ctx)
+{
+	int ret;
+
+	if (!ctx->label)
+		return log_msg_ret("pxb", -ENOENT);
+
+	ret = label_run_boot(ctx, ctx->label, ctx->kernel_addr,
+			     ctx->initrd_addr_str, ctx->initrd_filesize,
+			     ctx->initrd_str, ctx->conf_fdt);
+	if (ret)
+		return log_msg_ret("lrb", ret);
 
 	return 0;
 }
