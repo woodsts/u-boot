@@ -175,7 +175,6 @@ static int extlinux_read_bootflow(struct udevice *dev, struct bootflow *bflow)
 
 static int extlinux_boot(struct udevice *dev, struct bootflow *bflow)
 {
-	struct cmd_tbl cmdtp = {};	/* dummy */
 	struct pxe_context ctx;
 	struct extlinux_info info;
 	struct extlinux_plat *plat;
@@ -188,8 +187,8 @@ static int extlinux_boot(struct udevice *dev, struct bootflow *bflow)
 
 	plat = dev_get_plat(dev);
 
-	ret = pxe_setup_ctx(&ctx, &cmdtp, extlinux_getfile, &info, true,
-			    bflow->fname, false, plat->use_fallback);
+	ret = pxe_setup_ctx(&ctx, extlinux_getfile, &info, true, bflow->fname,
+			    false, plat->use_fallback);
 	if (ret)
 		return log_msg_ret("ctx", -EINVAL);
 

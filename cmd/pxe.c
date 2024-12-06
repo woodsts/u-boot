@@ -126,12 +126,11 @@ static int pxe_ipaddr_paths(struct pxe_context *ctx, unsigned long pxefile_addr_
 
 int pxe_get(ulong pxefile_addr_r, char **bootdirp, ulong *sizep, bool use_ipv6)
 {
-	struct cmd_tbl cmdtp[] = {};	/* dummy */
 	struct pxe_context ctx;
 	int i;
 
-	if (pxe_setup_ctx(&ctx, cmdtp, do_get_tftp, NULL, false,
-			  env_get("bootfile"), use_ipv6, false))
+	if (pxe_setup_ctx(&ctx, do_get_tftp, NULL, false, env_get("bootfile"),
+			  use_ipv6, false))
 		return -ENOMEM;
 
 	if (IS_ENABLED(CONFIG_BOOTP_PXE_DHCP_OPTION) &&
@@ -280,8 +279,8 @@ do_pxe_boot(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 		return 1;
 	}
 
-	if (pxe_setup_ctx(&ctx, cmdtp, do_get_tftp, NULL, false,
-			  env_get("bootfile"), use_ipv6, false)) {
+	if (pxe_setup_ctx(&ctx, do_get_tftp, NULL, false, env_get("bootfile"),
+			  use_ipv6, false)) {
 		printf("Out of memory\n");
 		return CMD_RET_FAILURE;
 	}
