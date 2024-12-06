@@ -109,7 +109,8 @@ typedef int (*pxe_getfile_func)(struct pxe_context *ctx, const char *file_path,
  * @use_ipv6: TRUE : use IPv6 addressing, FALSE : use IPv4 addressing
  * @use_fallback: TRUE : use "fallback" option as default, FALSE : use
  *	"default" option as default
- * @bflow: Bootflow being booted, or NULL if none
+ * @no_boot: Stop show of actually booting and just return
+ * @bflow: Bootflow being booted, or NULL if none (must be valid if @no_boot)
  */
 struct pxe_context {
 	/**
@@ -130,6 +131,7 @@ struct pxe_context {
 	ulong pxe_file_size;
 	bool use_ipv6;
 	bool use_fallback;
+	bool no_boot;
 	struct bootflow *bflow;
 };
 
