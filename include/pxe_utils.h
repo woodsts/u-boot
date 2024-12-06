@@ -100,7 +100,6 @@ typedef int (*pxe_getfile_func)(struct pxe_context *ctx, const char *file_path,
 /**
  * struct pxe_context - context information for PXE parsing
  *
- * @cmdtp: Pointer to command table to use when calling other commands
  * @getfile: Function called by PXE to read a file
  * @userdata: Data the caller requires for @getfile
  * @allow_abs_path: true to allow absolute paths
@@ -112,7 +111,6 @@ typedef int (*pxe_getfile_func)(struct pxe_context *ctx, const char *file_path,
  *	"default" option as default
  */
 struct pxe_context {
-	struct cmd_tbl *cmdtp;
 	/**
 	 * getfile() - read a file
 	 *
@@ -222,7 +220,6 @@ int format_mac_pxe(char *outbuf, size_t outbuf_len);
  * pxe_setup_ctx() - Setup a new PXE context
  *
  * @ctx: Context to set up
- * @cmdtp: Command table entry which started this action
  * @getfile: Function to call to read a file
  * @userdata: Data the caller requires for @getfile - stored in ctx->userdata
  * @allow_abs_path: true to allow absolute paths
@@ -237,10 +234,9 @@ int format_mac_pxe(char *outbuf, size_t outbuf_len);
  * Return: 0 if OK, -ENOMEM if out of memory, -E2BIG if bootfile is larger than
  *	MAX_TFTP_PATH_LEN bytes
  */
-int pxe_setup_ctx(struct pxe_context *ctx, struct cmd_tbl *cmdtp,
-		  pxe_getfile_func getfile, void *userdata,
-		  bool allow_abs_path, const char *bootfile, bool use_ipv6,
-		  bool use_fallback);
+int pxe_setup_ctx(struct pxe_context *ctx, pxe_getfile_func getfile,
+		  void *userdata, bool allow_abs_path, const char *bootfile,
+		  bool use_ipv6, bool use_fallback);
 
 /**
  * pxe_destroy_ctx() - Destroy a PXE context

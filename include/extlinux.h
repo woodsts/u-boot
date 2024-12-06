@@ -18,7 +18,6 @@
 struct extlinux_info {
 	struct udevice *dev;
 	struct bootflow *bflow;
-	struct cmd_tbl *cmdtp;
 };
 
 #endif
