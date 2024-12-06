@@ -22,8 +22,15 @@
 #include <mmc.h>
 #include <pxe_utils.h>
 
+/**
+ * struct extlinux_plat - locate state for this bootmeth
+ *
+ * @use_fallback: true to boot with the fallback option
+ * @info: Info passed to the extlinux_getfile() function
+ */
 struct extlinux_plat {
 	bool use_fallback;
+	struct extlinux_info info;
 };
 
 enum extlinux_option_type {
@@ -175,20 +182,18 @@ static int extlinux_read_bootflow(struct udevice *dev, struct bootflow *bflow)
 
 static int extlinux_boot(struct udevice *dev, struct bootflow *bflow)
 {
+	struct extlinux_plat *plat = dev_get_plat(dev);
 	struct pxe_context ctx;
-	struct extlinux_info info;
-	struct extlinux_plat *plat;
 	ulong addr;
 	int ret;
 
 	addr = map_to_sysmem(bflow->buf);
-	info.dev = dev;
-	info.bflow = bflow;
 
-	plat = dev_get_plat(dev);
+	plat->info.dev = dev;
+	plat->info.bflow = bflow;
 
-	ret = pxe_setup_ctx(&ctx, extlinux_getfile, &info, true, bflow->fname,
-			    false, plat->use_fallback, bflow);
+	ret = pxe_setup_ctx(&ctx, extlinux_getfile, &plat->info, true,
+			    bflow->fname, false, plat->use_fallback, bflow);
 	if (ret)
 		return log_msg_ret("ctx", -EINVAL);
 
