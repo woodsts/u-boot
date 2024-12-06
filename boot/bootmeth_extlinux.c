@@ -188,7 +188,7 @@ static int extlinux_boot(struct udevice *dev, struct bootflow *bflow)
 	plat = dev_get_plat(dev);
 
 	ret = pxe_setup_ctx(&ctx, extlinux_getfile, &info, true, bflow->fname,
-			    false, plat->use_fallback);
+			    false, plat->use_fallback, bflow);
 	if (ret)
 		return log_msg_ret("ctx", -EINVAL);
 

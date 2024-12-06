@@ -109,6 +109,7 @@ typedef int (*pxe_getfile_func)(struct pxe_context *ctx, const char *file_path,
  * @use_ipv6: TRUE : use IPv6 addressing, FALSE : use IPv4 addressing
  * @use_fallback: TRUE : use "fallback" option as default, FALSE : use
  *	"default" option as default
+ * @bflow: Bootflow being booted, or NULL if none
  */
 struct pxe_context {
 	/**
@@ -129,6 +130,7 @@ struct pxe_context {
 	ulong pxe_file_size;
 	bool use_ipv6;
 	bool use_fallback;
+	struct bootflow *bflow;
 };
 
 /**
@@ -231,12 +233,13 @@ int format_mac_pxe(char *outbuf, size_t outbuf_len);
  *                       other choice be selected
  *                FALSE : Use "default" option should no other choice be
  *                        selected
+ * @bflow: Bootflow to update, NULL if none
  * Return: 0 if OK, -ENOMEM if out of memory, -E2BIG if bootfile is larger than
  *	MAX_TFTP_PATH_LEN bytes
  */
 int pxe_setup_ctx(struct pxe_context *ctx, pxe_getfile_func getfile,
 		  void *userdata, bool allow_abs_path, const char *bootfile,
-		  bool use_ipv6, bool use_fallback);
+		  bool use_ipv6, bool use_fallback, struct bootflow *bflow);
 
 /**
  * pxe_destroy_ctx() - Destroy a PXE context
