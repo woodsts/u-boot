@@ -578,26 +578,23 @@ static int label_process_fdt(struct pxe_context *ctx, struct pxe_label *label,
  * @initrd_filesize: String containing initrd size (only used if
  *	@initrd_addr_str)
  * @initrd_str: initrd string to process (only used if @initrd_addr_str)
+ * @conf_fdt: string containing the FDT address
  * Return: does not return on success, or returns 0 if the boot command
  * returned, or -ve error value on error
  */
 static int label_run_boot(struct pxe_context *ctx, struct pxe_label *label,
 			  char *kernel_addr, char *initrd_addr_str,
-			  char *initrd_filesize, char *initrd_str)
+			  char *initrd_filesize, char *initrd_str,
+			  const char *conf_fdt)
 {
 	struct bootm_info bmi;
 	ulong kernel_addr_r;
+	int ret = 0;
 	void *buf;
-	int ret;
 
 	bootm_init(&bmi);
 
-	bmi.conf_fdt = env_get("fdt_addr_r");
-
-	ret = label_process_fdt(ctx, label, kernel_addr, &bmi.conf_fdt);
-	if (ret)
-		return ret;
-
+	bmi.conf_fdt = conf_fdt;
 	bmi.addr_img = kernel_addr;
 	bootm_x86_set(&bmi, bzimage_addr, hextoul(kernel_addr, NULL));
 
@@ -678,6 +675,8 @@ static int label_boot(struct pxe_context *ctx, struct pxe_label *label)
 	char mac_str[29] = "";
 	char ip_str[68] = "";
 	char *fit_addr = NULL;
+	const char *conf_fdt;
+	int ret;
 
 	label_print(label);
 
@@ -782,11 +781,16 @@ static int label_boot(struct pxe_context *ctx, struct pxe_label *label)
 		printf("append: %s\n", finalbootargs);
 	}
 
+	conf_fdt = env_get("fdt_addr_r");
+	ret = label_process_fdt(ctx, label, kernel_addr, &conf_fdt);
+	if (ret)
+		return ret;
+
 	if (ctx->no_boot)
 		return 0;
 
 	label_run_boot(ctx, label, kernel_addr, initrd_addr_str,
-		       initrd_filesize, initrd_str);
+		       initrd_filesize, initrd_str, conf_fdt);
 	/* ignore the error value since we are going to fail anyway */
 
 cleanup:
