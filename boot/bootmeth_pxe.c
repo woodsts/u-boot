@@ -140,7 +140,6 @@ static int extlinux_pxe_read_file(struct udevice *dev, struct bootflow *bflow,
 static int extlinux_pxe_boot(struct udevice *dev, struct bootflow *bflow)
 {
 	struct pxe_context *ctx = dev_get_priv(dev);
-	struct cmd_tbl cmdtp = {};	/* dummy */
 	struct extlinux_info info;
 	ulong addr;
 	int ret;
@@ -148,8 +147,7 @@ static int extlinux_pxe_boot(struct udevice *dev, struct bootflow *bflow)
 	addr = map_to_sysmem(bflow->buf);
 	info.dev = dev;
 	info.bflow = bflow;
-	info.cmdtp = &cmdtp;
-	ret = pxe_setup_ctx(ctx, &cmdtp, extlinux_pxe_getfile, &info, false,
+	ret = pxe_setup_ctx(ctx, extlinux_pxe_getfile, &info, false,
 			    bflow->subdir, false, false);
 	if (ret)
 		return log_msg_ret("ctx", -EINVAL);
