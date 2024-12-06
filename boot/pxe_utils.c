@@ -782,6 +782,9 @@ static int label_boot(struct pxe_context *ctx, struct pxe_label *label)
 		printf("append: %s\n", finalbootargs);
 	}
 
+	if (ctx->no_boot)
+		return 0;
+
 	label_run_boot(ctx, label, kernel_addr, initrd_addr_str,
 		       initrd_filesize, initrd_str);
 	/* ignore the error value since we are going to fail anyway */
@@ -1566,11 +1569,15 @@ static void boot_unattempted_labels(struct pxe_context *ctx,
 	struct list_head *pos;
 	struct pxe_label *label;
 
+	log_debug("Booting unattempted labels\n");
 	list_for_each(pos, &cfg->labels) {
 		label = list_entry(pos, struct pxe_label, list);
 
-		if (!label->attempted)
-			label_boot(ctx, label);
+		if (!label->attempted) {
+			log_debug("attempt: %s\n", label->name);
+			if (!label_boot(ctx, label))
+				return;
+		}
 	}
 }
 
@@ -1621,6 +1628,7 @@ void handle_pxe_menu(struct pxe_context *ctx, struct pxe_menu *cfg)
 
 	if (err == 1) {
 		err = label_boot(ctx, choice);
+		log_debug("label_boot() returns %d\n", err);
 		if (!err)
 			return;
 	} else if (err != -ENOENT) {
