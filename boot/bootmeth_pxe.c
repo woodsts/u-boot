@@ -116,21 +116,17 @@ static int extlinux_pxe_read_file(struct udevice *dev, struct bootflow *bflow,
 				  const char *file_path, ulong addr,
 				  enum bootflow_img_t type, ulong *sizep)
 {
-	char *tftp_argv[] = {"tftp", NULL, NULL, NULL};
-	struct pxe_context *ctx = dev_get_priv(dev);
-	char file_addr[17];
 	ulong size;
 	int ret;
 
-	sprintf(file_addr, "%lx", addr);
-	tftp_argv[1] = file_addr;
-	tftp_argv[2] = (void *)file_path;
-
-	if (do_tftpb(ctx->cmdtp, 0, 3, tftp_argv))
-		return -ENOENT;
-	ret = pxe_get_file_size(&size);
+	if (IS_ENABLED(CONFIG_NET_LWIP))
+		return -ENOTSUPP;
+	ret = netboot_run(TFTPGET, addr, file_path, 0, false);
 	if (ret)
 		return log_msg_ret("tftp", ret);
+	ret = pxe_get_file_size(&size);
+	if (ret)
+		return log_msg_ret("tft2", ret);
 	if (size > *sizep)
 		return log_msg_ret("spc", -ENOSPC);
 	*sizep = size;

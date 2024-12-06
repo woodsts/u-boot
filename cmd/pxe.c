@@ -29,25 +29,18 @@ const char *pxe_default_paths[] = {
 static int do_get_tftp(struct pxe_context *ctx, const char *file_path,
 		       char *file_addr, enum bootflow_img_t type, ulong *sizep)
 {
-	char *tftp_argv[] = {"tftp", NULL, NULL, NULL};
 	int ret;
-	int num_args;
 
-	tftp_argv[1] = file_addr;
-	tftp_argv[2] = (void *)file_path;
-	if (ctx->use_ipv6) {
-		tftp_argv[3] = USE_IP6_CMD_PARAM;
-		num_args = 4;
-	} else {
-		num_args = 3;
-	}
-
-	if (do_tftpb(ctx->cmdtp, 0, num_args, tftp_argv))
-		return -ENOENT;
+	if (IS_ENABLED(CONFIG_NET_LWIP))
+		return -ENOTSUPP;
+	ret = netboot_run(TFTPGET, hextoul(file_addr, NULL), file_path, 0,
+			  ctx->use_ipv6);
+	if (ret)
+		return log_msg_ret("tfp", ret);
 
 	ret = pxe_get_file_size(sizep);
 	if (ret)
-		return log_msg_ret("tftp", ret);
+		return log_msg_ret("tf2", ret);
 	ctx->pxe_file_size = *sizep;
 
 	return 1;
