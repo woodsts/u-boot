@@ -1459,7 +1459,7 @@ static int bootflow_scan_extlinux(struct unit_test_state *uts)
 		"ro root=UUID=9732b35b-4cd5-458b-9b91-80f7047e0b8a rhgb quiet LANG=en_US.UTF-8 cma=192MB cma=256MB",
 		bflow->cmdline);
 
-	ut_asserteq(3, bflow->images.count);
+	ut_asserteq(4, bflow->images.count);
 
 	/* check each image */
 	img = alist_get(&bflow->images, 0, struct bootflow_img);
@@ -1472,6 +1472,10 @@ static int bootflow_scan_extlinux(struct unit_test_state *uts)
 	img = alist_get(&bflow->images, 2, struct bootflow_img);
 	ut_asserteq(IH_TYPE_RAMDISK, img->type);
 	ut_asserteq(0x2000000, img->addr);	/* ramdisk_addr_r */
+
+	img = alist_get(&bflow->images, 3, struct bootflow_img);
+	ut_asserteq(IH_TYPE_FLATDT, img->type);
+	ut_asserteq(0xc00000, img->addr);	/* fdt_addr_r */
 
 	return 0;
 }
