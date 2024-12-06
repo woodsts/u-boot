@@ -143,6 +143,14 @@ static int extlinux_pxe_boot(struct udevice *dev, struct bootflow *bflow)
 			     bflow->subdir);
 }
 
+#if CONFIG_IS_ENABLED(BOOTSTD_FULL)
+static int extlinux_pxe_read_all(struct udevice *dev, struct bootflow *bflow)
+{
+	return extlinux_read_all(dev, bflow, extlinux_pxe_getfile, false,
+				 bflow->subdir);
+}
+#endif
+
 static int extlinux_bootmeth_pxe_bind(struct udevice *dev)
 {
 	struct bootmeth_uc_plat *plat = dev_get_uclass_plat(dev);
@@ -159,6 +167,9 @@ static struct bootmeth_ops extlinux_bootmeth_pxe_ops = {
 	.read_file	= extlinux_pxe_read_file,
 	.boot		= extlinux_pxe_boot,
 	.set_property	= extlinux_set_property,
+#if CONFIG_IS_ENABLED(BOOTSTD_FULL)
+	.read_all	= extlinux_pxe_read_all,
+#endif
 };
 
 static const struct udevice_id extlinux_bootmeth_pxe_ids[] = {

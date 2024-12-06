@@ -145,6 +145,14 @@ static int extlinux_local_boot(struct udevice *dev, struct bootflow *bflow)
 	return extlinux_boot(dev, bflow, extlinux_getfile, true, bflow->fname);
 }
 
+#if CONFIG_IS_ENABLED(BOOTSTD_FULL)
+static int extlinux_local_read_all(struct udevice *dev, struct bootflow *bflow)
+{
+	return extlinux_read_all(dev, bflow, extlinux_getfile, true,
+				 bflow->fname);
+}
+#endif
+
 static int extlinux_bootmeth_bind(struct udevice *dev)
 {
 	struct bootmeth_uc_plat *plat = dev_get_uclass_plat(dev);
@@ -162,6 +170,9 @@ static struct bootmeth_ops extlinux_bootmeth_ops = {
 	.read_file	= bootmeth_common_read_file,
 	.boot		= extlinux_local_boot,
 	.set_property	= extlinux_set_property,
+#if CONFIG_IS_ENABLED(BOOTSTD_FULL)
+	.read_all	= extlinux_local_read_all,
+#endif
 };
 
 static const struct udevice_id extlinux_bootmeth_ids[] = {

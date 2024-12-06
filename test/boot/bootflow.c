@@ -1433,3 +1433,46 @@ static int bootstd_adhoc(struct unit_test_state *uts)
 	return 0;
 }
 BOOTSTD_TEST(bootstd_adhoc, UTF_CONSOLE);
+
+/* Check scanning extlinux, adjusting cmdline and booting */
+static int bootflow_scan_extlinux(struct unit_test_state *uts)
+{
+	const struct bootflow_img *img;
+	struct bootstd_priv *std;
+	struct bootflow *bflow;
+
+	ut_assertok(run_command("bootflow scan", 0));
+	ut_assert_console_end();
+	ut_assertok(bootstd_get_priv(&std));
+
+	ut_asserteq(1, std->bootflows.count);
+
+	bflow = alist_getw(&std->bootflows, 0, struct bootflow);
+	std->cur_bootflow = bflow;
+
+	/* read all the images, but don't actually boot */
+	ut_assertok(inject_response(uts));
+	ut_assertok(bootflow_read_all(bflow));
+
+	/* check that the command line is now present */
+	ut_asserteq_str(
+		"ro root=UUID=9732b35b-4cd5-458b-9b91-80f7047e0b8a rhgb quiet LANG=en_US.UTF-8 cma=192MB cma=256MB",
+		bflow->cmdline);
+
+	ut_asserteq(3, bflow->images.count);
+
+	/* check each image */
+	img = alist_get(&bflow->images, 0, struct bootflow_img);
+	ut_asserteq_strn("# extlinux.conf", map_sysmem(img->addr, 0));
+
+	img = alist_get(&bflow->images, 1, struct bootflow_img);
+	ut_asserteq(IH_TYPE_KERNEL, img->type);
+	ut_asserteq(0x1000000, img->addr);	/* kernel_addr_r */
+
+	img = alist_get(&bflow->images, 2, struct bootflow_img);
+	ut_asserteq(IH_TYPE_RAMDISK, img->type);
+	ut_asserteq(0x2000000, img->addr);	/* ramdisk_addr_r */
+
+	return 0;
+}
+BOOTSTD_TEST(bootflow_scan_extlinux, UTF_DM | UTF_SCAN_FDT | UTF_CONSOLE);
