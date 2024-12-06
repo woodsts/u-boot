@@ -21,6 +21,7 @@
 #endif
 #include <dm/device-internal.h>
 #include <dm/lists.h>
+#include <linux/libfdt.h>
 #include <test/suites.h>
 #include <test/ut.h>
 #include "bootstd_common.h"
@@ -1440,6 +1441,9 @@ static int bootflow_scan_extlinux(struct unit_test_state *uts)
 	const struct bootflow_img *img;
 	struct bootstd_priv *std;
 	struct bootflow *bflow;
+	const char *cline;
+	const void *fdt;
+	int node;
 
 	ut_assertok(run_command("bootflow scan", 0));
 	ut_assert_console_end();
@@ -1476,6 +1480,26 @@ static int bootflow_scan_extlinux(struct unit_test_state *uts)
 	img = alist_get(&bflow->images, 3, struct bootflow_img);
 	ut_asserteq(IH_TYPE_FLATDT, img->type);
 	ut_asserteq(0xc00000, img->addr);	/* fdt_addr_r */
+
+	/* adjust the command line */
+	ut_assertok(run_command("bootflow cmdline set root /dev/mmc2", 0));
+
+	ut_asserteq(-EFAULT, bootflow_boot(bflow));
+	ut_assert_skip_to_line("sandbox: continuing, as we cannot run Linux");
+	ut_assert_console_end();
+
+	/* check that the images were not loaded again */
+	ut_asserteq(4, bflow->images.count);
+
+	/* check the cmdline in the booted FDT */
+	fdt = working_fdt;
+	node = fdt_subnode_offset(fdt, 0, "chosen");
+	ut_assert(node > 0);
+	cline = fdt_getprop(fdt, node, "bootargs", 0);
+	ut_assertnonnull(cline);
+	ut_asserteq_str(
+		"ro root=/dev/mmc2 rhgb quiet LANG=en_US.UTF-8 cma=192MB cma=256MB",
+		bflow->cmdline);
 
 	return 0;
 }
