@@ -74,3 +74,28 @@ int extlinux_set_property(struct udevice *dev, const char *property,
 
 	return 0;
 }
+
+int extlinux_boot(struct udevice *dev, struct bootflow *bflow,
+		  pxe_getfile_func getfile, bool allow_abs_path,
+		  const char *bootfile)
+{
+	struct extlinux_plat *plat = dev_get_plat(dev);
+	ulong addr;
+	int ret;
+
+	addr = map_to_sysmem(bflow->buf);
+
+	plat->info.dev = dev;
+	plat->info.bflow = bflow;
+
+	ret = pxe_setup_ctx(&plat->ctx, getfile, &plat->info, allow_abs_path,
+			    bootfile, false, plat->use_fallback, bflow);
+	if (ret)
+		return log_msg_ret("ctx", -EINVAL);
+
+	ret = pxe_process(&plat->ctx, addr, false);
+	if (ret)
+		return log_msg_ret("bread", -EINVAL);
+
+	return 0;
+}
