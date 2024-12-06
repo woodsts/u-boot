@@ -139,24 +139,8 @@ static int extlinux_pxe_read_file(struct udevice *dev, struct bootflow *bflow,
 
 static int extlinux_pxe_boot(struct udevice *dev, struct bootflow *bflow)
 {
-	struct extlinux_plat *plat = dev_get_plat(dev);
-	struct pxe_context *ctx = &plat->ctx;
-	ulong addr;
-	int ret;
-
-	addr = map_to_sysmem(bflow->buf);
-	plat->info.dev = dev;
-	plat->info.bflow = bflow;
-	ret = pxe_setup_ctx(ctx, extlinux_pxe_getfile, &plat->info, false,
-			    bflow->subdir, false, plat->use_fallback, bflow);
-	if (ret)
-		return log_msg_ret("ctx", -EINVAL);
-
-	ret = pxe_process(ctx, addr, false);
-	if (ret)
-		return log_msg_ret("bread", -EINVAL);
-
-	return 0;
+	return extlinux_boot(dev, bflow, extlinux_pxe_getfile, false,
+			     bflow->subdir);
 }
 
 static int extlinux_bootmeth_pxe_bind(struct udevice *dev)

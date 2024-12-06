@@ -140,27 +140,9 @@ static int extlinux_read_bootflow(struct udevice *dev, struct bootflow *bflow)
 	return 0;
 }
 
-static int extlinux_boot(struct udevice *dev, struct bootflow *bflow)
+static int extlinux_local_boot(struct udevice *dev, struct bootflow *bflow)
 {
-	struct extlinux_plat *plat = dev_get_plat(dev);
-	ulong addr;
-	int ret;
-
-	addr = map_to_sysmem(bflow->buf);
-
-	plat->info.dev = dev;
-	plat->info.bflow = bflow;
-
-	ret = pxe_setup_ctx(&plat->ctx, extlinux_getfile, &plat->info, true,
-			    bflow->fname, false, plat->use_fallback, bflow);
-	if (ret)
-		return log_msg_ret("ctx", -EINVAL);
-
-	ret = pxe_process(&plat->ctx, addr, false);
-	if (ret)
-		return log_msg_ret("bread", -EINVAL);
-
-	return 0;
+	return extlinux_boot(dev, bflow, extlinux_getfile, true, bflow->fname);
 }
 
 static int extlinux_bootmeth_bind(struct udevice *dev)
@@ -178,7 +160,7 @@ static struct bootmeth_ops extlinux_bootmeth_ops = {
 	.check		= extlinux_check,
 	.read_bootflow	= extlinux_read_bootflow,
 	.read_file	= bootmeth_common_read_file,
-	.boot		= extlinux_boot,
+	.boot		= extlinux_local_boot,
 	.set_property	= extlinux_set_property,
 };
 
