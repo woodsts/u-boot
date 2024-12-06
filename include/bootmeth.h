@@ -151,15 +151,15 @@ struct bootmeth_ops {
 	/**
 	 * set_property() - set the bootmeth property
 	 *
-	 * This allows the setting of boot method specific properties to enable
-	 * automated finer grain control of the boot process
+	 * This allows the setting of bootmeth-specific properties to enable
+	 * automated finer-grained control of the boot process
 	 *
 	 * @name: String containing the name of the relevant boot method
 	 * @property: String containing the name of the property to set
 	 * @value: String containing the value to be set for the specified
 	 *         property
-	 * Return: 0 if OK, -ENODEV if an unknown bootmeth or property is
-	 *      provided, -ENOENT if there are no bootmeth devices
+	 * Return: 0 if OK, -EINVAL if an unknown property or invalid value is
+	 *	provided
 	 */
 	int (*set_property)(struct udevice *dev, const char *property,
 			    const char *value);
