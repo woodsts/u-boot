@@ -148,7 +148,7 @@ static int extlinux_pxe_boot(struct udevice *dev, struct bootflow *bflow)
 	info.dev = dev;
 	info.bflow = bflow;
 	ret = pxe_setup_ctx(ctx, extlinux_pxe_getfile, &info, false,
-			    bflow->subdir, false, false);
+			    bflow->subdir, false, false, bflow);
 	if (ret)
 		return log_msg_ret("ctx", -EINVAL);
 

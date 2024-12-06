@@ -106,7 +106,7 @@ static int do_sysboot(struct cmd_tbl *cmdtp, int flag, int argc,
 	}
 
 	if (pxe_setup_ctx(&ctx, sysboot_read_file, &info, true, filename, false,
-			  false)) {
+			  false, NULL)) {
 		printf("Out of memory\n");
 		return CMD_RET_FAILURE;
 	}
