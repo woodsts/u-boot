@@ -27,9 +27,11 @@
  *
  * @use_fallback: true to boot with the fallback option
  * @info: Info passed to the extlinux_getfile() function
+ * @ctx: holds the PXE context, if it should be saved
  */
 struct extlinux_plat {
 	bool use_fallback;
+	struct pxe_context ctx;
 	struct extlinux_info info;
 };
 
@@ -183,7 +185,6 @@ static int extlinux_read_bootflow(struct udevice *dev, struct bootflow *bflow)
 static int extlinux_boot(struct udevice *dev, struct bootflow *bflow)
 {
 	struct extlinux_plat *plat = dev_get_plat(dev);
-	struct pxe_context ctx;
 	ulong addr;
 	int ret;
 
@@ -192,12 +193,12 @@ static int extlinux_boot(struct udevice *dev, struct bootflow *bflow)
 	plat->info.dev = dev;
 	plat->info.bflow = bflow;
 
-	ret = pxe_setup_ctx(&ctx, extlinux_getfile, &plat->info, true,
+	ret = pxe_setup_ctx(&plat->ctx, extlinux_getfile, &plat->info, true,
 			    bflow->fname, false, plat->use_fallback, bflow);
 	if (ret)
 		return log_msg_ret("ctx", -EINVAL);
 
-	ret = pxe_process(&ctx, addr, false);
+	ret = pxe_process(&plat->ctx, addr, false);
 	if (ret)
 		return log_msg_ret("bread", -EINVAL);
 
