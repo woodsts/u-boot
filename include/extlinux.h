@@ -7,6 +7,8 @@
 #ifndef __extlinux_h
 #define __extlinux_h
 
+#include <pxe_utils.h>
+
 #define EXTLINUX_FNAME	"extlinux/extlinux.conf"
 
 /**
@@ -19,5 +21,32 @@ struct extlinux_info {
 	struct udevice *dev;
 	struct bootflow *bflow;
 };
+
+/**
+ * struct extlinux_plat - locate state for this bootmeth
+ *
+ * @use_falllback: true to boot with the fallback option
+ * @ctx: holds the PXE context, if it should be saved
+ * @info: information used for the getfile() method
+ */
+struct extlinux_plat {
+	bool use_fallback;
+	struct pxe_context ctx;
+	struct extlinux_info info;
+};
+
+/**
+ * extlinux_set_property() - set an extlinux property
+ *
+ * This allows the setting of bootmeth-specific properties to enable
+ * automated finer-grained control of the boot process
+ *
+ * @name: String containing the name of the relevant boot method
+ * @property: String containing the name of the property to set
+ * @value: String containing the value to be set for the specified property
+ * Return: 0 if OK, -EINVAL if an unknown property or invalid value is provided
+ */
+int extlinux_set_property(struct udevice *dev, const char *property,
+			  const char *value);
 
 #endif
