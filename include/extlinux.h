@@ -49,4 +49,19 @@ struct extlinux_plat {
 int extlinux_set_property(struct udevice *dev, const char *property,
 			  const char *value);
 
+/**
+ * extlinux_boot() - Boot a bootflow
+ *
+ * @dev: bootmeth device
+ * @bflow: Bootflow to boot
+ * @getfile: Function to use to read files
+ * @allow_abs_path: true to allow absolute paths
+ * @bootfile: Bootfile whose directory loaded files are relative to, NULL if
+ *	none
+ * Return: 0 if OK, -ve error code on failure
+ */
+int extlinux_boot(struct udevice *dev, struct bootflow *bflow,
+		  pxe_getfile_func getfile, bool allow_abs_path,
+		  const char *bootfile);
+
 #endif
