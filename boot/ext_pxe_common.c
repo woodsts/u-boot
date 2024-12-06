@@ -75,9 +75,9 @@ int extlinux_set_property(struct udevice *dev, const char *property,
 	return 0;
 }
 
-int extlinux_boot(struct udevice *dev, struct bootflow *bflow,
-		  pxe_getfile_func getfile, bool allow_abs_path,
-		  const char *bootfile)
+static int extlinux_process(struct udevice *dev, struct bootflow *bflow,
+			    pxe_getfile_func getfile, bool allow_abs_path,
+			    const char *bootfile, bool no_boot)
 {
 	struct extlinux_plat *plat = dev_get_plat(dev);
 	ulong addr;
@@ -92,10 +92,33 @@ int extlinux_boot(struct udevice *dev, struct bootflow *bflow,
 			    bootfile, false, plat->use_fallback, bflow);
 	if (ret)
 		return log_msg_ret("ctx", -EINVAL);
+	plat->ctx.no_boot = no_boot;
 
 	ret = pxe_process(&plat->ctx, addr, false);
 	if (ret)
 		return log_msg_ret("bread", -EINVAL);
+
+	return 0;
+}
+
+int extlinux_boot(struct udevice *dev, struct bootflow *bflow,
+		  pxe_getfile_func getfile, bool allow_abs_path,
+		  const char *bootfile)
+{
+	return extlinux_process(dev, bflow, getfile, allow_abs_path, bootfile,
+				false);
+}
+
+int extlinux_read_all(struct udevice *dev, struct bootflow *bflow,
+		      pxe_getfile_func getfile, bool allow_abs_path,
+		      const char *bootfile)
+{
+	int ret;
+
+	ret = extlinux_process(dev, bflow, getfile, allow_abs_path, bootfile,
+			       true);
+	if (ret)
+		return log_msg_ret("era", -EINVAL);
 
 	return 0;
 }
