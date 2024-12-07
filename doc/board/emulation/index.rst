@@ -8,6 +8,7 @@ Emulation
 
    acpi
    blkdev
+   script
    qemu-arm
    qemu-mips
    qemu-ppce500

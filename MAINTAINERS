@@ -1111,6 +1111,14 @@ F:	tools/efivar.py
 F:	tools/file2include.c
 F:	tools/mkeficapsule.c
 
+EMULATION
+M:	Simon Glass <sjg@chromium.org>
+S:	Maintained
+W:	https://docs.u-boot.org/en/latest/board/emulation/script.html
+F:	configs/qemu_x86*
+F:	doc/board/emulation/script.rst
+F:	scripts/build-qemu.sh
+
 ENVIRONMENT
 M:	Joe Hershberger <joe.hershberger@ni.com>
 S:	Maintained
