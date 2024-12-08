@@ -333,6 +333,13 @@ config EEPRO100
 	  This driver supports Intel(R) PRO/100 82557/82559/82559ER fast
 	  ethernet family of adapters.
 
+config EFI_NET
+        bool "UEFI firmware-based networking support"
+	depends on EFI_APP
+	help
+	  This driver allows the use of UEFI-provided network interfaces
+	  as network devices within U-Boot.
+
 config ESSEDMA
 	bool "Qualcomm ESS Edma support"
 	depends on DM_ETH && ARCH_IPQ40XX

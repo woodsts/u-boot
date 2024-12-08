@@ -15,6 +15,7 @@ obj-y += version.o
 obj-$(CONFIG_CMD_ARMFFA) += armffa.o
 obj-$(CONFIG_CMD_2048) += 2048.o
 obj-$(CONFIG_CMD_ACPI) += acpi.o
+obj-$(CONFIG_CMD_ADDR_FIND) += addr_find.o
 obj-$(CONFIG_CMD_ADDRMAP) += addrmap.o
 obj-$(CONFIG_CMD_AES) += aes.o
 obj-$(CONFIG_CMD_ADC) += adc.o
@@ -69,6 +70,7 @@ obj-$(CONFIG_CMD_EEPROM) += eeprom.o
 obj-$(CONFIG_EFI) += efi.o efi_common.o
 obj-$(CONFIG_CMD_EFIDEBUG) += efidebug.o efi_common.o
 obj-$(CONFIG_CMD_EFICONFIG) += eficonfig.o
+obj-$(CONFIG_CMD_EFI_GET_ENV) += efigetenv.o
 ifdef CONFIG_CMD_EFICONFIG
 ifdef CONFIG_EFI_MM_COMM_TEE
 obj-$(CONFIG_EFI_SECURE_BOOT) += eficonfig_sbkey.o
@@ -137,6 +139,7 @@ obj-$(CONFIG_CMD_NVEDIT_EFI) += nvedit_efi.o
 obj-$(CONFIG_CMD_ONENAND) += onenand.o
 obj-$(CONFIG_CMD_OSD) += osd.o
 obj-$(CONFIG_CMD_PART) += part.o
+obj-$(CONFIG_CMD_PART_FIND) += part_find.o
 obj-$(CONFIG_CMD_PCAP) += pcap.o
 ifdef CONFIG_PCI
 obj-$(CONFIG_CMD_PCI) += pci.o

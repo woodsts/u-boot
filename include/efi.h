@@ -19,6 +19,9 @@
 #include <linux/linkage.h>
 #include <linux/string.h>
 #include <linux/types.h>
+#ifndef USE_HOSTCC
+#include <net.h>
+#endif
 
 /* Type INTN in UEFI specification */
 #define efi_intn_t ssize_t
@@ -459,6 +462,7 @@ static inline struct efi_mem_desc *efi_get_next_mem_desc(
  */
 struct efi_priv {
 	efi_handle_t parent_image;
+	struct efi_loaded_image *loaded_image;
 	struct efi_system_table *sys_table;
 	struct efi_boot_services *boot;
 	struct efi_runtime_services *run;
@@ -491,6 +495,30 @@ struct efi_media_plat {
 	efi_handle_t handle;
 	struct efi_block_io *blkio;
 	struct efi_device_path *device_path;
+};
+
+#ifndef USE_HOSTCC
+/*
+ * EFI attributes of the udevice handled by efi_net driver
+ *
+ * @handle: handle of the controller on which this driver is installed
+ */
+struct efi_net_plat {
+	struct eth_pdata eth_pdata;
+	efi_handle_t handle;
+	struct efi_simple_network *snp;
+};
+#endif
+
+/*
+ * EFI attributes of the udevice handled by efi_tpm driver
+ *
+ * @handle: handle of the controller on which this driver is installed
+ * @proto: pointer to the TCG2 EFI protocol
+ */
+struct efi_tpm_plat {
+	efi_handle_t handle;
+	struct efi_tcg2_protocol *proto;
 };
 
 /* Base address of the EFI image */

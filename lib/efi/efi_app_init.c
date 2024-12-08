@@ -9,6 +9,7 @@
 #include <dm.h>
 #include <efi.h>
 #include <efi_api.h>
+#include <efi_tcg2.h>
 #include <errno.h>
 #include <malloc.h>
 #include <asm/global_data.h>
@@ -17,6 +18,15 @@
 #include <linux/types.h>
 
 DECLARE_GLOBAL_DATA_PTR;
+
+static size_t device_path_length(const struct efi_device_path *device_path)
+{
+	const struct efi_device_path *d;
+
+	for (d = device_path; d->type != DEVICE_PATH_TYPE_END; d = (void *)d + d->length) {
+	}
+	return (void *)d - (void *)device_path + d->length;
+}
 
 /**
  * efi_bind_block() - bind a new block device to an EFI device
@@ -38,19 +48,23 @@ int efi_bind_block(efi_handle_t handle, struct efi_block_io *blkio,
 		   struct efi_device_path *device_path, int len,
 		   struct udevice **devp)
 {
-	struct efi_media_plat plat;
+	struct efi_media_plat *plat;
 	struct udevice *dev;
 	char name[18];
 	int ret;
+	size_t device_path_len = device_path_length(device_path);
 
-	plat.handle = handle;
-	plat.blkio = blkio;
-	plat.device_path = malloc(device_path->length);
-	if (!plat.device_path)
+	plat = malloc(sizeof(struct efi_media_plat));
+	if (!plat)
+		return log_msg_ret("plat", -ENOMEM);
+	plat->handle = handle;
+	plat->blkio = blkio;
+	plat->device_path = malloc(device_path_len);
+	if (!plat->device_path)
 		return log_msg_ret("path", -ENOMEM);
-	memcpy(plat.device_path, device_path, device_path->length);
+	memcpy(plat->device_path, device_path, device_path_len);
 	ret = device_bind(dm_root(), DM_DRIVER_GET(efi_media), "efi_media",
-			  &plat, ofnode_null(), &dev);
+			  plat, ofnode_null(), &dev);
 	if (ret)
 		return log_msg_ret("bind", ret);
 
@@ -184,6 +198,135 @@ static int setup_block(void)
 }
 
 /**
+ * setup_net() - Find all network devices and setup EFI devices for them
+ *
+ * Return: 0 if found, -ENOSYS if there is no boot-services table, -ENOTSUPP
+ *	if a required protocol is not supported
+ */
+static int setup_net(void)
+{
+	efi_guid_t efi_snp_guid = EFI_SIMPLE_NETWORK_PROTOCOL_GUID;
+	struct efi_boot_services *boot = efi_get_boot();
+	efi_uintn_t num_handles;
+	efi_handle_t *handle;
+	int ret, i;
+
+	if (!boot)
+		return log_msg_ret("sys", -ENOSYS);
+
+	/* Find all devices which support the simple network protocol */
+	ret = boot->locate_handle_buffer(BY_PROTOCOL, &efi_snp_guid, NULL,
+				  &num_handles, &handle);
+
+	if (ret)
+		return 0;
+	log_debug("Found %d net handles:\n", (int)num_handles);
+
+	for (i = 0; i < num_handles; i++) {
+		struct efi_simple_network *snp;
+		struct efi_net_plat *plat;
+		struct udevice *dev;
+		char name[18];
+
+		ret = boot->handle_protocol(handle[i], &efi_snp_guid,
+					    (void **)&snp);
+
+		if (ret != EFI_SUCCESS) {
+			log_warning("- snp %d failed (ret=0x%x\n", i, ret);
+			continue;
+		}
+
+		plat = malloc(sizeof(*plat));
+		if (!plat) {
+			log_warning("- snp %d failed to alloc platform data", i);
+			continue;
+		}
+		plat->handle = handle[i];
+		plat->snp = snp;
+		ret = device_bind(dm_root(), DM_DRIVER_GET(efi_net), "efi_net",
+				  plat, ofnode_null(), &dev);
+		if (ret) {
+			log_warning("- bind snp %d failed (ret=0x%x)\n", i,
+				    ret);
+			continue;
+		}
+
+		snprintf(name, sizeof(name), "efi_net_%x", dev_seq(dev));
+		device_set_name(dev, name);
+
+		printf("%2d: %-12s\n", i, dev->name);
+	}
+	boot->free_pool(handle);
+
+	return 0;
+}
+
+/**
+ * setup_tpm() - Find all TPMs and setup EFI devices for them
+ *
+ * Return: 0 if found, -ENOSYS if there is no boot-services table, -ENOTSUPP
+ *	if a required protocol is not supported
+ */
+static int setup_tpm(void)
+{
+	efi_guid_t efi_tcg2_guid = EFI_TCG2_PROTOCOL_GUID;
+	struct efi_boot_services *boot = efi_get_boot();
+	efi_uintn_t num_handles;
+	efi_handle_t *handle;
+	int ret, i;
+
+	if (!boot)
+		return log_msg_ret("sys", -ENOSYS);
+
+	/* Find all devices which support the TCG2 protocol */
+	ret = boot->locate_handle_buffer(BY_PROTOCOL, &efi_tcg2_guid, NULL,
+				  &num_handles, &handle);
+
+	if (ret)
+		return 0;
+	log_debug("Found %d TPM handles:\n", (int)num_handles);
+
+	for (i = 0; i < num_handles; i++) {
+		struct efi_tcg2_protocol *proto;
+		struct efi_tpm_plat *plat;
+		struct udevice *dev;
+		char name[18];
+
+		ret = boot->handle_protocol(handle[i], &efi_tcg2_guid,
+					    (void **)&proto);
+
+		if (ret != EFI_SUCCESS) {
+			log_warning("- TPM %d failed (ret=0x%x)\n", i, ret);
+			continue;
+		}
+
+		plat = malloc(sizeof(*plat));
+		if (!plat) {
+			log_warning("- TPM %d failed to alloc platform data", i);
+			continue;
+		}
+
+		plat->handle = handle[i];
+		plat->proto = proto;
+		ret = device_bind(dm_root(), DM_DRIVER_GET(efi_net), "efi_tpm",
+				  plat, ofnode_null(), &dev);
+		if (ret) {
+			log_warning("- bind TPM %d failed (ret=0x%x)\n", i,
+				    ret);
+			continue;
+		}
+
+		snprintf(name, sizeof(name), "efi_tpm_%x", dev_seq(dev));
+		device_set_name(dev, name);
+
+		printf("%2d: %-12s\n", i, dev->name);
+	}
+	boot->free_pool(handle);
+
+	return 0;
+}
+
+/**
  * board_early_init_r() - Scan for UEFI devices that should be available
  *
  * This sets up block devices within U-Boot for those found in UEFI. With this,
@@ -197,6 +340,12 @@ int board_early_init_r(void)
 		int ret;
 
 		ret = setup_block();
+		if (ret)
+			return ret;
+		ret = setup_net();
+		if (ret)
+			return ret;
+		ret = setup_tpm();
 		if (ret)
 			return ret;
 	}

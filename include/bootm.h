@@ -217,6 +217,12 @@ void arch_preboot_os(void);
  */
 void board_quiesce_devices(void);
 
+/*
+ * boards should define this if they need to fix up the kernel before boot
+ * (eg, by modifying the desired load address).
+ */
+void board_fixup_os(struct image_info *os);
+
 /**
  * switch_to_non_secure_mode() - switch to non-secure mode
  */

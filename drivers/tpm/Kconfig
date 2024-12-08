@@ -209,6 +209,13 @@ config TPM2_MMIO
 	  to the device using the standard TPM Interface Specification (TIS)
 	  protocol.
 
+config TPM2_EFI
+        bool "UEFI firmware based TPM2 Interface"
+	depends on TPM_V2 && EFI_APP
+	help
+	  This driver supports the use of UEFI firmware-provided drivers for
+	  interfacing with a TPM 2.
+
 endif # TPM_V2
 
 endmenu

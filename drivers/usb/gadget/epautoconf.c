@@ -8,12 +8,11 @@
  *                      Remy Bohmer <linux@bohmer.net>
  */
 
+#include <linux/ctype.h>
 #include <linux/usb/ch9.h>
 #include <linux/errno.h>
 #include <linux/usb/gadget.h>
 #include <asm/unaligned.h>
-
-#define isdigit(c)      ('0' <= (c) && (c) <= '9')
 
 /* we must assign addresses for configurable endpoints (like net2280) */
 static unsigned epnum;
