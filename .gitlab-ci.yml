@@ -235,14 +235,14 @@ Check packing of Python tools:
 # Test sandbox with test.py
 sandbox test.py:
   tags:
-    - ${DEFAULT_AMD64_TAG}
+    - ${DEFAULT_ARM64_TAG}
   variables:
     TEST_PY_BD: "sandbox"
   <<: *buildman_and_testpy_dfn
 
 sandbox with clang test.py:
   tags:
-    - ${DEFAULT_AMD64_TAG}
+    - ${DEFAULT_ARM64_TAG}
   variables:
     TEST_PY_BD: "sandbox"
     OVERRIDE: "-O clang-17"
@@ -250,14 +250,14 @@ sandbox with clang test.py:
 
 sandbox64 test.py:
   tags:
-    - ${DEFAULT_AMD64_TAG}
+    - ${DEFAULT_ARM64_TAG}
   variables:
     TEST_PY_BD: "sandbox64"
   <<: *buildman_and_testpy_dfn
 
 sandbox64 with clang test.py:
   tags:
-    - ${DEFAULT_AMD64_TAG}
+    - ${DEFAULT_ARM64_TAG}
   variables:
     TEST_PY_BD: "sandbox64"
     OVERRIDE: "-O clang-17"
@@ -313,7 +313,7 @@ evb-ast2600 test.py:
 
 sandbox_flattree test.py:
   tags:
-    - ${DEFAULT_AMD64_TAG}
+    - ${DEFAULT_ARM64_TAG}
   variables:
     TEST_PY_BD: "sandbox_flattree"
   <<: *buildman_and_testpy_dfn
