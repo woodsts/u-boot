@@ -1668,6 +1668,8 @@ int fdtdec_setup(void)
 {
 	int ret = -ENOENT;
 
+	for (int i = 0; i < 10; i++)
+		printf("Clear\n");
 	/*
 	 * If allowing a bloblist, check that first. There was discussion about
 	 * adding an OF_BLOBLIST Kconfig, but this was rejected.
@@ -1678,58 +1680,83 @@ int fdtdec_setup(void)
 	if (CONFIG_IS_ENABLED(BLOBLIST) &&
 	    (xpl_prev_phase() != PHASE_TPL ||
 	     !IS_ENABLED(CONFIG_TPL_BLOBLIST))) {
-		ret = bloblist_maybe_init();
+printf("%s:%d\n", __func__, __LINE__);
+// The general case here WILL have made a bloblist so ret=0.
+		//ret = bloblist_maybe_init();
+		/* We need a "Is there a bloblist here?" func. */
+printf("%s:%d (ret=%d)\n", __func__, __LINE__, ret);
 		if (!ret) {
+printf("%s:%d\n", __func__, __LINE__);
 			gd->fdt_blob = bloblist_find(BLOBLISTT_CONTROL_FDT, 0);
 			if (gd->fdt_blob) {
 				gd->fdt_src = FDTSRC_BLOBLIST;
-				log_debug("Devicetree is in bloblist at %p\n",
+				printf("Devicetree is in bloblist at %p\n",
 					  gd->fdt_blob);
 				ret = 0;
 			} else {
-				log_debug("No FDT found in bloblist\n");
+				printf("No FDT found in bloblist\n");
 				ret = -ENOENT;
 			}
+printf("%s:%d (ret=%d)\n", __func__, __LINE__, ret);
 		}
 	}
 
 	/* Otherwise, the devicetree is typically appended to U-Boot */
 	if (ret) {
+printf("%s:%d\n", __func__, __LINE__);
 		if (IS_ENABLED(CONFIG_OF_SEPARATE)) {
+printf("%s:%d\n", __func__, __LINE__);
 			gd->fdt_blob = fdt_find_separate();
 			gd->fdt_src = FDTSRC_SEPARATE;
 		} else { /* embed dtb in ELF file for testing / development */
+printf("%s:%d\n", __func__, __LINE__);
 			gd->fdt_blob = dtb_dt_embedded();
 			gd->fdt_src = FDTSRC_EMBED;
 		}
-	}
+	} else
+		printf("%s:%d\n", __func__, __LINE__);
+printf("%s:%d\n", __func__, __LINE__);
 
 	/* Allow the board to override the fdt address. */
 	if (IS_ENABLED(CONFIG_OF_BOARD)) {
+printf("%s:%d\n", __func__, __LINE__);
 		gd->fdt_blob = board_fdt_blob_setup(&ret);
-		if (!ret)
+		if (!ret) {
+printf("%s:%d\n", __func__, __LINE__);
 			gd->fdt_src = FDTSRC_BOARD;
-		else if (ret != -EEXIST)
+		} else if (ret != -EEXIST) {
+printf("%s:%d\n", __func__, __LINE__);
 			return ret;
+		}
+printf("%s:%d\n", __func__, __LINE__);
 	}
 
+printf("%s:%d\n", __func__, __LINE__);
 	/* Allow the early environment to override the fdt address */
 	if (!IS_ENABLED(CONFIG_XPL_BUILD)) {
+printf("%s:%d\n", __func__, __LINE__);
 		ulong addr;
 
 		addr = env_get_hex("fdtcontroladdr", 0);
 		if (addr) {
+printf("%s:%d\n", __func__, __LINE__);
 			gd->fdt_blob = map_sysmem(addr, 0);
 			gd->fdt_src = FDTSRC_ENV;
 		}
 	}
 
-	if (CONFIG_IS_ENABLED(MULTI_DTB_FIT))
+	if (CONFIG_IS_ENABLED(MULTI_DTB_FIT)) {
+printf("%s:%d\n", __func__, __LINE__);
 		setup_multi_dtb_fit();
+	}
 
 	ret = fdtdec_prepare_fdt(gd->fdt_blob);
-	if (!ret)
+printf("%s:%d\n", __func__, __LINE__);
+	if (!ret) {
+printf("%s:%d\n", __func__, __LINE__);
 		ret = fdtdec_board_setup(gd->fdt_blob);
+	}
+
 	oftree_reset();
 
 	return ret;

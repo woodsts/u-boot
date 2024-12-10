@@ -133,10 +133,13 @@ static struct bloblist_rec *bloblist_findrec(uint tag)
 	struct bloblist_hdr *hdr = gd->bloblist;
 	struct bloblist_rec *rec;
 
+printf("%s:%d\n", __func__, __LINE__);
 	if (!hdr)
 		return NULL;
+printf("%s:%d\n", __func__, __LINE__);
 
 	foreach_rec(rec, hdr) {
+printf("%s:%d\n", __func__, __LINE__);
 		if (rec_tag(rec) == tag)
 			return rec;
 	}
@@ -225,12 +228,14 @@ void *bloblist_find(uint tag, int size)
 {
 	struct bloblist_rec *rec;
 
+printf("%s:%d\n", __func__, __LINE__);
 	rec = bloblist_findrec(tag);
 	if (!rec)
 		return NULL;
 	if (size && size != rec->size)
 		return NULL;
 
+printf("%s:%d\n", __func__, __LINE__);
 	return (void *)rec + rec_hdr_size(rec);
 }
 
@@ -532,44 +537,53 @@ int bloblist_init(void)
 		size = gd->bloblist->total_size;
 
 	if (ret) {
+printf("%s:%d\n", __func__, __LINE__);
 		/*
 		 * If we don't have a bloblist from a fixed address, or the one
 		 * in the fixed address is not valid. we must allocate the
 		 * memory for it now.
 		 */
 		if (CONFIG_IS_ENABLED(BLOBLIST_ALLOC)) {
+printf("%s:%d\n", __func__, __LINE__);
 			void *ptr = memalign(BLOBLIST_ALIGN, size);
 
 			if (!ptr)
 				return log_msg_ret("alloc", -ENOMEM);
 			addr = map_to_sysmem(ptr);
 		} else if (!fixed) {
+printf("%s:%d\n", __func__, __LINE__);
 			return log_msg_ret("BLOBLIST_FIXED is not enabled",
 					   ret);
 		}
-		log_debug("Creating new bloblist size %lx at %lx\n", size,
+		printf("Creating new bloblist size %lx at %lx\n", size,
 			  addr);
 		ret = bloblist_new(addr, size, 0, 0);
 	} else {
-		log_debug("Found existing bloblist size %lx at %lx\n", size,
+		printf("Found existing bloblist size %lx at %lx\n", size,
 			  addr);
 	}
+printf("%s:%d (ret=%d)\n", __func__, __LINE__, ret);
 	if (ret)
 		return log_msg_ret("ini", ret);
+printf("%s:%d\n", __func__, __LINE__);
 	gd->flags |= GD_FLG_BLOBLIST_READY;
 
 #ifdef DEBUG
 	bloblist_show_stats();
 	bloblist_show_list();
 #endif
+printf("%s:%d\n", __func__, __LINE__);
 
 	return 0;
 }
 
 int bloblist_maybe_init(void)
 {
-	if (CONFIG_IS_ENABLED(BLOBLIST) && !(gd->flags & GD_FLG_BLOBLIST_READY))
+	if (CONFIG_IS_ENABLED(BLOBLIST) && !(gd->flags & GD_FLG_BLOBLIST_READY)) {
+printf("%s:%d\n", __func__, __LINE__);
 		return bloblist_init();
+	}
+printf("%s:%d\n", __func__, __LINE__);
 
 	return 0;
 }

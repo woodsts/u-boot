@@ -79,6 +79,8 @@ void main_loop(void)
 		panic("Failed to boot");
 	}
 
+	panic("At the disco");
+
 	cli_loop();
 
 	panic("No CLI available");
