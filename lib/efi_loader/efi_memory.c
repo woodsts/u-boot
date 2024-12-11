@@ -36,7 +36,7 @@ efi_uintn_t efi_memory_map_key;
  *
  * @link: Link to prev/next node in list
  * @type: EFI memory-type
- * @physical_start: Start address of region in physical memory. Note that this
+ * @base: Start address of region in physical memory. Note that this
  *	is really a pointer stored as an address, so use map_to_sysmem() to
  *	convert it to an address if needed
  * @num_pages: Number of EFI pages this record covers (each is EFI_PAGE_SIZE
@@ -46,7 +46,7 @@ efi_uintn_t efi_memory_map_key;
 struct mem_node {
 	struct list_head link;
 	enum efi_memory_type type;
-	efi_physical_addr_t physical_start;
+	efi_physical_addr_t base;
 	u64 num_pages;
 	u64 attribute;
 };
@@ -121,9 +121,9 @@ static int efi_mem_cmp(void *priv, struct list_head *a, struct list_head *b)
 	struct mem_node *mema = list_entry(a, struct mem_node, link);
 	struct mem_node *memb = list_entry(b, struct mem_node, link);
 
-	if (mema->physical_start == memb->physical_start)
+	if (mema->base == memb->base)
 		return 0;
-	else if (mema->physical_start < memb->physical_start)
+	else if (mema->base < memb->base)
 		return 1;
 	else
 		return -1;
@@ -137,7 +137,7 @@ static int efi_mem_cmp(void *priv, struct list_head *a, struct list_head *b)
  */
 static uint64_t desc_get_end(struct mem_node *node)
 {
-	return node->physical_start + (node->num_pages << EFI_PAGE_SHIFT);
+	return node->base + (node->num_pages << EFI_PAGE_SHIFT);
 }
 
 /**
@@ -169,13 +169,13 @@ static void efi_mem_sort(void)
 			cur = lmem;
 			prev = prevmem;
 
-			if ((desc_get_end(cur) == prev->physical_start) &&
-			    (prev->type == cur->type) &&
-			    (prev->attribute == cur->attribute)) {
+			if (desc_get_end(cur) == prev->base &&
+			    prev->type == cur->type &&
+			    prev->attribute == cur->attribute) {
 				/* There is an existing map before, reuse it */
 				pages = cur->num_pages;
 				prev->num_pages += pages;
-				prev->physical_start -= pages << EFI_PAGE_SHIFT;
+				prev->base -= pages << EFI_PAGE_SHIFT;
 				list_del(&lmem->link);
 				free(lmem);
 
@@ -216,10 +216,10 @@ static s64 efi_mem_carve_out(struct mem_node *map, struct mem_node *carve_desc,
 {
 	struct mem_node *newmap;
 	struct mem_node *map_desc = map;
-	uint64_t map_start = map_desc->physical_start;
-	uint64_t map_end = map_start + (map_desc->num_pages << EFI_PAGE_SHIFT);
-	uint64_t carve_start = carve_desc->physical_start;
-	uint64_t carve_end = carve_start +
+	u64 map_start = map_desc->base;
+	u64 map_end = map_start + (map_desc->num_pages << EFI_PAGE_SHIFT);
+	u64 carve_start = carve_desc->base;
+	u64 carve_end = carve_start +
 			     (carve_desc->num_pages << EFI_PAGE_SHIFT);
 
 	/* check whether we're overlapping */
@@ -241,7 +241,7 @@ static s64 efi_mem_carve_out(struct mem_node *map, struct mem_node *carve_desc,
 			list_del(&map->link);
 			free(map);
 		} else {
-			map->physical_start = carve_end;
+			map->base = carve_end;
 			map->num_pages = (map_end - carve_end)
 					      >> EFI_PAGE_SHIFT;
 		}
@@ -261,7 +261,7 @@ static s64 efi_mem_carve_out(struct mem_node *map, struct mem_node *carve_desc,
 	if (!newmap)
 		return EFI_CARVE_OUT_OF_RESOURCES;
 	newmap->type = map->type;
-	newmap->physical_start = carve_start;
+	newmap->base = carve_start;
 	newmap->num_pages = (map_end - carve_start) >> EFI_PAGE_SHIFT;
 	newmap->attribute = map->attribute;
 	/* Insert before current entry (descending address order) */
@@ -298,7 +298,7 @@ efi_status_t efi_add_memory_map_pg(u64 start, u64 pages,
 	if (!newlist)
 		return EFI_OUT_OF_RESOURCES;
 	newlist->type = memory_type;
-	newlist->physical_start = start;
+	newlist->base = start;
 	newlist->num_pages = pages;
 
 	switch (memory_type) {
@@ -415,7 +415,7 @@ static efi_status_t efi_check_allocated(u64 addr, bool must_be_allocated)
 	struct mem_node *item;
 
 	list_for_each_entry(item, &efi_mem, link) {
-		u64 start = item->physical_start;
+		u64 start = item->base;
 		u64 end = start + (item->num_pages << EFI_PAGE_SHIFT);
 
 		if (addr >= start && addr < end) {
@@ -695,10 +695,10 @@ efi_status_t efi_get_memory_map(efi_uintn_t *memory_map_size,
 	list_for_each_entry(lmem, &efi_mem, link) {
 		memory_map->type = lmem->type;
 		memory_map->reserved = 0;
-		memory_map->physical_start = lmem->physical_start;
+		memory_map->physical_start = lmem->base;
 
 		/* virtual and physical are always the same */
-		memory_map->virtual_start = lmem->physical_start;
+		memory_map->virtual_start = lmem->base;
 		memory_map->num_pages = lmem->num_pages;
 		memory_map->attribute = lmem->attribute;
 		memory_map--;
