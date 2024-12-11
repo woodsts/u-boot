@@ -533,7 +533,7 @@ static efi_status_t EFIAPI efi_free_pool_ext(void *buffer)
 {
 	efi_status_t r;
 
-	EFI_ENTRY("%p", buffer);
+	EFI_ENTRY("%llx", (u64)map_to_sysmem(buffer));
 	r = efi_free_pool(buffer);
 	return EFI_EXIT(r);
 }
