@@ -1678,7 +1678,7 @@ endif # CONFIG_X86
 
 OBJCOPYFLAGS_u-boot-app.efi := $(OBJCOPYFLAGS_EFI)
 u-boot-app.efi: u-boot dts/dt.dtb FORCE
-	$(call if_changed,embeddtb)
+	$(if $(CONFIG_OF_SEPARATE),$(call if_changed,embeddtb))
 	$(call if_changed,zobjcopy)
 
 u-boot.bin.o: u-boot.bin FORCE

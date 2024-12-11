@@ -1236,7 +1236,7 @@ static void *fdt_find_separate(void)
 		fdt_blob = (ulong *)_image_binary_end;
 	else
 		fdt_blob = (ulong *)__bss_end;
-#elif defined CONFIG_EFI_APP
+#elif defined CONFIG_EFI_APP && defined CONFIG_OF_SEPARATE
 	/* FDT is in a separate section */
 	fdt_blob = (ulong *)__dtb;
 #else
