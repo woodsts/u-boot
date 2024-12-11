@@ -209,18 +209,22 @@ out:
 }
 
 /**
- * efi_binary_run() - run loaded UEFI image
+ * efi_binary_run_() - run loaded UEFI image
  *
  * @image_ptr:	memory address of the UEFI image
  * @size:	size of the UEFI image
  * @fdt:	device-tree
+ * @device:	EFI device-path
+ * @image:	EFI image-path
  *
  * Execute an EFI binary image loaded at @image.
  * @size may be zero if the binary is loaded with U-Boot load command.
  *
  * Return:	status code
  */
-efi_status_t efi_binary_run(void *image_ptr, size_t size, void *fdt)
+efi_status_t efi_binary_run_(void *image_ptr, size_t size, void *fdt,
+			     struct efi_device_path *device,
+			     struct efi_device_path *image)
 {
 	efi_status_t ret;
 
@@ -236,6 +240,23 @@ efi_status_t efi_binary_run(void *image_ptr, size_t size, void *fdt)
 	if (ret != EFI_SUCCESS)
 		return ret;
 
-	return efi_run_image(image_ptr, size, bootefi_device_path,
-			     bootefi_image_path);
+	return efi_run_image(image_ptr, size, device, image);
+}
+
+/**
+ * efi_binary_run() - run loaded UEFI image
+ *
+ * @image:	memory address of the UEFI image
+ * @size:	size of the UEFI image
+ * @fdt:	device-tree
+ *
+ * Execute an EFI binary image loaded at @image.
+ * @size may be zero if the binary is loaded with U-Boot load command.
+ *
+ * Return:	status code
+ */
+efi_status_t efi_binary_run(void *image, size_t size, void *fdt)
+{
+	return efi_binary_run_(image, size, fdt, bootefi_device_path,
+			       bootefi_image_path);
 }
