@@ -764,7 +764,7 @@ efi_status_t efi_next_variable_name(efi_uintn_t *size, u16 **buf,
  *
  * Allocate memory from pool and zero it out.
  *
- * @size:	number of bytes to allocate
+ * @len:	number of bytes to allocate
  * Return:	pointer to allocated memory or NULL
  */
 void *efi_alloc(size_t len);

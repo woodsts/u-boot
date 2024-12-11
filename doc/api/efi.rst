@@ -54,6 +54,12 @@ drivers, handles, loaded images, and the memory map).
 .. kernel-doc:: cmd/efidebug.c
    :internal:
 
+Overall API
+-----------
+
+.. kernel-doc:: include/efi_loader.h
+   :internal:
+
 Initialization of the UEFI sub-system
 -------------------------------------
 
