@@ -28,7 +28,7 @@ DECLARE_GLOBAL_DATA_PTR;
 efi_uintn_t efi_memory_map_key;
 
 /**
- * struct efi_mem_list - defines an EFI memory record
+ * struct mem_node - defines an EFI memory record
  *
  * Note that this struct is for use inside U-Boot and is not visible to the
  * EFI application, other than through calls to efi_get_memory_map(), where this
@@ -43,7 +43,7 @@ efi_uintn_t efi_memory_map_key;
  *	bytes)
  * @attribute: Memory attributes (see EFI_MEMORY...)
  */
-struct efi_mem_list {
+struct mem_node {
 	struct list_head link;
 	enum efi_memory_type type;
 	efi_physical_addr_t physical_start;
@@ -118,8 +118,8 @@ static u64 checksum(struct efi_pool_allocation *alloc)
  */
 static int efi_mem_cmp(void *priv, struct list_head *a, struct list_head *b)
 {
-	struct efi_mem_list *mema = list_entry(a, struct efi_mem_list, link);
-	struct efi_mem_list *memb = list_entry(b, struct efi_mem_list, link);
+	struct mem_node *mema = list_entry(a, struct mem_node, link);
+	struct mem_node *memb = list_entry(b, struct mem_node, link);
 
 	if (mema->physical_start == memb->physical_start)
 		return 0;
@@ -135,7 +135,7 @@ static int efi_mem_cmp(void *priv, struct list_head *a, struct list_head *b)
  * @node:	memory node
  * Return:	end address + 1
  */
-static uint64_t desc_get_end(struct efi_mem_list *node)
+static uint64_t desc_get_end(struct mem_node *node)
 {
 	return node->physical_start + (node->num_pages << EFI_PAGE_SHIFT);
 }
@@ -147,8 +147,8 @@ static uint64_t desc_get_end(struct efi_mem_list *node)
  */
 static void efi_mem_sort(void)
 {
-	struct efi_mem_list *lmem;
-	struct efi_mem_list *prevmem = NULL;
+	struct mem_node *lmem;
+	struct mem_node *prevmem = NULL;
 	bool merge_again = true;
 
 	list_sort(NULL, &efi_mem, efi_mem_cmp);
@@ -157,8 +157,8 @@ static void efi_mem_sort(void)
 	while (merge_again) {
 		merge_again = false;
 		list_for_each_entry(lmem, &efi_mem, link) {
-			struct efi_mem_list *prev;
-			struct efi_mem_list *cur;
+			struct mem_node *prev;
+			struct mem_node *cur;
 			uint64_t pages;
 
 			if (!prevmem) {
@@ -211,12 +211,11 @@ static void efi_mem_sort(void)
  * In case of EFI_CARVE_OVERLAPS_NONRAM it is the callers responsibility
  * to re-add the already carved out pages to the mapping.
  */
-static s64 efi_mem_carve_out(struct efi_mem_list *map,
-			     struct efi_mem_list *carve_desc,
+static s64 efi_mem_carve_out(struct mem_node *map, struct mem_node *carve_desc,
 			     bool overlap_conventional)
 {
-	struct efi_mem_list *newmap;
-	struct efi_mem_list *map_desc = map;
+	struct mem_node *newmap;
+	struct mem_node *map_desc = map;
 	uint64_t map_start = map_desc->physical_start;
 	uint64_t map_end = map_start + (map_desc->num_pages << EFI_PAGE_SHIFT);
 	uint64_t carve_start = carve_desc->physical_start;
@@ -278,8 +277,8 @@ efi_status_t efi_add_memory_map_pg(u64 start, u64 pages,
 				   int memory_type,
 				   bool overlap_conventional)
 {
-	struct efi_mem_list *lmem;
-	struct efi_mem_list *newlist;
+	struct mem_node *lmem;
+	struct mem_node *newlist;
 	bool carve_again;
 	uint64_t carved_pages = 0;
 	struct efi_event *evt;
@@ -413,7 +412,7 @@ efi_status_t efi_add_memory_map(u64 start, u64 size, int memory_type)
  */
 static efi_status_t efi_check_allocated(u64 addr, bool must_be_allocated)
 {
-	struct efi_mem_list *item;
+	struct mem_node *item;
 
 	list_for_each_entry(item, &efi_mem, link) {
 		u64 start = item->physical_start;
@@ -664,7 +663,7 @@ efi_status_t efi_get_memory_map(efi_uintn_t *memory_map_size,
 {
 	size_t map_entries;
 	efi_uintn_t map_size = 0;
-	struct efi_mem_list *lmem;
+	struct mem_node *lmem;
 	efi_uintn_t provided_map_size;
 
 	if (!memory_map_size)
