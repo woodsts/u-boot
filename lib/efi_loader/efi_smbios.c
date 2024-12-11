@@ -40,7 +40,11 @@ efi_status_t efi_smbios_register(void)
 		return EFI_NOT_FOUND;
 	}
 
-	/* Mark space used for tables */
+	/*
+	 * Mark space used for tables/
+	 *
+	 * TODO(sjg): This should use (ulong)map_sysmem(addr, ...)
+	 */
 	ret = efi_add_memory_map(addr, TABLE_SIZE, EFI_RUNTIME_SERVICES_DATA);
 	if (ret)
 		return ret;
