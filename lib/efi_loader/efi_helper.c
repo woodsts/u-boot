@@ -486,12 +486,11 @@ static efi_status_t copy_fdt(void **fdtp)
 		log_err("Failed to reserve space for FDT\n");
 		goto done;
 	}
-	/* TODO(sjg): This does not work on sandbox */
-	new_fdt = (void *)(uintptr_t)new_fdt_addr;
+	new_fdt = map_sysmem(new_fdt_addr, fdt_size);
 	memcpy(new_fdt, fdt, fdt_totalsize(fdt));
 	fdt_set_totalsize(new_fdt, fdt_size);
 
-	*fdtp = (void *)(uintptr_t)new_fdt_addr;
+	*fdtp = new_fdt;
 done:
 	return ret;
 }
