@@ -36,9 +36,7 @@ efi_uintn_t efi_memory_map_key;
  *
  * @link: Link to prev/next node in list
  * @type: EFI memory-type
- * @base: Start address of region in physical memory. Note that this
- *	is really a pointer stored as an address, so use map_to_sysmem() to
- *	convert it to an address if needed
+ * @base: Start address of region in physical memory
  * @num_pages: Number of EFI pages this record covers (each is EFI_PAGE_SIZE
  *	bytes)
  * @attribute: Memory attributes (see EFI_MEMORY...)
@@ -434,7 +432,7 @@ efi_status_t efi_allocate_pages(enum efi_allocate_type type,
 				enum efi_memory_type memory_type,
 				efi_uintn_t pages, uint64_t *memory)
 {
-	u64 efi_addr, len;
+	u64 len;
 	uint flags;
 	efi_status_t ret;
 	phys_addr_t addr;
@@ -462,8 +460,7 @@ efi_status_t efi_allocate_pages(enum efi_allocate_type type,
 		break;
 	case EFI_ALLOCATE_MAX_ADDRESS:
 		/* Max address */
-		addr = map_to_sysmem((void *)(uintptr_t)*memory);
-		addr = (u64)lmb_alloc_base_flags(len, EFI_PAGE_SIZE, addr,
+		addr = (u64)lmb_alloc_base_flags(len, EFI_PAGE_SIZE, *memory,
 						 flags);
 		if (!addr)
 			return EFI_OUT_OF_RESOURCES;
@@ -472,8 +469,7 @@ efi_status_t efi_allocate_pages(enum efi_allocate_type type,
 		if (*memory & EFI_PAGE_MASK)
 			return EFI_NOT_FOUND;
 
-		addr = map_to_sysmem((void *)(uintptr_t)*memory);
-		addr = (u64)lmb_alloc_addr_flags(addr, len, flags);
+		addr = (u64)lmb_alloc_addr_flags(*memory, len, flags);
 		if (!addr)
 			return EFI_NOT_FOUND;
 		break;
@@ -482,17 +478,15 @@ efi_status_t efi_allocate_pages(enum efi_allocate_type type,
 		return EFI_INVALID_PARAMETER;
 	}
 
-	efi_addr = (u64)(uintptr_t)map_sysmem(addr, 0);
 	/* Reserve that map in our memory maps */
-	ret = efi_add_memory_map_pg(efi_addr, pages, memory_type, true);
+	ret = efi_add_memory_map_pg(addr, pages, memory_type, true);
 	if (ret != EFI_SUCCESS) {
 		/* Map would overlap, bail out */
 		lmb_free_flags(addr, (u64)pages << EFI_PAGE_SHIFT, flags);
-		unmap_sysmem((void *)(uintptr_t)efi_addr);
 		return  EFI_OUT_OF_RESOURCES;
 	}
 
-	*memory = efi_addr;
+	*memory = addr;
 
 	return EFI_SUCCESS;
 }
@@ -515,17 +509,9 @@ efi_status_t efi_free_pages(uint64_t memory, efi_uintn_t pages)
 	}
 
 	len = (u64)pages << EFI_PAGE_SHIFT;
-	/*
-	 * The 'memory' variable for sandbox holds a pointer which has already
-	 * been mapped with map_sysmem() from efi_allocate_pages(). Convert
-	 * it back to an address LMB understands
-	 */
-	status = lmb_free_flags(map_to_sysmem((void *)(uintptr_t)memory), len,
-				LMB_NOOVERWRITE);
+	status = lmb_free_flags(memory, len, LMB_NOOVERWRITE);
 	if (status)
 		return EFI_NOT_FOUND;
-
-	unmap_sysmem((void *)(uintptr_t)memory);
 
 	return ret;
 }
@@ -550,7 +536,7 @@ void *efi_alloc_aligned_pages(u64 len, int memory_type, size_t align)
 	if (align < EFI_PAGE_SIZE) {
 		r = efi_allocate_pages(EFI_ALLOCATE_ANY_PAGES, memory_type,
 				       req_pages, &mem);
-		return (r == EFI_SUCCESS) ? (void *)(uintptr_t)mem : NULL;
+		return (r == EFI_SUCCESS) ? map_sysmem(mem, len) : NULL;
 	}
 
 	r = efi_allocate_pages(EFI_ALLOCATE_ANY_PAGES, memory_type,
@@ -571,7 +557,7 @@ void *efi_alloc_aligned_pages(u64 len, int memory_type, size_t align)
 		efi_free_pages(mem, free_pages);
 	}
 
-	return (void *)(uintptr_t)aligned_mem;
+	return map_sysmem(aligned_mem, len);
 }
 
 efi_status_t efi_allocate_pool(enum efi_memory_type pool_type, efi_uintn_t size, void **buffer)
@@ -593,7 +579,7 @@ efi_status_t efi_allocate_pool(enum efi_memory_type pool_type, efi_uintn_t size,
 	r = efi_allocate_pages(EFI_ALLOCATE_ANY_PAGES, pool_type, num_pages,
 			       &addr);
 	if (r == EFI_SUCCESS) {
-		alloc = (struct efi_pool_allocation *)(uintptr_t)addr;
+		alloc = map_sysmem(addr, size);
 		alloc->num_pages = num_pages;
 		alloc->checksum = checksum(alloc);
 		*buffer = alloc->data;
@@ -624,7 +610,7 @@ efi_status_t efi_free_pool(void *buffer)
 	if (!buffer)
 		return EFI_INVALID_PARAMETER;
 
-	ret = efi_check_allocated((uintptr_t)buffer, true);
+	ret = efi_check_allocated(map_to_sysmem(buffer), true);
 	if (ret != EFI_SUCCESS)
 		return ret;
 
@@ -639,7 +625,7 @@ efi_status_t efi_free_pool(void *buffer)
 	/* Avoid double free */
 	alloc->checksum = 0;
 
-	ret = efi_free_pages((uintptr_t)alloc, alloc->num_pages);
+	ret = efi_free_pages(map_to_sysmem(alloc), alloc->num_pages);
 
 	return ret;
 }

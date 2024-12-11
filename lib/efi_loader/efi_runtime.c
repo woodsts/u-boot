@@ -13,6 +13,7 @@
 #include <efi_variable.h>
 #include <log.h>
 #include <malloc.h>
+#include <mapmem.h>
 #include <rtc.h>
 #include <asm/global_data.h>
 #include <u-boot/crc.h>
@@ -930,7 +931,7 @@ out:
 efi_status_t efi_add_runtime_mmio(void **mmio_ptr, u64 len)
 {
 	struct efi_runtime_mmio_list *newmmio;
-	uint64_t addr = *(uintptr_t *)mmio_ptr;
+	u64 addr = map_to_sysmem(*mmio_ptr);
 	efi_status_t ret;
 
 	ret = efi_add_memory_map(addr, len, EFI_MMAP_IO);

@@ -795,7 +795,7 @@ efi_status_t efi_allocate_pages(enum efi_allocate_type type,
 /**
  * efi_free_pages() - free memory pages
  *
- * @memory:	start of the memory area to be freed
+ * @memory:	start-address of the memory area to be freed
  * @pages:	number of pages to be freed
  * Return:	status code
  */
@@ -833,9 +833,9 @@ efi_status_t efi_get_memory_map(efi_uintn_t *memory_map_size,
 /**
  * efi_add_memory_map() - add memory area to the memory map
  *
- * @start:		start address of the memory area. Note that this is
- *			actually a pointer provided as an integer. To pass in
- *			an address, pass in (ulong)map_to_sysmem(addr)
+ * @start:		start address, must be a multiple of EFI_PAGE_SIZE. Note
+ *			that this is an address, not a pointer. Use
+ *			map_to_sysmem(ptr) if you need to pass in a pointer
  * @size:		length in bytes of the memory area
  * @memory_type:	type of memory added
  *
@@ -850,9 +850,8 @@ efi_status_t efi_add_memory_map(u64 start, u64 size, int memory_type);
  * efi_add_memory_map_pg() - add pages to the memory map
  *
  * @start: start address, must be a multiple of EFI_PAGE_SIZE. Note that this
- * is actually a pointer provided as an integer. To pass in an address, pass
- * in (ulong)map_to_sysmem(addr)
- *
+ *	is an address, not a pointer. Use map_to_sysmem(ptr) if you need to pass
+ *	in a pointer
  * @pages:			number of pages to add
  * @memory_type:		EFI type of memory added
  * @overlap_conventional:	region may only overlap free(conventional)

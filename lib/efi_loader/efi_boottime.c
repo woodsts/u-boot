@@ -431,15 +431,25 @@ static efi_status_t EFIAPI efi_allocate_pages_ext(int type, int memory_type,
 						  uint64_t *memory)
 {
 	efi_status_t r;
+	u64 addr;
 
 	EFI_ENTRY("%d, %d, 0x%zx, %p", type, memory_type, pages, memory);
-	r = efi_allocate_pages(type, memory_type, pages, memory);
+	if (!memory)
+		return EFI_INVALID_PARAMETER;
+
+	/* we should not read this unless type indicates it is being used */
+	if (type == EFI_ALLOCATE_MAX_ADDRESS || type == EFI_ALLOCATE_ADDRESS)
+		addr = map_to_sysmem((void *)(uintptr_t)*memory);
+	r = efi_allocate_pages(type, memory_type, pages, &addr);
+	if (r == EFI_SUCCESS)
+		*memory = (uintptr_t)map_sysmem(addr, pages * EFI_PAGE_SIZE);
+
 	return EFI_EXIT(r);
 }
 
 /**
  * efi_free_pages_ext() - Free memory pages.
- * @memory: start of the memory area to be freed
+ * @memory: start of the memory area to be freed (a pointer, cast to u64)
  * @pages:  number of pages to be freed
  *
  * This function implements the FreePages service.
@@ -453,9 +463,12 @@ static efi_status_t EFIAPI efi_free_pages_ext(uint64_t memory,
 					      efi_uintn_t pages)
 {
 	efi_status_t r;
+	u64 addr;
 
 	EFI_ENTRY("%llx, 0x%zx", memory, pages);
-	r = efi_free_pages(memory, pages);
+	addr = map_to_sysmem((void *)(uintptr_t)memory);
+	r = efi_free_pages(addr, pages);
+
 	return EFI_EXIT(r);
 }
 
@@ -1951,8 +1964,9 @@ efi_status_t efi_load_image_from_file(struct efi_device_path *file_path,
 {
 	struct efi_file_handle *f;
 	efi_status_t ret;
-	u64 addr;
 	efi_uintn_t bs;
+	void *buf;
+	u64 addr;
 
 	/* Open file */
 	f = efi_file_from_path(file_path);
@@ -1978,10 +1992,11 @@ efi_status_t efi_load_image_from_file(struct efi_device_path *file_path,
 	}
 
 	/* Read file */
-	EFI_CALL(ret = f->read(f, &bs, (void *)(uintptr_t)addr));
+	buf = map_sysmem(addr, bs);
+	EFI_CALL(ret = f->read(f, &bs, buf));
 	if (ret != EFI_SUCCESS)
 		efi_free_pages(addr, efi_size_in_pages(bs));
-	*buffer = (void *)(uintptr_t)addr;
+	*buffer = buf;
 	*size = bs;
 error:
 	EFI_CALL(f->close(f));
@@ -2012,6 +2027,7 @@ efi_status_t efi_load_image_from_path(bool boot_policy,
 	uint64_t addr, pages;
 	const efi_guid_t *guid;
 	struct efi_handler *handler;
+	void *buf;
 
 	/* In case of failure nothing is returned */
 	*buffer = NULL;
@@ -2050,15 +2066,16 @@ efi_status_t efi_load_image_from_path(bool boot_policy,
 		ret = EFI_OUT_OF_RESOURCES;
 		goto out;
 	}
+	buf = map_sysmem(addr, buffer_size);
 	ret = EFI_CALL(load_file_protocol->load_file(
 					load_file_protocol, rem, boot_policy,
-					&buffer_size, (void *)(uintptr_t)addr));
+					&buffer_size, buf));
 	if (ret != EFI_SUCCESS)
 		efi_free_pages(addr, pages);
 out:
 	efi_close_protocol(device, guid, efi_root, NULL);
 	if (ret == EFI_SUCCESS) {
-		*buffer = (void *)(uintptr_t)addr;
+		*buffer = buf;
 		*size = buffer_size;
 	}
 
@@ -2121,7 +2138,7 @@ efi_status_t EFIAPI efi_load_image(bool boot_policy,
 		ret = efi_load_pe(*image_obj, dest_buffer, source_size, info);
 	if (!source_buffer)
 		/* Release buffer to which file was loaded */
-		efi_free_pages((uintptr_t)dest_buffer,
+		efi_free_pages(map_to_sysmem(dest_buffer),
 			       efi_size_in_pages(source_size));
 	if (ret == EFI_SUCCESS || ret == EFI_SECURITY_VIOLATION) {
 		info->system_table = &systab;
@@ -3322,7 +3339,7 @@ close_next:
 		}
 	}
 
-	efi_free_pages((uintptr_t)loaded_image_protocol->image_base,
+	efi_free_pages(map_to_sysmem(loaded_image_protocol->image_base),
 		       efi_size_in_pages(loaded_image_protocol->image_size));
 	efi_delete_handle(&image_obj->header);
 
