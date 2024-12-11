@@ -44,11 +44,45 @@ void efi_clear_bootdev(void)
 	image_size = 0;
 }
 
+efi_status_t calculate_paths(const char *dev, const char *devnr, const char *path,
+			     struct efi_device_path **device_pathp,
+			     struct efi_device_path **image_pathp)
+
+{
+	struct efi_device_path *image, *device;
+	efi_status_t ret;
+
+	ret = efi_dp_from_name(dev, devnr, path, &device, &image);
+	if (ret != EFI_SUCCESS)
+		return ret;
+
+	*device_pathp = device;
+	if (image) {
+		/* FIXME: image should not contain device */
+		struct efi_device_path *image_tmp = image;
+
+		efi_dp_split_file_path(image, &device, &image);
+		efi_free_pool(image_tmp);
+	}
+	*image_pathp = image;
+	log_debug("- boot device %pD\n", device);
+	if (image)
+		log_debug("- image %pD\n", image);
+
+	return EFI_SUCCESS;
+}
+
 /**
  * efi_set_bootdev() - set boot device
  *
  * This function is called when a file is loaded, e.g. via the 'load' command.
  * We use the path to this file to inform the UEFI binary about the boot device.
+ *
+ * For a valid image, it sets:
+ *    - image_addr to the provided buffer
+ *    - image_size to the provided buffer_size
+ *    - bootefi_device_path to the EFI device-path
+ *    - bootefi_image_path to the EFI image-path
  *
  * @dev:		device, e.g. "MMC"
  * @devnr:		number of the device, e.g. "1:2"
@@ -59,7 +93,6 @@ void efi_clear_bootdev(void)
 void efi_set_bootdev(const char *dev, const char *devnr, const char *path,
 		     void *buffer, size_t buffer_size)
 {
-	struct efi_device_path *device, *image;
 	efi_status_t ret;
 
 	log_debug("dev=%s, devnr=%s, path=%s, buffer=%p, size=%zx\n", dev,
@@ -93,21 +126,9 @@ void efi_set_bootdev(const char *dev, const char *devnr, const char *path,
 	image_addr = buffer;
 	image_size = buffer_size;
 
-	ret = efi_dp_from_name(dev, devnr, path, &device, &image);
-	if (ret == EFI_SUCCESS) {
-		bootefi_device_path = device;
-		if (image) {
-			/* FIXME: image should not contain device */
-			struct efi_device_path *image_tmp = image;
-
-			efi_dp_split_file_path(image, &device, &image);
-			efi_free_pool(image_tmp);
-		}
-		bootefi_image_path = image;
-		log_debug("- boot device %pD\n", device);
-		if (image)
-			log_debug("- image %pD\n", image);
-	} else {
+	ret = calculate_paths(dev, devnr, path, &bootefi_device_path,
+			      &bootefi_image_path);
+	if (ret) {
 		log_debug("- efi_dp_from_name() failed, err=%lx\n", ret);
 		efi_clear_bootdev();
 	}
