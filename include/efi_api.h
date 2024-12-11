@@ -573,6 +573,16 @@ struct efi_mac_addr {
 #  define DEVICE_PATH_SUB_TYPE_VENDOR		0x04
 #  define DEVICE_PATH_SUB_TYPE_CONTROLLER	0x05
 
+/**
+ * struct efi_device_path_memory - 'Memory Mapped Device Path' object
+ *
+ * @dp: header for device-path protocol
+ * @memory_type: see enum efi_memory_type
+ * @start_address: start address of the memory; note that this is provided to
+ *	the EFI application so must be a pointer cast to u64
+ * @end_address: end address of the memory; note that this is provided to
+ *	the EFI application so must be a pointer cast to u64
+ */
 struct efi_device_path_memory {
 	struct efi_device_path dp;
 	u32 memory_type;
