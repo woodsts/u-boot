@@ -34,14 +34,14 @@ efi_uintn_t efi_memory_map_key;
  * EFI application, other than through calls to efi_get_memory_map(), where this
  * internal format is converted to the external struct efi_mem_desc format.
  *
- * @type (enum efi_memory_type): EFI memory-type
+ * @type: EFI memory-type
  * @physical_start: Start address of region in physical memory
  * @num_pages: Number of EFI pages this record covers (each is EFI_PAGE_SIZE
  *	bytes)
  * @attribute: Memory attributes (see EFI_MEMORY...)
  */
 struct priv_mem_desc {
-	u32 type;
+	enum efi_memory_type type;
 	efi_physical_addr_t physical_start;
 	u64 num_pages;
 	u64 attribute;
