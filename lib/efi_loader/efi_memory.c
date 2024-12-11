@@ -35,7 +35,6 @@ efi_uintn_t efi_memory_map_key;
  * internal format is converted to the external struct efi_mem_desc format.
  *
  * @type (enum efi_memory_type): EFI memory-type
- * @reserved: unused
  * @physical_start: Start address of region in physical memory
  * @num_pages: Number of EFI pages this record covers (each is EFI_PAGE_SIZE
  *	bytes)
@@ -43,7 +42,6 @@ efi_uintn_t efi_memory_map_key;
  */
 struct priv_mem_desc {
 	u32 type;
-	u32 reserved;
 	efi_physical_addr_t physical_start;
 	u64 num_pages;
 	u64 attribute;
@@ -703,7 +701,7 @@ efi_status_t efi_get_memory_map(efi_uintn_t *memory_map_size,
 	memory_map = &memory_map[map_entries - 1];
 	list_for_each_entry(lmem, &efi_mem, link) {
 		memory_map->type = lmem->desc.type;
-		memory_map->reserved = lmem->desc.reserved;
+		memory_map->reserved = 0;
 		memory_map->physical_start = lmem->desc.physical_start;
 
 		/* virtual and physical are always the same */
