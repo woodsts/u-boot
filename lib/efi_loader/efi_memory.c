@@ -37,7 +37,6 @@ efi_uintn_t efi_memory_map_key;
  * @type (enum efi_memory_type): EFI memory-type
  * @reserved: unused
  * @physical_start: Start address of region in physical memory
- * @virtual_start: Start address of region in physical memory
  * @num_pages: Number of EFI pages this record covers (each is EFI_PAGE_SIZE
  *	bytes)
  * @attribute: Memory attributes (see EFI_MEMORY...)
@@ -46,7 +45,6 @@ struct priv_mem_desc {
 	u32 type;
 	u32 reserved;
 	efi_physical_addr_t physical_start;
-	efi_virtual_addr_t virtual_start;
 	u64 num_pages;
 	u64 attribute;
 };
@@ -187,7 +185,6 @@ static void efi_mem_sort(void)
 				pages = cur->num_pages;
 				prev->num_pages += pages;
 				prev->physical_start -= pages << EFI_PAGE_SHIFT;
-				prev->virtual_start -= pages << EFI_PAGE_SHIFT;
 				list_del(&lmem->link);
 				free(lmem);
 
@@ -255,7 +252,6 @@ static s64 efi_mem_carve_out(struct efi_mem_list *map,
 			free(map);
 		} else {
 			map->desc.physical_start = carve_end;
-			map->desc.virtual_start = carve_end;
 			map->desc.num_pages = (map_end - carve_end)
 					      >> EFI_PAGE_SHIFT;
 		}
@@ -276,7 +272,6 @@ static s64 efi_mem_carve_out(struct efi_mem_list *map,
 		return EFI_CARVE_OUT_OF_RESOURCES;
 	newmap->desc = map->desc;
 	newmap->desc.physical_start = carve_start;
-	newmap->desc.virtual_start = carve_start;
 	newmap->desc.num_pages = (map_end - carve_start) >> EFI_PAGE_SHIFT;
 	/* Insert before current entry (descending address order) */
 	list_add_tail(&newmap->link, &map->link);
@@ -313,7 +308,6 @@ efi_status_t efi_add_memory_map_pg(u64 start, u64 pages,
 		return EFI_OUT_OF_RESOURCES;
 	newlist->desc.type = memory_type;
 	newlist->desc.physical_start = start;
-	newlist->desc.virtual_start = start;
 	newlist->desc.num_pages = pages;
 
 	switch (memory_type) {
@@ -711,7 +705,9 @@ efi_status_t efi_get_memory_map(efi_uintn_t *memory_map_size,
 		memory_map->type = lmem->desc.type;
 		memory_map->reserved = lmem->desc.reserved;
 		memory_map->physical_start = lmem->desc.physical_start;
-		memory_map->virtual_start = lmem->desc.virtual_start;
+
+		/* virtual and physical are always the same */
+		memory_map->virtual_start = lmem->desc.physical_start;
 		memory_map->num_pages = lmem->desc.num_pages;
 		memory_map->attribute = lmem->desc.attribute;
 		memory_map--;
