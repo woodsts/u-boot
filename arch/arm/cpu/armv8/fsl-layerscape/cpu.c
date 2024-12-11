@@ -1272,7 +1272,7 @@ void __efi_runtime EFIAPI efi_reset_system(
 
 efi_status_t efi_reset_system_init(void)
 {
-	return efi_add_runtime_mmio(&rstcr, sizeof(*rstcr));
+	return efi_add_runtime_mmio((void **)&rstcr, sizeof(*rstcr));
 }
 
 #endif

@@ -85,7 +85,7 @@ void __efi_runtime EFIAPI efi_reset_system(
 efi_status_t efi_reset_system_init(void)
 {
 	wdog_regs = (struct bcm2835_wdog_regs *)BCM2835_WDOG_PHYSADDR;
-	return efi_add_runtime_mmio(&wdog_regs, sizeof(*wdog_regs));
+	return efi_add_runtime_mmio((void **)&wdog_regs, sizeof(*wdog_regs));
 }
 
 #endif
