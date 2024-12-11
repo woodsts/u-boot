@@ -276,6 +276,27 @@ enum efi_memory_type {
 #define EFI_PAGE_SIZE		(1ULL << EFI_PAGE_SHIFT)
 #define EFI_PAGE_MASK		(EFI_PAGE_SIZE - 1)
 
+/**
+ * struct efi_mem_desc - defines an EFI memory record
+ *
+ * This field implements the EFI_MEMORY_DESCRIPTOR type of the UEFI
+ * specification.
+ *
+ * Note that this struct is for use outside U-Boot, so the two 'start' fields
+ * are pointers, not addresses. Use map_to_sysmem() to convert to an address, so
+ * that sandbox operates correctly.
+ *
+ * @type (enum efi_memory_type): EFI memory-type
+ * @reserved: unused
+ * @physical_start: Start address of region in physical memory
+ * @virtual_start: Start address of region in virtual memory, which will be the
+ *	same as @physical_start before where both addresses will always be the
+ *	same before SetVirtualMemoryMap() is called as the UEFI specification
+ *	requires identity mapping.
+ * @num_pages: Number of EFI pages this record covers (each is EFI_PAGE_SIZE
+ *	bytes)
+ * @attribute: Memory attributes (see EFI_MEMORY_...)
+ */
 struct efi_mem_desc {
 	u32 type;
 	u32 reserved;

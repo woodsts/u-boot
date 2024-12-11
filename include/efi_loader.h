@@ -788,8 +788,10 @@ efi_status_t efi_add_memory_map(u64 start, u64 size, int memory_type);
 /**
  * efi_add_memory_map_pg() - add pages to the memory map
  *
- * @start:			start address, must be a multiple of
- *				EFI_PAGE_SIZE
+ * @start: start address, must be a multiple of EFI_PAGE_SIZE. Note that this
+ * is actually a pointer provided as an integer. To pass in an address, pass
+ * in (ulong)map_to_sysmem(addr)
+ *
  * @pages:			number of pages to add
  * @memory_type:		type of memory added
  * @overlap_conventional:	region may only overlap free(conventional)
