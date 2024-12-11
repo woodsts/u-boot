@@ -28,34 +28,27 @@ DECLARE_GLOBAL_DATA_PTR;
 efi_uintn_t efi_memory_map_key;
 
 /**
- * struct priv_mem_desc - defines an memory region
+ * struct efi_mem_list - defines an EFI memory record
  *
  * Note that this struct is for use inside U-Boot and is not visible to the
  * EFI application, other than through calls to efi_get_memory_map(), where this
  * internal format is converted to the external struct efi_mem_desc format.
  *
+ * @link: Link to prev/next node in list
  * @type: EFI memory-type
- * @physical_start: Start address of region in physical memory
+ * @physical_start: Start address of region in physical memory. Note that this
+ *	is really a pointer stored as an address, so use map_to_sysmem() to
+ *	convert it to an address if needed
  * @num_pages: Number of EFI pages this record covers (each is EFI_PAGE_SIZE
  *	bytes)
  * @attribute: Memory attributes (see EFI_MEMORY...)
  */
-struct priv_mem_desc {
+struct efi_mem_list {
+	struct list_head link;
 	enum efi_memory_type type;
 	efi_physical_addr_t physical_start;
 	u64 num_pages;
 	u64 attribute;
-};
-
-/**
- * struct efi_mem_list - defines an EFI memory record
- *
- * @link: Link to prev/next node in list
- * @desc: Memory information about this node
- */
-struct efi_mem_list {
-	struct list_head link;
-	struct priv_mem_desc desc;
 };
 
 #define EFI_CARVE_NO_OVERLAP		-1
@@ -128,9 +121,9 @@ static int efi_mem_cmp(void *priv, struct list_head *a, struct list_head *b)
 	struct efi_mem_list *mema = list_entry(a, struct efi_mem_list, link);
 	struct efi_mem_list *memb = list_entry(b, struct efi_mem_list, link);
 
-	if (mema->desc.physical_start == memb->desc.physical_start)
+	if (mema->physical_start == memb->physical_start)
 		return 0;
-	else if (mema->desc.physical_start < memb->desc.physical_start)
+	else if (mema->physical_start < memb->physical_start)
 		return 1;
 	else
 		return -1;
@@ -139,12 +132,12 @@ static int efi_mem_cmp(void *priv, struct list_head *a, struct list_head *b)
 /**
  * desc_get_end() - get end address of memory area
  *
- * @desc:	memory descriptor
+ * @node:	memory node
  * Return:	end address + 1
  */
-static uint64_t desc_get_end(struct priv_mem_desc *desc)
+static uint64_t desc_get_end(struct efi_mem_list *node)
 {
-	return desc->physical_start + (desc->num_pages << EFI_PAGE_SHIFT);
+	return node->physical_start + (node->num_pages << EFI_PAGE_SHIFT);
 }
 
 /**
@@ -164,8 +157,8 @@ static void efi_mem_sort(void)
 	while (merge_again) {
 		merge_again = false;
 		list_for_each_entry(lmem, &efi_mem, link) {
-			struct priv_mem_desc *prev;
-			struct priv_mem_desc *cur;
+			struct efi_mem_list *prev;
+			struct efi_mem_list *cur;
 			uint64_t pages;
 
 			if (!prevmem) {
@@ -173,8 +166,8 @@ static void efi_mem_sort(void)
 				continue;
 			}
 
-			cur = &lmem->desc;
-			prev = &prevmem->desc;
+			cur = lmem;
+			prev = prevmem;
 
 			if ((desc_get_end(cur) == prev->physical_start) &&
 			    (prev->type == cur->type) &&
@@ -219,11 +212,11 @@ static void efi_mem_sort(void)
  * to re-add the already carved out pages to the mapping.
  */
 static s64 efi_mem_carve_out(struct efi_mem_list *map,
-			     struct priv_mem_desc *carve_desc,
+			     struct efi_mem_list *carve_desc,
 			     bool overlap_conventional)
 {
 	struct efi_mem_list *newmap;
-	struct priv_mem_desc *map_desc = &map->desc;
+	struct efi_mem_list *map_desc = map;
 	uint64_t map_start = map_desc->physical_start;
 	uint64_t map_end = map_start + (map_desc->num_pages << EFI_PAGE_SHIFT);
 	uint64_t carve_start = carve_desc->physical_start;
@@ -249,8 +242,8 @@ static s64 efi_mem_carve_out(struct efi_mem_list *map,
 			list_del(&map->link);
 			free(map);
 		} else {
-			map->desc.physical_start = carve_end;
-			map->desc.num_pages = (map_end - carve_end)
+			map->physical_start = carve_end;
+			map->num_pages = (map_end - carve_end)
 					      >> EFI_PAGE_SHIFT;
 		}
 
@@ -268,10 +261,10 @@ static s64 efi_mem_carve_out(struct efi_mem_list *map,
 	newmap = calloc(1, sizeof(*newmap));
 	if (!newmap)
 		return EFI_CARVE_OUT_OF_RESOURCES;
-	newmap->desc.type = map->desc.type;
-	newmap->desc.physical_start = carve_start;
-	newmap->desc.num_pages = (map_end - carve_start) >> EFI_PAGE_SHIFT;
-	newmap->desc.attribute = map->desc.attribute;
+	newmap->type = map->type;
+	newmap->physical_start = carve_start;
+	newmap->num_pages = (map_end - carve_start) >> EFI_PAGE_SHIFT;
+	newmap->attribute = map->attribute;
 	/* Insert before current entry (descending address order) */
 	list_add_tail(&newmap->link, &map->link);
 
@@ -305,20 +298,20 @@ efi_status_t efi_add_memory_map_pg(u64 start, u64 pages,
 	newlist = calloc(1, sizeof(*newlist));
 	if (!newlist)
 		return EFI_OUT_OF_RESOURCES;
-	newlist->desc.type = memory_type;
-	newlist->desc.physical_start = start;
-	newlist->desc.num_pages = pages;
+	newlist->type = memory_type;
+	newlist->physical_start = start;
+	newlist->num_pages = pages;
 
 	switch (memory_type) {
 	case EFI_RUNTIME_SERVICES_CODE:
 	case EFI_RUNTIME_SERVICES_DATA:
-		newlist->desc.attribute = EFI_MEMORY_WB | EFI_MEMORY_RUNTIME;
+		newlist->attribute = EFI_MEMORY_WB | EFI_MEMORY_RUNTIME;
 		break;
 	case EFI_MMAP_IO:
-		newlist->desc.attribute = EFI_MEMORY_RUNTIME;
+		newlist->attribute = EFI_MEMORY_RUNTIME;
 		break;
 	default:
-		newlist->desc.attribute = EFI_MEMORY_WB;
+		newlist->attribute = EFI_MEMORY_WB;
 		break;
 	}
 
@@ -328,7 +321,7 @@ efi_status_t efi_add_memory_map_pg(u64 start, u64 pages,
 		list_for_each_entry(lmem, &efi_mem, link) {
 			s64 r;
 
-			r = efi_mem_carve_out(lmem, &newlist->desc,
+			r = efi_mem_carve_out(lmem, newlist,
 					      overlap_conventional);
 			switch (r) {
 			case EFI_CARVE_OUT_OF_RESOURCES:
@@ -423,12 +416,12 @@ static efi_status_t efi_check_allocated(u64 addr, bool must_be_allocated)
 	struct efi_mem_list *item;
 
 	list_for_each_entry(item, &efi_mem, link) {
-		u64 start = item->desc.physical_start;
-		u64 end = start + (item->desc.num_pages << EFI_PAGE_SHIFT);
+		u64 start = item->physical_start;
+		u64 end = start + (item->num_pages << EFI_PAGE_SHIFT);
 
 		if (addr >= start && addr < end) {
 			if (must_be_allocated ^
-			    (item->desc.type == EFI_CONVENTIONAL_MEMORY))
+			    (item->type == EFI_CONVENTIONAL_MEMORY))
 				return EFI_SUCCESS;
 			else
 				return EFI_NOT_FOUND;
@@ -701,14 +694,14 @@ efi_status_t efi_get_memory_map(efi_uintn_t *memory_map_size,
 	/* Return the list in ascending order */
 	memory_map = &memory_map[map_entries - 1];
 	list_for_each_entry(lmem, &efi_mem, link) {
-		memory_map->type = lmem->desc.type;
+		memory_map->type = lmem->type;
 		memory_map->reserved = 0;
-		memory_map->physical_start = lmem->desc.physical_start;
+		memory_map->physical_start = lmem->physical_start;
 
 		/* virtual and physical are always the same */
-		memory_map->virtual_start = lmem->desc.physical_start;
-		memory_map->num_pages = lmem->desc.num_pages;
-		memory_map->attribute = lmem->desc.attribute;
+		memory_map->virtual_start = lmem->physical_start;
+		memory_map->num_pages = lmem->num_pages;
+		memory_map->attribute = lmem->attribute;
 		memory_map--;
 	}
 
