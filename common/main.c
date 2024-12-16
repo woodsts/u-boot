@@ -79,7 +79,7 @@ void main_loop(void)
 		panic("Failed to boot");
 	}
 
-	cli_loop();
+//	cli_loop();
 
 	panic("No CLI available");
 }

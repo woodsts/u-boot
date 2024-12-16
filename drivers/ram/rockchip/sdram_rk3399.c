@@ -3151,6 +3151,7 @@ static int rk3399_dmc_probe(struct udevice *dev)
 {
 	struct dram_info *priv = dev_get_priv(dev);
 
+printf("%s:%d\n", __func__, __LINE__);
 	priv->pmugrf = syscon_get_first_range(ROCKCHIP_SYSCON_PMUGRF);
 	debug("%s: pmugrf = %p\n", __func__, priv->pmugrf);
 	if (phase_sdram_init() && rk3399_dmc_init(dev))

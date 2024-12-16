@@ -568,6 +568,7 @@ int bloblist_init(void)
 
 int bloblist_maybe_init(void)
 {
+printf("%s:%d\n", __func__, __LINE__);
 	if (CONFIG_IS_ENABLED(BLOBLIST) && !(gd->flags & GD_FLG_BLOBLIST_READY))
 		return bloblist_init();
 
