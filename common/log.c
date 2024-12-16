@@ -440,6 +440,7 @@ int log_init(void)
 	const int count = ll_entry_count(struct log_driver, log_driver);
 	struct log_driver *end = drv + count;
 
+printf("%s:%d\n", __func__, __LINE__);
 	/*
 	 * We cannot add runtime data to the driver since it is likely stored
 	 * in rodata. Instead, set up a 'device' corresponding to each driver.

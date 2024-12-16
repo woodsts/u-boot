@@ -797,6 +797,7 @@ static int initf_bootstage(void)
 			IS_ENABLED(CONFIG_BOOTSTAGE_STASH);
 	int ret;
 
+printf("%s:%d\n", __func__, __LINE__);
 	ret = bootstage_init(!from_spl);
 	if (ret)
 		return ret;
@@ -855,6 +856,7 @@ static int initf_upl(void)
 	struct upl *upl;
 	int ret;
 
+printf("%s:%d\n", __func__, __LINE__);
 	if (!IS_ENABLED(CONFIG_UPL_IN) || !(gd->flags & GD_FLG_UPL))
 		return 0;
 

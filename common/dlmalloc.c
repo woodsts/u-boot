@@ -2483,6 +2483,7 @@ int mALLOPt(param_number, value) int param_number; int value;
 
 int initf_malloc(void)
 {
+printf("%s:%d\n", __func__, __LINE__);
 #if CONFIG_IS_ENABLED(SYS_MALLOC_F)
 	assert(gd->malloc_base);	/* Set up by crt0.S */
 	gd->malloc_limit = CONFIG_VAL(SYS_MALLOC_F_LEN);

@@ -211,6 +211,7 @@ int event_init(void)
 {
 	struct event_state *state = gd_event_state();
 
+printf("%s:%d\n", __func__, __LINE__);
 	INIT_LIST_HEAD(&state->spy_head);
 
 	return 0;
