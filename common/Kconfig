@@ -1022,7 +1022,7 @@ config TPL_BLOBLIST
 	bool "Support for a bloblist in TPL"
 	depends on BLOBLIST && TPL_LIBGENERIC_SUPPORT && TPL_LIBCOMMON_SUPPORT
 	select TPL_CRC32
-	default y if TPL
+	default y if TPL && VPL
 	help
 	  This enables a bloblist in TPL. The bloblist is set up in TPL and
 	  passed to SPL and U-Boot proper.
