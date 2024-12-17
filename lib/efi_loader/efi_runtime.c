@@ -13,6 +13,7 @@
 #include <efi_variable.h>
 #include <log.h>
 #include <malloc.h>
+#include <mapmem.h>
 #include <rtc.h>
 #include <asm/global_data.h>
 #include <u-boot/crc.h>
@@ -927,10 +928,10 @@ out:
  * @len:		size of the memory-mapped IO region
  * Returns:		status code
  */
-efi_status_t efi_add_runtime_mmio(void *mmio_ptr, u64 len)
+efi_status_t efi_add_runtime_mmio(void **mmio_ptr, u64 len)
 {
 	struct efi_runtime_mmio_list *newmmio;
-	uint64_t addr = *(uintptr_t *)mmio_ptr;
+	u64 addr = map_to_sysmem(*mmio_ptr);
 	efi_status_t ret;
 
 	ret = efi_add_memory_map(addr, len, EFI_MMAP_IO);
@@ -941,7 +942,7 @@ efi_status_t efi_add_runtime_mmio(void *mmio_ptr, u64 len)
 	if (!newmmio)
 		return EFI_OUT_OF_RESOURCES;
 	newmmio->ptr = mmio_ptr;
-	newmmio->paddr = *(uintptr_t *)mmio_ptr;
+	newmmio->paddr = (uintptr_t)*(void **)mmio_ptr;
 	newmmio->len = len;
 	list_add_tail(&newmmio->link, &efi_runtime_mmio);
 

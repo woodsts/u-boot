@@ -73,7 +73,7 @@ struct jmp_buf_data;
  * Call this with mmio_ptr as the _pointer_ to a pointer to an MMIO region
  * to make it available at runtime
  */
-efi_status_t efi_add_runtime_mmio(void *mmio_ptr, u64 len);
+efi_status_t efi_add_runtime_mmio(void **mmio_ptr, u64 len);
 
 /*
  * Special case handler for error/abort that just tries to dtrt to get
@@ -758,21 +758,68 @@ efi_status_t efi_next_variable_name(efi_uintn_t *size, u16 **buf,
  * Return:	size in pages
  */
 #define efi_size_in_pages(size) (((size) + EFI_PAGE_MASK) >> EFI_PAGE_SHIFT)
-/* Allocate boot service data pool memory */
+
+/**
+ * efi_alloc() - allocate boot-services-data pool-memory
+ *
+ * Allocate memory from pool and zero it out.
+ *
+ * @len:	number of bytes to allocate
+ * Return:	pointer to allocated memory or NULL
+ */
 void *efi_alloc(size_t len);
-/* Allocate pages on the specified alignment */
+
+/**
+ * efi_alloc_aligned_pages() - allocate aligned memory pages
+ *
+ * @len:		len in bytes
+ * @memory_type:	usage type of the allocated memory
+ * @align:		alignment in bytes
+ * Return:		aligned memory or NULL
+ */
 void *efi_alloc_aligned_pages(u64 len, int memory_type, size_t align);
-/* More specific EFI memory allocator, called by EFI payloads */
+
+/**
+ * efi_allocate_pages - allocate memory pages
+ *
+ * @type:		type of allocation to be performed
+ * @memory_type:	usage type of the allocated memory
+ * @pages:		number of pages to be allocated
+ * @memory:		returns a pointer to the allocated memory
+ * Return:		status code
+ */
 efi_status_t efi_allocate_pages(enum efi_allocate_type type,
 				enum efi_memory_type memory_type,
 				efi_uintn_t pages, uint64_t *memory);
-/* EFI memory free function. */
+
+/**
+ * efi_free_pages() - free memory pages
+ *
+ * @memory:	start-address of the memory area to be freed
+ * @pages:	number of pages to be freed
+ * Return:	status code
+ */
 efi_status_t efi_free_pages(uint64_t memory, efi_uintn_t pages);
-/* EFI memory allocator for small allocations */
+
+/**
+ * efi_allocate_pool - allocate memory from pool
+ *
+ * @pool_type:	type of the pool from which memory is to be allocated
+ * @size:	number of bytes to be allocated
+ * @buffer:	allocated memory
+ * Return:	status code
+ */
 efi_status_t efi_allocate_pool(enum efi_memory_type pool_type,
 			       efi_uintn_t size, void **buffer);
-/* EFI pool memory free function. */
+
+/**
+ * efi_free_pool() - free memory from pool
+ *
+ * @buffer:	start of memory to be freed
+ * Return:	status code
+ */
 efi_status_t efi_free_pool(void *buffer);
+
 /* Allocate and retrieve EFI memory map */
 efi_status_t efi_get_memory_map_alloc(efi_uintn_t *map_size,
 				      struct efi_mem_desc **memory_map);
@@ -782,16 +829,31 @@ efi_status_t efi_get_memory_map(efi_uintn_t *memory_map_size,
 				efi_uintn_t *map_key,
 				efi_uintn_t *descriptor_size,
 				uint32_t *descriptor_version);
-/* Adds a range into the EFI memory map */
+
+/**
+ * efi_add_memory_map() - add memory area to the memory map
+ *
+ * @start:		start address, must be a multiple of EFI_PAGE_SIZE. Note
+ *			that this is an address, not a pointer. Use
+ *			map_to_sysmem(ptr) if you need to pass in a pointer
+ * @size:		length in bytes of the memory area
+ * @memory_type:	type of memory added
+ *
+ * Return:		status code
+ *
+ * This function automatically aligns the start and size of the memory area
+ * to EFI_PAGE_SIZE.
+ */
 efi_status_t efi_add_memory_map(u64 start, u64 size, int memory_type);
 
 /**
  * efi_add_memory_map_pg() - add pages to the memory map
  *
- * @start:			start address, must be a multiple of
- *				EFI_PAGE_SIZE
+ * @start: start address, must be a multiple of EFI_PAGE_SIZE. Note that this
+ *	is an address, not a pointer. Use map_to_sysmem(ptr) if you need to pass
+ *	in a pointer
  * @pages:			number of pages to add
- * @memory_type:		type of memory added
+ * @memory_type:		EFI type of memory added
  * @overlap_conventional:	region may only overlap free(conventional)
  *				memory
  * Return:			status code
@@ -856,8 +918,7 @@ struct efi_device_path *efi_dp_part_node(struct blk_desc *desc, int part);
 struct efi_device_path *efi_dp_from_file(const struct efi_device_path *dp,
 					 const char *path);
 struct efi_device_path *efi_dp_from_eth(void);
-struct efi_device_path *efi_dp_from_mem(uint32_t mem_type,
-					uint64_t start_address,
+struct efi_device_path *efi_dp_from_mem(uint32_t mem_type, void *start_ptr,
 					size_t size);
 /* Determine the last device path node that is not the end node. */
 const struct efi_device_path *efi_dp_last_node(

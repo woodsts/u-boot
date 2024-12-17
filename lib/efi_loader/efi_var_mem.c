@@ -7,6 +7,7 @@
 
 #include <efi_loader.h>
 #include <efi_variable.h>
+#include <mapmem.h>
 #include <u-boot/crc.h>
 
 /*
@@ -226,8 +227,9 @@ efi_status_t efi_var_mem_init(void)
 				 &memory);
 	if (ret != EFI_SUCCESS)
 		return ret;
-	efi_var_buf = (struct efi_var_file *)(uintptr_t)memory;
-	memset(efi_var_buf, 0, EFI_VAR_BUF_SIZE);
+
+	efi_var_buf = map_sysmem(memory, EFI_VAR_BUF_SIZE);
+	memset(efi_var_buf, '\0', EFI_VAR_BUF_SIZE);
 	efi_var_buf->magic = EFI_VAR_FILE_MAGIC;
 	efi_var_buf->length = (uintptr_t)efi_var_buf->var -
 			      (uintptr_t)efi_var_buf;
