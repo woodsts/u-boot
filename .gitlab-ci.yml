@@ -701,3 +701,8 @@ vf2:
   variables:
     ROLE: vf2
   <<: *lab_dfn
+
+colibrimx8:
+  variables:
+    ROLE: colibrimx8
+  <<: *lab_dfn
