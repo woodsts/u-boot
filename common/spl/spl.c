@@ -423,6 +423,8 @@ static int write_spl_handoff(void)
 	ret = handoff_arch_save(ho);
 	if (ret)
 		return ret;
+	printf("gd->bloblist->total_size: %d\n", gd->bloblist->total_size);
+	printf("gd->bloblist->used_size: %d\n", gd->bloblist->total_size);
 	debug(PHASE_PROMPT "Wrote SPL handoff\n");
 
 	return 0;
