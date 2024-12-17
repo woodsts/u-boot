@@ -87,5 +87,10 @@ SECTIONS
 		*(.eh_frame)
 		*(.note.GNU-stack)
 	}
+
+	.embedded_dtb : {
+		*(.embedded_dtb)
+	}
+
 	.comment 0 : { *(.comment) }
 }

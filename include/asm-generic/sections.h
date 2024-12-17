@@ -70,7 +70,7 @@ extern char __image_copy_start[], __image_copy_end[];
 extern char __bss_end[];
 extern char __rel_dyn_start[], __rel_dyn_end[];
 extern char _image_binary_end[];
-extern char _dtb[];
+extern char __dtb[];
 
 /*
  * This is the U-Boot entry point - prior to relocation it should be same
