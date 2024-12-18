@@ -643,11 +643,10 @@ rpi3z:
     ROLE: rpi3z
   <<: *lab_dfn
 
-# bbb has a hardware failure 30-Nov-24
-#bbb:
-#  variables:
-#    ROLE: bbb
-#  <<: *lab_dfn
+bbb:
+ variables:
+   ROLE: bbb
+ <<: *lab_dfn
 
 kevin:
   variables:
