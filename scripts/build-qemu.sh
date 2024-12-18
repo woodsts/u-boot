@@ -21,19 +21,27 @@ usage() {
 	fi
 	echo "Usage: $0 -aBkrsw"
 	echo
-	echo "   -a   - Select architecture (arm, x86)"
-	echo "   -B   - Don't build; assume a build exists"
-	echo "   -k   - Use kvm (kernel-based Virtual Machine)"
-	echo "   -o   - Run Operating System ('ubuntu' only for now)"
-	echo "   -r   - Run QEMU with the image"
-	echo "   -R   - Select OS release (e.g. 24.04)"
-	echo "   -s   - Use serial only (no display)"
-	echo "   -w   - Use word version (32-bit)" ) >&2
+	echo "   -a <arch> - Select architecture (arm, x86)"
+	echo "   -B        - Don't build; assume a build exists"
+	echo "   -e        - Run UEFI Self-Certification Test (SCT)"
+	echo "   -k        - Use kvm (kernel-based Virtual Machine)"
+	echo "   -o <name> - Run Operating System ('ubuntu' only for now)"
+	echo "   -r        - Run QEMU with the image"
+	echo "   -R <os>   - Select OS release (e.g. 24.04)"
+	echo "   -s        - Use serial only (no display)"
+	echo "   -S <seq>  - Select SCT sequence-file"
+	echo "   -w        - Use word version (32-bit)" ) >&2
 	exit 1
 }
 
 # Directory tree for OS images
 imagedir=${imagedir-/vid/software/linux}
+
+# Directory for UEFI Self-Certification Test (SCT)
+sctdir=${sctdir-/vid/software/devel/uefi/sct}
+
+# Mount point for use when writing to disk images
+mnt=${mnt-/mnt}
 
 # architecture (arm or x86)
 arch=arm
@@ -65,13 +73,24 @@ kvm=
 # We avoid in-tree build because it gets confusing trying different builds
 ubdir=${ubdir-/tmp/b}
 
-while getopts "a:Bko:rR:sw" opt; do
+while getopts "a:Beko:rR:sS:w" opt; do
 	case "${opt}" in
 	a)
 		arch=$OPTARG
 		;;
 	B)
 		build=
+		;;
+	e)
+		extra+=" -m 4G -smp 4"
+		extra+=" -display none"
+		extra+=" -device virtio-gpu-pci"
+		extra+=" -device qemu-xhci"
+		extra+=" -device usb-kbd"
+		extra+=" -drive file=${sctdir}/sct.img,format=raw,if=none,id=vda"
+		extra+=" -device virtio-blk-device,drive=vda,bootindex=1"
+		extra+=" -device virtio-net-device,netdev=net0"
+		extra+=" -netdev user,id=net0"
 		;;
 	k)
 		kvm="-enable-kvm"
@@ -91,6 +110,9 @@ while getopts "a:Bko:rR:sw" opt; do
 	s)
 		serial=1
 		;;
+	S)
+		seq=$OPTARG
+		;;
 	w)
 		bitness=32
 		;;
@@ -103,6 +125,19 @@ done
 # Build U-Boot for the selected board
 build_u_boot() {
 	buildman -w -o $DIR --board $BOARD -I || exit $?
+}
+
+# Write the SCT test-sequence file into the SCT image
+update_sct_seq() {
+	if [[ -z "${seq}" ]]; then
+		return
+	fi
+	LOOP=$(sudo losetup --show -f -P "${sctdir}/sct.img")
+	PART="${LOOP}p1"
+	sudo mount -o loop ${PART} ${mnt} -o uid=$(id -u),gid=$(id -g)
+	cp "${seq}" "${mnt}/."
+	sudo umount ${mnt}
+	sudo losetup -d ${LOOP}
 }
 
 # Run QEMU with U-Boot
@@ -129,7 +164,7 @@ arm)
 	BOARD="qemu_arm"
 	BIOS="u-boot.bin"
 	qemu=qemu-system-arm
-	extra+=" -machine virt"
+	extra+=" -machine virt -accel tcg"
 	suffix="arm"
 	if [[ "${bitness}" == "64" ]]; then
 		BOARD="qemu_arm64"
@@ -168,6 +203,7 @@ DIR=${ubdir}/${BOARD}
 
 if [[ -n "${build}" ]]; then
 	build_u_boot
+	update_sct_seq
 fi
 
 if [[ -n "${run}" ]]; then
