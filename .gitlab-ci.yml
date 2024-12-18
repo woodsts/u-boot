@@ -704,3 +704,8 @@ colibrimx8:
   variables:
     ROLE: colibrimx8
   <<: *lab_dfn
+
+rockpro64:
+  variables:
+    ROLE: rockpro64
+  <<: *lab_dfn
