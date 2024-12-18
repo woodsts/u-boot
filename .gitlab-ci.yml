@@ -654,11 +654,11 @@ kevin:
     ROLE: kevin
   <<: *lab_dfn
 
-# pine64 has a hardware failure 30-Nov-24
-#pine64:
-#  variables:
-#    ROLE: pine64
-#  <<: *lab_dfn
+# pine64+
+pine64:
+ variables:
+   ROLE: pine64
+ <<: *lab_dfn
 
 # c4 needs binman supported added, so signing works
 #c4:
