@@ -592,6 +592,12 @@ samus:
     ROLE: samus
   <<: *lab_dfn
 
+# chromebook_samus_tpl
+samus_tpl:
+  variables:
+    ROLE: samus_tpl
+  <<: *lab_dfn
+
 link:
   variables:
     ROLE: link
