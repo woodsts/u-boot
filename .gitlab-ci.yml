@@ -587,11 +587,10 @@ pcduino3_nano:
     ROLE: pcduino3_nano
   <<: *lab_dfn
 
-# samus has a hardware failure 30-Nov-24
-#samus:
-#  variables:
-#    ROLE: samus
-#  <<: *lab_dfn
+samus:
+  variables:
+    ROLE: samus
+  <<: *lab_dfn
 
 link:
   variables:
