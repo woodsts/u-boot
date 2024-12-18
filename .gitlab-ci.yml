@@ -715,3 +715,13 @@ rockpro64:
   variables:
     ROLE: rockpro64
   <<: *lab_dfn
+
+rock3a:
+  variables:
+    ROLE: rock3a
+  <<: *lab_dfn
+
+rock5b:
+  variables:
+    ROLE: rock5b
+  <<: *lab_dfn
