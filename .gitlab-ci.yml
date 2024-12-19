@@ -46,7 +46,7 @@ stages:
     - export USE_LABGRID_SJG=1
     # export verbose="-v"
     - ${SRC}/test/py/test.py --role ${ROLE} --build-dir "${OUT}"
-        --capture=tee-sys -k "not bootstd" || ret=$?
+        --capture=tee-sys -k "version" || ret=$?
     - U_BOOT_BOARD_IDENTITY="${ROLE}" u-boot-test-release || true
     - if [[ $ret -ne 0 ]]; then
         exit $ret;
