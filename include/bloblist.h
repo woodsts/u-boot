@@ -153,6 +153,7 @@ enum bloblist_tag_t {
 	BLOBLISTT_U_BOOT_SPL_HANDOFF	= 0xfff000, /* Hand-off info from SPL */
 	BLOBLISTT_VBE			= 0xfff001, /* VBE per-phase state */
 	BLOBLISTT_U_BOOT_VIDEO		= 0xfff002, /* Video info from SPL */
+	BLOBLISTT_EFI_LOG		= 0xfff003, /* Log of EFI calls */
 };
 
 /**

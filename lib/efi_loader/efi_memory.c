@@ -8,6 +8,7 @@
 #define LOG_CATEGORY LOGC_EFI
 
 #include <efi_loader.h>
+#include <efi_log.h>
 #include <init.h>
 #include <lmb.h>
 #include <log.h>
@@ -428,9 +429,9 @@ static efi_status_t efi_check_allocated(u64 addr, bool must_be_allocated)
 	return EFI_NOT_FOUND;
 }
 
-efi_status_t efi_allocate_pages(enum efi_allocate_type type,
-				enum efi_memory_type memory_type,
-				efi_uintn_t pages, uint64_t *memory)
+static efi_status_t efi_allocate_pages_(enum efi_allocate_type type,
+					enum efi_memory_type memory_type,
+					efi_uintn_t pages, uint64_t *memory)
 {
 	u64 len;
 	uint flags;
@@ -491,7 +492,21 @@ efi_status_t efi_allocate_pages(enum efi_allocate_type type,
 	return EFI_SUCCESS;
 }
 
-efi_status_t efi_free_pages(uint64_t memory, efi_uintn_t pages)
+efi_status_t efi_allocate_pages(enum efi_allocate_type type,
+				enum efi_memory_type memory_type,
+				efi_uintn_t pages, uint64_t *memory)
+{
+	efi_status_t ret;
+	int ofs;
+
+	ofs = efi_logs_allocate_pages(type, memory_type, pages, memory);
+	ret = efi_allocate_pages_(type, memory_type, pages, memory);
+	efi_loge_allocate_pages(ofs, ret);
+
+	return ret;
+}
+
+static efi_status_t efi_free_pages_(uint64_t memory, efi_uintn_t pages)
 {
 	u64 len;
 	long status;
@@ -516,7 +531,20 @@ efi_status_t efi_free_pages(uint64_t memory, efi_uintn_t pages)
 	return ret;
 }
 
-void *efi_alloc_aligned_pages(u64 len, int memory_type, size_t align)
+efi_status_t efi_free_pages(u64 memory, efi_uintn_t pages)
+{
+	efi_status_t ret;
+	int ofs;
+
+	ofs = efi_logs_free_pages(memory, pages);
+	ret = efi_free_pages_(memory, pages);
+	efi_loge_free_pages(ofs, ret);
+
+	return ret;
+}
+
+void *efi_alloc_aligned_pages(u64 len, enum efi_memory_type memory_type,
+			      size_t align)
 {
 	u64 req_pages = efi_size_in_pages(len);
 	u64 true_pages = req_pages + efi_size_in_pages(align) - 1;
@@ -560,7 +588,8 @@ void *efi_alloc_aligned_pages(u64 len, int memory_type, size_t align)
 	return map_sysmem(aligned_mem, len);
 }
 
-efi_status_t efi_allocate_pool(enum efi_memory_type pool_type, efi_uintn_t size, void **buffer)
+static efi_status_t efi_allocate_pool_(enum efi_memory_type pool_type,
+				       efi_uintn_t size, void **buffer)
 {
 	efi_status_t r;
 	u64 addr;
@@ -588,6 +617,19 @@ efi_status_t efi_allocate_pool(enum efi_memory_type pool_type, efi_uintn_t size,
 	return r;
 }
 
+efi_status_t efi_allocate_pool(enum efi_memory_type pool_type, efi_uintn_t size,
+			       void **buffer)
+{
+	efi_status_t ret;
+	int ofs;
+
+	ofs = efi_logs_allocate_pool(pool_type, size, buffer);
+	ret = efi_allocate_pool_(pool_type, size, buffer);
+	efi_loge_allocate_pool(ofs, ret);
+
+	return ret;
+}
+
 void *efi_alloc(size_t size)
 {
 	void *buf;
@@ -602,7 +644,7 @@ void *efi_alloc(size_t size)
 	return buf;
 }
 
-efi_status_t efi_free_pool(void *buffer)
+static efi_status_t efi_free_pool_(void *buffer)
 {
 	efi_status_t ret;
 	struct efi_pool_allocation *alloc;
@@ -626,6 +668,18 @@ efi_status_t efi_free_pool(void *buffer)
 	alloc->checksum = 0;
 
 	ret = efi_free_pages(map_to_sysmem(alloc), alloc->num_pages);
+
+	return ret;
+}
+
+efi_status_t efi_free_pool(void *buffer)
+{
+	efi_status_t ret;
+	int ofs;
+
+	ofs = efi_logs_free_pool(buffer);
+	ret = efi_free_pool_(buffer);
+	efi_loge_free_pool(ofs, ret);
 
 	return ret;
 }
