@@ -58,17 +58,7 @@ stages:
       - "build/${BOARD}/multiplexed_log.css"
     expire_in: 1 week
 
-bob:
-  variables:
-    ROLE: bob
-  <<: *lab_dfn
-
 coral:
   variables:
     ROLE: coral
-  <<: *lab_dfn
-
-kevin:
-  variables:
-    ROLE: kevin
   <<: *lab_dfn
