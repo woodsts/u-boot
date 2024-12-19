@@ -21,6 +21,7 @@
 #endif
 #include <dm/device-internal.h>
 #include <dm/lists.h>
+#include <linux/libfdt.h>
 #include <test/suites.h>
 #include <test/ut.h>
 #include "bootstd_common.h"
@@ -1433,3 +1434,73 @@ static int bootstd_adhoc(struct unit_test_state *uts)
 	return 0;
 }
 BOOTSTD_TEST(bootstd_adhoc, UTF_CONSOLE);
+
+/* Check scanning extlinux, adjusting cmdline and booting */
+static int bootflow_scan_extlinux(struct unit_test_state *uts)
+{
+	const struct bootflow_img *img;
+	struct bootstd_priv *std;
+	struct bootflow *bflow;
+	const char *cline;
+	const void *fdt;
+	int node;
+
+	ut_assertok(run_command("bootflow scan", 0));
+	ut_assert_console_end();
+	ut_assertok(bootstd_get_priv(&std));
+
+	ut_asserteq(1, std->bootflows.count);
+
+	bflow = alist_getw(&std->bootflows, 0, struct bootflow);
+	std->cur_bootflow = bflow;
+
+	/* read all the images, but don't actually boot */
+	ut_assertok(inject_response(uts));
+	ut_assertok(bootflow_read_all(bflow));
+
+	/* check that the command line is now present */
+	ut_asserteq_str(
+		"ro root=UUID=9732b35b-4cd5-458b-9b91-80f7047e0b8a rhgb quiet LANG=en_US.UTF-8 cma=192MB cma=256MB",
+		bflow->cmdline);
+
+	ut_asserteq(4, bflow->images.count);
+
+	/* check each image */
+	img = alist_get(&bflow->images, 0, struct bootflow_img);
+	ut_asserteq_strn("# extlinux.conf", map_sysmem(img->addr, 0));
+
+	img = alist_get(&bflow->images, 1, struct bootflow_img);
+	ut_asserteq(IH_TYPE_KERNEL, img->type);
+	ut_asserteq(0x1000000, img->addr);	/* kernel_addr_r */
+
+	img = alist_get(&bflow->images, 2, struct bootflow_img);
+	ut_asserteq(IH_TYPE_RAMDISK, img->type);
+	ut_asserteq(0x2000000, img->addr);	/* ramdisk_addr_r */
+
+	img = alist_get(&bflow->images, 3, struct bootflow_img);
+	ut_asserteq(IH_TYPE_FLATDT, img->type);
+	ut_asserteq(0xc00000, img->addr);	/* fdt_addr_r */
+
+	/* adjust the command line */
+	ut_assertok(run_command("bootflow cmdline set root /dev/mmc2", 0));
+
+	ut_asserteq(-EFAULT, bootflow_boot(bflow));
+	ut_assert_skip_to_line("sandbox: continuing, as we cannot run Linux");
+	ut_assert_console_end();
+
+	/* check that the images were not loaded again */
+	ut_asserteq(4, bflow->images.count);
+
+	/* check the cmdline in the booted FDT */
+	fdt = working_fdt;
+	node = fdt_subnode_offset(fdt, 0, "chosen");
+	ut_assert(node > 0);
+	cline = fdt_getprop(fdt, node, "bootargs", 0);
+	ut_assertnonnull(cline);
+	ut_asserteq_str(
+		"ro root=/dev/mmc2 rhgb quiet LANG=en_US.UTF-8 cma=192MB cma=256MB",
+		bflow->cmdline);
+
+	return 0;
+}
+BOOTSTD_TEST(bootflow_scan_extlinux, UTF_DM | UTF_SCAN_FDT | UTF_CONSOLE);

@@ -100,7 +100,6 @@ typedef int (*pxe_getfile_func)(struct pxe_context *ctx, const char *file_path,
 /**
  * struct pxe_context - context information for PXE parsing
  *
- * @cmdtp: Pointer to command table to use when calling other commands
  * @getfile: Function called by PXE to read a file
  * @userdata: Data the caller requires for @getfile
  * @allow_abs_path: true to allow absolute paths
@@ -110,9 +109,20 @@ typedef int (*pxe_getfile_func)(struct pxe_context *ctx, const char *file_path,
  * @use_ipv6: TRUE : use IPv6 addressing, FALSE : use IPv4 addressing
  * @use_fallback: TRUE : use "fallback" option as default, FALSE : use
  *	"default" option as default
+ * @no_boot: Stop show of actually booting and just return
+ * @bflow: Bootflow being booted, or NULL if none (must be valid if @no_boot)
+ * @cfg: PXE menu (NULL if not yet probed)
+ *
+ * The following are only used when probing for a label
+ * @label: Label to process
+ * @kernel_addr: String containing kernel address (cannot be NULL)
+ * @initrd_addr_str: String containing initaddr address (NULL if none)
+ * @initrd_filesize: String containing initrd size (only used if
+ *	@initrd_addr_str)
+ * @initrd_str: initrd string to process (only used if @initrd_addr_str)
+ * @conf_fdt: string containing the FDT address
  */
 struct pxe_context {
-	struct cmd_tbl *cmdtp;
 	/**
 	 * getfile() - read a file
 	 *
@@ -131,6 +141,17 @@ struct pxe_context {
 	ulong pxe_file_size;
 	bool use_ipv6;
 	bool use_fallback;
+	bool no_boot;
+	struct bootflow *bflow;
+	struct pxe_menu *cfg;
+
+	/* information on the selected label to boot */
+	struct pxe_label *label;
+	char *kernel_addr;
+	char *initrd_addr_str;
+	char *initrd_filesize;
+	char *initrd_str;
+	char *conf_fdt;
 };
 
 /**
@@ -222,7 +243,6 @@ int format_mac_pxe(char *outbuf, size_t outbuf_len);
  * pxe_setup_ctx() - Setup a new PXE context
  *
  * @ctx: Context to set up
- * @cmdtp: Command table entry which started this action
  * @getfile: Function to call to read a file
  * @userdata: Data the caller requires for @getfile - stored in ctx->userdata
  * @allow_abs_path: true to allow absolute paths
@@ -234,13 +254,13 @@ int format_mac_pxe(char *outbuf, size_t outbuf_len);
  *                       other choice be selected
  *                FALSE : Use "default" option should no other choice be
  *                        selected
+ * @bflow: Bootflow to update, NULL if none
  * Return: 0 if OK, -ENOMEM if out of memory, -E2BIG if bootfile is larger than
  *	MAX_TFTP_PATH_LEN bytes
  */
-int pxe_setup_ctx(struct pxe_context *ctx, struct cmd_tbl *cmdtp,
-		  pxe_getfile_func getfile, void *userdata,
-		  bool allow_abs_path, const char *bootfile, bool use_ipv6,
-		  bool use_fallback);
+int pxe_setup_ctx(struct pxe_context *ctx, pxe_getfile_func getfile,
+		  void *userdata, bool allow_abs_path, const char *bootfile,
+		  bool use_ipv6, bool use_fallback, struct bootflow *bflow);
 
 /**
  * pxe_destroy_ctx() - Destroy a PXE context
@@ -281,5 +301,27 @@ int pxe_get_file_size(ulong *sizep);
  *            FALSE : use IPv4 addressing
  */
 int pxe_get(ulong pxefile_addr_r, char **bootdirp, ulong *sizep, bool use_ipv6);
+
+/**
+ * pxe_probe() - Process a PXE file to find the label to boot
+ *
+ * This fills in the label, etc. fields in @ctx, assuming it funds something to
+ * boot. Then pxe_do_boot() can be called to boot it.
+ *
+ * @ctx: PXE context created with pxe_setup_ctx()
+ * @pxefile_addr_r: Address to load file
+ * @prompt: Force a prompt for the user
+ * Return: 0 if OK, -ve on error
+ */
+int pxe_probe(struct pxe_context *ctx, ulong pxefile_addr_r, bool prompt);
+
+/**
+ * pxe_do_boot() - Boot the selected label
+ *
+ * This boots the label discovered by pxe_probe()
+ *
+ * Return: Does not return, on success, otherwise returns a -ve error code
+ */
+int pxe_do_boot(struct pxe_context *ctx);
 
 #endif /* __PXE_UTILS_H */
