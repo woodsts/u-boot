@@ -1163,7 +1163,6 @@ config ARCH_SUNXI
 	select DM_SPI if SPI
 	select DM_SPI_FLASH if SPI && MTD
 	select DM_KEYBOARD
-	select DM_MMC if MMC
 	select DM_SERIAL
 	select OF_BOARD_SETUP
 	select OF_CONTROL
@@ -1211,7 +1210,6 @@ config ARCH_U8500
 	select CPU_V7A
 	select DM
 	select DM_GPIO
-	select DM_MMC if MMC
 	select DM_SERIAL
 	select DM_USB_GADGET if DM_USB
 	select OF_CONTROL
@@ -1236,7 +1234,6 @@ config ARCH_VERSAL
 	select ARM64
 	select CLK
 	select DM
-	select DM_MMC if MMC
 	select DM_SERIAL
 	select GICV3
 	select OF_CONTROL
@@ -1249,7 +1246,6 @@ config ARCH_VERSAL2
 	select ARM64
 	select CLK
 	select DM
-	select DM_MMC if MMC
 	select DM_SERIAL
 	select OF_CONTROL
 	imply BOARD_LATE_INIT
@@ -1261,7 +1257,6 @@ config ARCH_VERSAL_NET
 	select ARM64
 	select CLK
 	select DM
-	select DM_MMC if MMC
 	select DM_SERIAL
 	select OF_CONTROL
 	imply BOARD_LATE_INIT
@@ -1286,7 +1281,6 @@ config ARCH_ZYNQ
 	select CPU_V7A
 	select DEBUG_UART_BOARD_INIT if SPL && DEBUG_UART
 	select DM
-	select DM_MMC if MMC
 	select DM_SERIAL
 	select DM_SPI
 	select DM_SPI_FLASH
@@ -1315,7 +1309,6 @@ config ARCH_ZYNQMP_R5
 	select CLK
 	select CPU_V7R
 	select DM
-	select DM_MMC if MMC
 	select DM_SERIAL
 	select OF_CONTROL
 	imply CMD_DM
@@ -1329,7 +1322,6 @@ config ARCH_ZYNQMP
 	select DM
 	select DEBUG_UART_BOARD_INIT if SPL && DEBUG_UART
 	imply DM_MAILBOX
-	select DM_MMC if MMC
 	select DM_SERIAL
 	select MTD
 	select DM_SPI if SPI
@@ -1397,8 +1389,8 @@ config TARGET_TOTAL_COMPUTE
 	select PL01X_SERIAL
 	select DM
 	select DM_SERIAL
-	select DM_MMC
 	select DM_GPIO
+	select MMC
 	imply OF_HAS_PRIOR_STAGE
 	imply MISC_INIT_R
 
@@ -1904,7 +1896,7 @@ config TARGET_SL28
 	select DM
 	select DM_GPIO
 	select DM_I2C
-	select DM_MMC
+	select MMC
 	select MTD
 	select DM_SPI_FLASH
 	select DM_MDIO
@@ -1945,10 +1937,10 @@ config ARCH_UNIPHIER
 	select DM
 	select DM_GPIO
 	select DM_I2C
-	select DM_MMC
 	select DM_MTD
 	select DM_RESET
 	select DM_SERIAL
+	select MMC
 	select OF_BOARD_SETUP
 	select OF_CONTROL
 	select OF_LIBFDT
@@ -1992,9 +1984,9 @@ config ARCH_STI
 	select BLK
 	select CPU_V7A
 	select DM
-	select DM_MMC
 	select DM_RESET
 	select DM_SERIAL
+	select MMC
 	imply CMD_DM
 	help
 	  Support for STMicroelectronics STiH407/10 SoC family.
@@ -2041,7 +2033,6 @@ config ARCH_ROCKCHIP
 	select DM
 	select DM_GPIO
 	select DM_I2C
-	select DM_MMC
 	select DM_PWM
 	select DM_REGULATOR
 	select DM_SERIAL
@@ -2050,6 +2041,7 @@ config ARCH_ROCKCHIP
 	select DM_USB_GADGET if USB_DWC3_GADGET
 	select ENABLE_ARM_SOC_BOOT0_HOOK
 	select OF_CONTROL
+	select MMC
 	select MTD
 	select SPI
 	select SPL_DM if SPL
