@@ -587,11 +587,16 @@ pcduino3_nano:
     ROLE: pcduino3_nano
   <<: *lab_dfn
 
-# samus has a hardware failure 30-Nov-24
-#samus:
-#  variables:
-#    ROLE: samus
-#  <<: *lab_dfn
+samus:
+  variables:
+    ROLE: samus
+  <<: *lab_dfn
+
+# chromebook_samus_tpl
+samus_tpl:
+  variables:
+    ROLE: samus_tpl
+  <<: *lab_dfn
 
 link:
   variables:
@@ -643,22 +648,21 @@ rpi3z:
     ROLE: rpi3z
   <<: *lab_dfn
 
-# bbb has a hardware failure 30-Nov-24
-#bbb:
-#  variables:
-#    ROLE: bbb
-#  <<: *lab_dfn
+bbb:
+ variables:
+   ROLE: bbb
+ <<: *lab_dfn
 
 kevin:
   variables:
     ROLE: kevin
   <<: *lab_dfn
 
-# pine64 has a hardware failure 30-Nov-24
-#pine64:
-#  variables:
-#    ROLE: pine64
-#  <<: *lab_dfn
+# pine64+
+pine64:
+ variables:
+   ROLE: pine64
+ <<: *lab_dfn
 
 # c4 needs binman supported added, so signing works
 #c4:
@@ -689,4 +693,35 @@ pcduino3:
 nyan-big:
   variables:
     ROLE: nyan-big
+  <<: *lab_dfn
+
+rpi:
+  variables:
+    ROLE: rpi
+  <<: *lab_dfn
+
+# StarFive VisionFive 2
+vf2:
+  variables:
+    ROLE: vf2
+  <<: *lab_dfn
+
+colibrimx8:
+  variables:
+    ROLE: colibrimx8
+  <<: *lab_dfn
+
+rockpro64:
+  variables:
+    ROLE: rockpro64
+  <<: *lab_dfn
+
+rock3a:
+  variables:
+    ROLE: rock3a
+  <<: *lab_dfn
+
+rock5b:
+  variables:
+    ROLE: rock5b
   <<: *lab_dfn
