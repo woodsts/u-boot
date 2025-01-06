@@ -28,7 +28,12 @@ efi_status_t EFIAPI efi_main(efi_handle_t handle,
 			     struct efi_system_table *systab)
 {
 	struct efi_loaded_image *loaded_image;
+	struct efi_mem_desc *map;
 	efi_status_t ret;
+	efi_uintn_t map_size;
+	efi_uintn_t map_key;
+	efi_uintn_t desc_size;
+	u32 desc_version;
 
 	systable = systab;
 	boottime = systable->boottime;
@@ -48,6 +53,29 @@ efi_status_t EFIAPI efi_main(efi_handle_t handle,
 	con_out->output_string(con_out, u"U-Boot test app for EFI_LOADER\r\n");
 
 out:
+	map_size = 0;
+	ret = boottime->get_memory_map(&map_size, NULL, &map_key, &desc_size,
+				       &desc_version);
+	if (ret != EFI_BUFFER_TOO_SMALL) {
+		con_out->output_string(con_out, u"map error A\n");
+		return ret;
+	}
+
+	ret = boottime->allocate_pool(EFI_BOOT_SERVICES_DATA, map_size,
+				      (void **)&map);
+	if (ret) {
+		con_out->output_string(con_out, u"map error B\n");
+		return ret;
+	}
+	/* Allocate extra space for newly allocated memory */
+	map_size += sizeof(struct efi_mem_desc);
+	ret = boottime->get_memory_map(&map_size, map, &map_key, &desc_size,
+				       &desc_version);
+	if (ret) {
+		con_out->output_string(con_out, u"map error C\n");
+		return ret;
+	}
+
 	con_out->output_string(con_out, u"Exiting test app\n");
 	ret = boottime->exit(handle, ret, 0, NULL);
 
