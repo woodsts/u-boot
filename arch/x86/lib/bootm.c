@@ -104,16 +104,13 @@ static int boot_prep_linux(struct bootm_headers *images)
 		is_zimage = 1;
 #if defined(CONFIG_FIT)
 	} else if (images->fit_uname_os && is_zimage) {
-		struct abuf buf;
-
-		ret = fit_image_get_emb_data(images->fit_hdr_os,
-					     images->fit_noffset_os, &buf);
+		ret = fit_image_get_data(images->fit_hdr_os,
+					 images->fit_noffset_os,
+					 (const void **)&data, &len);
 		if (ret) {
 			puts("Can't get image data/size!\n");
 			goto error;
 		}
-		data = buf.data;
-		len = buf.size;
 		is_zimage = 1;
 #endif
 	}
