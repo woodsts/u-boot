@@ -1330,6 +1330,9 @@ static int bootflow_efi(struct unit_test_state *uts)
 
 	ut_assert_console_end();
 
+	/* make sure the bootflow is still present */
+	ut_assertnonnull(std->cur_bootflow);
+
 	/* check memory allocations are as expected */
 	if (!hdr)
 		return 0;
