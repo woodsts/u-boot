@@ -44,8 +44,6 @@ do_imgextract(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 	const char	*uname = NULL;
 	const void*	fit_hdr;
 	int		noffset;
-	const void	*fit_data;
-	size_t		fit_len;
 #endif
 #ifdef CONFIG_GZIP
 	uint		unc_len = CONFIG_SYS_XIMG_LEN;
@@ -122,7 +120,9 @@ do_imgextract(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 		break;
 #endif
 #if defined(CONFIG_FIT)
-	case IMAGE_FORMAT_FIT:
+	case IMAGE_FORMAT_FIT: {
+		struct abuf buf;
+
 		if (uname == NULL) {
 			puts("No FIT subimage unit name\n");
 			return 1;
@@ -161,7 +161,7 @@ do_imgextract(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 		}
 
 		/* get subimage/external data address and length */
-		if (fit_image_get_data(fit_hdr, noffset, &fit_data, &fit_len)) {
+		if (fit_image_get_data(fit_hdr, noffset, &buf)) {
 			puts("Could not find script subimage data\n");
 			return 1;
 		}
@@ -169,9 +169,10 @@ do_imgextract(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 		if (fit_image_get_comp(fit_hdr, noffset, &comp))
 			comp = IH_COMP_NONE;
 
-		data = (ulong)fit_data;
-		len = (ulong)fit_len;
+		data = abuf_addr(&buf);
+		len = buf.size;
 		break;
+	}
 #endif
 	default:
 		puts("Invalid image type for imxtract\n");

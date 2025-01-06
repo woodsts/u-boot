@@ -475,9 +475,8 @@ void fit_image_print(const void *fit, int image_noffset, const char *p)
 {
 	char *desc;
 	uint8_t type, arch, os, comp = IH_COMP_NONE;
-	size_t size;
 	ulong load, entry;
-	const void *data;
+	struct abuf buf;
 	int noffset;
 	int ndepth;
 	int ret;
@@ -510,24 +509,21 @@ void fit_image_print(const void *fit, int image_noffset, const char *p)
 	fit_image_get_comp(fit, image_noffset, &comp);
 	printf("%s  Compression:  %s\n", p, genimg_get_comp_name(comp));
 
-	ret = fit_image_get_data(fit, image_noffset, &data, &size);
+	ret = fit_image_get_data(fit, image_noffset, &buf);
 
 	if (!tools_build()) {
 		printf("%s  Data Start:   ", p);
-		if (ret) {
+		if (ret)
 			printf("unavailable\n");
-		} else {
-			void *vdata = (void *)data;
-
-			printf("0x%08lx\n", (ulong)map_to_sysmem(vdata));
-		}
+		else
+			printf("0x%08lx\n", abuf_addr(&buf));
 	}
 
 	printf("%s  Data Size:    ", p);
 	if (ret)
 		printf("unavailable\n");
 	else
-		genimg_print_size(size);
+		genimg_print_size(buf.size);
 
 	/* Remaining, type dependent properties */
 	if ((type == IH_TYPE_KERNEL) || (type == IH_TYPE_STANDALONE) ||
@@ -1017,24 +1013,7 @@ int fit_image_get_data_size_unciphered(const void *fit, int noffset,
 	return 0;
 }
 
-/**
- * fit_image_get_data - get data and its size including
- *				 both embedded and external data
- * @fit: pointer to the FIT format image header
- * @noffset: component image node offset
- * @data: double pointer to void, will hold data property's data address
- * @size: pointer to size_t, will hold data property's data size
- *
- * fit_image_get_data() finds data and its size including
- * both embedded and external data. If the property is found
- * its data start address and size are returned to the caller.
- *
- * returns:
- *     0, on success
- *     otherwise, on failure
- */
-int fit_image_get_data(const void *fit, int noffset, const void **data,
-		       size_t *size)
+int fit_image_get_data(const void *fit, int noffset, struct abuf *buf)
 {
 	bool external_data = false;
 	int offset;
@@ -1056,16 +1035,10 @@ int fit_image_get_data(const void *fit, int noffset, const void **data,
 	if (external_data) {
 		debug("External Data\n");
 		ret = fit_image_get_data_size(fit, noffset, &len);
-		if (!ret) {
-			*data = fit + offset;
-			*size = len;
-		}
+		if (!ret)
+			abuf_init_const(buf, fit + offset, len);
 	} else {
-		struct abuf buf;
-
-		ret = fit_image_get_emb_data(fit, noffset, &buf);
-		*data = buf.data;
-		*size = buf.size;
+		ret = fit_image_get_emb_data(fit, noffset, buf);
 	}
 
 	return ret;
@@ -1410,9 +1383,8 @@ error:
 int fit_image_verify(const void *fit, int image_noffset)
 {
 	const char *name = fit_get_name(fit, image_noffset, NULL);
-	const void	*data;
-	size_t		size;
 	char		*err_msg = "";
+	struct abuf buf;
 
 	if (IS_ENABLED(CONFIG_FIT_SIGNATURE) && strchr(name, '@')) {
 		/*
@@ -1423,13 +1395,13 @@ int fit_image_verify(const void *fit, int image_noffset)
 		goto err;
 	}
 	/* Get image data and data length */
-	if (fit_image_get_data(fit, image_noffset, &data, &size)) {
+	if (fit_image_get_data(fit, image_noffset, &buf)) {
 		err_msg = "Can't get image data/size";
 		goto err;
 	}
 
 	return fit_image_verify_with_data(fit, image_noffset, gd_fdt_blob(),
-					  data, size);
+					  buf.data, buf.size);
 
 err:
 	printf("error!\n%s in '%s' image node\n", err_msg,
@@ -1739,8 +1711,8 @@ int fit_conf_find_compat(const void *fit, const void *fdt)
 		const char *kfdt_name;
 		int kfdt_noffset, compat_noffset;
 		const char *cur_fdt_compat;
+		struct abuf buf;
 		int len;
-		size_t sz;
 		int i;
 
 		if (ndepth > 1)
@@ -1772,10 +1744,11 @@ int fit_conf_find_compat(const void *fit, const void *fdt)
 			}
 
 			/* search in this config's kernel FDT */
-			if (fit_image_get_data(fit, kfdt_noffset, &fdt, &sz)) {
+			if (fit_image_get_data(fit, kfdt_noffset, &buf)) {
 				debug("Failed to get fdt \"%s\".\n", kfdt_name);
 				continue;
 			}
+			fdt = buf.data;
 
 			compat_noffset = 0;  /* search kFDT under root node */
 		}
@@ -1923,6 +1896,7 @@ int fit_conf_get_prop_node(const void *fit, int noffset, const char *prop_name,
 static int fit_get_data_tail(const void *fit, int noffset,
 			     const void **data, size_t *size)
 {
+	struct abuf buf;
 	char *desc;
 
 	if (noffset < 0)
@@ -1931,11 +1905,14 @@ static int fit_get_data_tail(const void *fit, int noffset,
 	if (!fit_image_verify(fit, noffset))
 		return -EINVAL;
 
-	if (fit_image_get_data(fit, noffset, data, size))
+	if (fit_image_get_data(fit, noffset, &buf))
 		return -ENOENT;
 
 	if (!fit_get_desc(fit, noffset, &desc))
 		printf("%s\n", desc);
+
+	*data = buf.data;
+	*size = buf.size;
 
 	return 0;
 }
@@ -2047,6 +2024,7 @@ int fit_image_load(struct bootm_headers *images, ulong addr,
 	const char *fit_uname;
 	const char *fit_uname_config;
 	const char *fit_base_uname_config;
+	struct abuf abuf;
 	const void *fit;
 	void *buf;
 	void *loadbuf;
@@ -2187,11 +2165,14 @@ int fit_image_load(struct bootm_headers *images, ulong addr,
 	bootstage_mark(bootstage_id + BOOTSTAGE_SUB_CHECK_ALL_OK);
 
 	/* get image data address and length */
-	if (fit_image_get_data(fit, noffset, (const void **)&buf, &size)) {
+	if (fit_image_get_data(fit, noffset, &abuf)) {
 		printf("Could not find %s subimage data!\n", prop_name);
 		bootstage_error(bootstage_id + BOOTSTAGE_SUB_GET_DATA);
 		return -ENOENT;
 	}
+
+	buf = abuf.data;
+	size = abuf.size;
 
 	/* Decrypt data before uncompress/move */
 	if (IS_ENABLED(CONFIG_FIT_CIPHER) && IMAGE_ENABLE_DECRYPT) {

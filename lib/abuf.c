@@ -21,18 +21,25 @@ void abuf_set(struct abuf *abuf, void *data, size_t size)
 	abuf->size = size;
 }
 
-#ifndef USE_HOSTCC
 void abuf_map_sysmem(struct abuf *abuf, ulong addr, size_t size)
 {
+#ifdef USE_HOSTCC
+	abuf_set(abuf, (void *)addr, size);
+#else
 	abuf_set(abuf, map_sysmem(addr, size), size);
+#endif
 }
 
 ulong abuf_addr(const struct abuf *abuf)
 {
+#ifdef USE_HOSTCC
+	return (ulong)abuf->data;
+#else
 	return map_to_sysmem(abuf->data);
+#endif
 }
 
-#else
+#ifdef USE_HOSTCC
 /* copied from lib/string.c for convenience */
 static char *memdup(const void *src, size_t len)
 {

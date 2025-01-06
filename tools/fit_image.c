@@ -15,6 +15,7 @@
 
 #include "imagetool.h"
 #include "fit_common.h"
+#include <abuf.h>
 #include "mkimage.h"
 #include <image.h>
 #include <string.h>
@@ -871,19 +872,18 @@ static int fit_image_extract(
 	int image_noffset,
 	const char *file_name)
 {
-	const void *file_data;
-	size_t file_size = 0;
+	struct abuf buf;
 	int ret;
 
 	/* get the data address and size of component at offset "image_noffset" */
-	ret = fit_image_get_data(fit, image_noffset, &file_data, &file_size);
+	ret = fit_image_get_data(fit, image_noffset, &buf);
 	if (ret) {
 		fprintf(stderr, "Could not get component information\n");
 		return ret;
 	}
 
 	/* save the "file_data" into the file specified by "file_name" */
-	return imagetool_save_subimage(file_name, (ulong) file_data, file_size);
+	return imagetool_save_subimage(file_name, abuf_addr(&buf), buf.size);
 }
 
 /**

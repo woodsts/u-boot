@@ -1184,8 +1184,23 @@ int fit_image_get_data_position(const void *fit, int noffset,
 int fit_image_get_data_size(const void *fit, int noffset, int *data_size);
 int fit_image_get_data_size_unciphered(const void *fit, int noffset,
 				       size_t *data_size);
-int fit_image_get_data(const void *fit, int noffset, const void **data,
-		       size_t *size);
+
+/**
+ * fit_image_get_data() - Get a node's data and size
+ *
+ * @fit: pointer to the FIT format image header
+ * @noffset: component image node offset
+ * @buf: returns data (inited by this function)
+ *
+ * fit_image_get_data_and_size() finds data and its size including
+ * both embedded and external data. If the property is found
+ * its data start address and size are returned to the caller.
+ *
+ * returns:
+ *     0, on success
+ *     otherwise, on failure
+ */
+int fit_image_get_data(const void *fit, int noffset, struct abuf *buf);
 
 /**
  * fit_get_data_node() - Get verified image data for an image

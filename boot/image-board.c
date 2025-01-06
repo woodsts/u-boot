@@ -960,9 +960,7 @@ int image_locate_script(void *buf, int size, const char *fit_uname,
 			const char *confname, char **datap, uint *lenp)
 {
 	const struct legacy_img_hdr *hdr;
-	const void *fit_data;
 	const void *fit_hdr;
-	size_t fit_len;
 	int noffset;
 	int verify;
 	ulong len;
@@ -1020,6 +1018,8 @@ int image_locate_script(void *buf, int size, const char *fit_uname,
 		if (!IS_ENABLED(CONFIG_FIT)) {
 			goto exit_image_format;
 		} else {
+			struct abuf abuf;
+
 			fit_hdr = buf;
 			if (fit_check_format(fit_hdr, IMAGE_SIZE_INVAL)) {
 				puts("Bad FIT image format\n");
@@ -1083,14 +1083,13 @@ fallback:
 			}
 
 			/* get script subimage data address and length */
-			if (fit_image_get_data(fit_hdr, noffset, &fit_data,
-					       &fit_len)) {
+			if (fit_image_get_data(fit_hdr, noffset, &abuf)) {
 				puts("Could not find script subimage data\n");
 				return 1;
 			}
 
-			data = (u32 *)fit_data;
-			len = (ulong)fit_len;
+			data = abuf.data;
+			len = abuf.size;
 		}
 		break;
 	default:

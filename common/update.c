@@ -6,6 +6,7 @@
  *             Bartlomiej Sieka <tur@semihalf.com>
  */
 
+#include <abuf.h>
 #include <cpu_func.h>
 #include <image.h>
 #include <linux/printk.h>
@@ -198,15 +199,15 @@ static int update_flash(ulong addr_source, ulong addr_first, ulong size)
 static int update_fit_getparams(const void *fit, int noffset, ulong *addr,
 						ulong *fladdr, ulong *size)
 {
-	const void *data;
+	struct abuf buf;
 
-	if (fit_image_get_data(fit, noffset, &data, (size_t *)size))
+	if (fit_image_get_data(fit, noffset, &buf))
 		return 1;
 
 	if (fit_image_get_load(fit, noffset, (ulong *)fladdr))
 		return 1;
 
-	*addr = (ulong)data;
+	*addr = abuf_addr(&buf);
 
 	return 0;
 }
