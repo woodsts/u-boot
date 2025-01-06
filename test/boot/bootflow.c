@@ -6,6 +6,7 @@
  * Written by Simon Glass <sjg@chromium.org>
  */
 
+#include <bloblist.h>
 #include <bootdev.h>
 #include <bootflow.h>
 #include <bootmeth.h>
@@ -14,6 +15,7 @@
 #include <dm.h>
 #include <efi.h>
 #include <efi_loader.h>
+#include <efi_log.h>
 #include <expo.h>
 #include <mapmem.h>
 #ifdef CONFIG_SANDBOX
@@ -1271,10 +1273,13 @@ BOOTSTD_TEST(bootflow_android_image_v2, UTF_CONSOLE | UTF_DM | UTF_SCAN_FDT);
 /* Test EFI bootmeth */
 static int bootflow_efi(struct unit_test_state *uts)
 {
+	struct efil_hdr *hdr = bloblist_find(BLOBLISTT_EFI_LOG, 0);
 	static const char *order[] = {"mmc1", "usb", NULL};
+	struct efil_rec_hdr *rec_hdr;
 	struct bootstd_priv *std;
 	struct udevice *bootstd;
 	const char **old_order;
+	int i;
 
 	ut_assertok(uclass_first_device_err(UCLASS_BOOTSTD, &bootstd));
 	std = dev_get_priv(bootstd);
@@ -1325,7 +1330,64 @@ static int bootflow_efi(struct unit_test_state *uts)
 
 	ut_assert_console_end();
 
-	ut_assertok(bootstd_test_drop_bootdev_order(uts));
+	/* check memory allocations are as expected */
+	if (!hdr)
+		return 0;
+
+	for (i = 0, rec_hdr = (void *)hdr + sizeof(*hdr);
+	     (void *)rec_hdr - (void *)hdr < hdr->upto;
+	     i++, rec_hdr = (void *)rec_hdr + rec_hdr->size) {
+		void *start = (void *)rec_hdr + sizeof(struct efil_rec_hdr);
+
+		switch (rec_hdr->tag) {
+		case EFILT_ALLOCATE_PAGES: {
+			struct efil_allocate_pages *rec = start;
+
+			ut_assert(rec_hdr->ended);
+			ut_assertok(rec_hdr->e_ret);
+			ut_asserteq(EFI_ALLOCATE_ANY_PAGES, rec->type);
+			log_debug("rec->memory_type %d\n", rec->memory_type);
+			ut_assert(rec->memory_type == EFI_RUNTIME_SERVICES_DATA ||
+				  rec->memory_type == EFI_BOOT_SERVICES_DATA ||
+				  rec->memory_type == EFI_ACPI_MEMORY_NVS ||
+				  rec->memory_type == EFI_LOADER_CODE);
+			ut_assert(rec->e_memory < gd->ram_size);
+			break;
+		}
+		case EFILT_FREE_PAGES: {
+			struct efil_free_pages *rec = start;
+
+			ut_assert(rec_hdr->ended);
+			ut_assertok(rec_hdr->e_ret);
+			ut_assert(rec->memory < gd->ram_size);
+			break;
+		}
+		case EFILT_ALLOCATE_POOL: {
+			struct efil_allocate_pool *rec = start;
+
+			ut_assert(rec_hdr->ended);
+			ut_assertok(rec_hdr->e_ret);
+			log_debug("rec->pool_type %d\n", rec->pool_type);
+			ut_assert(rec->pool_type == EFI_RUNTIME_SERVICES_DATA ||
+				  rec->pool_type == EFI_BOOT_SERVICES_DATA ||
+				  rec->pool_type == EFI_ACPI_MEMORY_NVS);
+			ut_assert(map_to_sysmem((void *)rec->e_buffer) <
+				  gd->ram_size);
+			break;
+		}
+		case EFILT_FREE_POOL: {
+			struct efil_free_pool *rec = start;
+
+			ut_assert(rec_hdr->ended);
+			ut_assertok(rec_hdr->e_ret);
+			ut_assert(map_to_sysmem((void *)rec->buffer) <
+				  gd->ram_size);
+			break;
+		}
+		default:
+			break;
+		}
+	}
 
 	return 0;
 }
