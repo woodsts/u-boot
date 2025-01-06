@@ -180,4 +180,5 @@ U_BOOT_DRIVER(usb_sandbox) = {
 	.probe = sandbox_usb_probe,
 	.ops	= &sandbox_usb_ops,
 	.priv_auto	= sizeof(struct sandbox_usb_ctrl),
+	.flags	= DM_FLAG_ACTIVE_DMA,
 };
