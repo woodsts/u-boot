@@ -735,10 +735,11 @@ efi_status_t efi_get_memory_map(efi_uintn_t *memory_map_size,
 	list_for_each_entry(lmem, &efi_mem, link) {
 		memory_map->type = lmem->type;
 		memory_map->reserved = 0;
-		memory_map->physical_start = lmem->base;
+		memory_map->physical_start = (u64)(ulong)map_sysmem(lmem->base,
+					lmem->num_pages * EFI_PAGE_SIZE);
 
 		/* virtual and physical are always the same */
-		memory_map->virtual_start = lmem->base;
+		memory_map->virtual_start = memory_map->physical_start;
 		memory_map->num_pages = lmem->num_pages;
 		memory_map->attribute = lmem->attribute;
 		memory_map--;
