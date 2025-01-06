@@ -76,6 +76,15 @@ out:
 		return ret;
 	}
 
+	/* exit boot services so that this part of U-Boot can be tested */
+	con_out->output_string(con_out, u"Exiting boot services\n");
+	ret = boottime->exit_boot_services(handle, map_key);
+	if (ret) {
+		con_out->output_string(con_out, u"Failed exit-boot-services\n");
+		return ret;
+	}
+
+	/* now exit for real */
 	con_out->output_string(con_out, u"Exiting test app\n");
 	ret = boottime->exit(handle, ret, 0, NULL);
 

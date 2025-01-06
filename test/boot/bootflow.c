@@ -23,6 +23,7 @@
 #endif
 #include <dm/device-internal.h>
 #include <dm/lists.h>
+#include <dm/uclass-internal.h>
 #include <linux/libfdt.h>
 #include <test/suites.h>
 #include <test/ut.h>
@@ -1279,6 +1280,7 @@ static int bootflow_efi(struct unit_test_state *uts)
 	struct bootstd_priv *std;
 	struct udevice *bootstd;
 	const char **old_order;
+	struct udevice *usb;
 	int i;
 
 	ut_assertok(uclass_first_device_err(UCLASS_BOOTSTD, &bootstd));
@@ -1315,6 +1317,10 @@ static int bootflow_efi(struct unit_test_state *uts)
 
 	systab.fw_vendor = test_vendor;
 
+	/* the USB block-device should have beeen probed */
+	ut_assertok(uclass_find_device_by_seq(UCLASS_USB, 1, &usb));
+	ut_assert(device_active(usb));
+
 	ut_asserteq(1, run_command("bootflow boot", 0));
 	ut_assert_nextline(
 		"** Booting bootflow 'usb_mass_storage.lun0.bootdev.part_1' with efi");
@@ -1325,6 +1331,7 @@ static int bootflow_efi(struct unit_test_state *uts)
 
 	/* TODO: Why the \r ? */
 	ut_assert_nextline("U-Boot test app for EFI_LOADER\r");
+	ut_assert_nextline("Exiting boot services");
 	ut_assert_nextline("Exiting test app");
 	ut_assert_nextline("Boot failed (err=-14)");
 
@@ -1332,6 +1339,10 @@ static int bootflow_efi(struct unit_test_state *uts)
 
 	/* make sure the bootflow is still present */
 	ut_assertnonnull(std->cur_bootflow);
+
+	/* the USB block-device should have beeen removed */
+	ut_assertok(uclass_find_device_by_seq(UCLASS_USB, 1, &usb));
+	ut_assert(!device_active(usb));
 
 	/* check memory allocations are as expected */
 	if (!hdr)
