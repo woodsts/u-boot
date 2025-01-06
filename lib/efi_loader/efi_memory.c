@@ -837,11 +837,11 @@ int efi_memory_init(void)
 	uint64_t efi_bounce_buffer_addr = 0xffffffff;
 
 	if (efi_allocate_pages(EFI_ALLOCATE_MAX_ADDRESS, EFI_BOOT_SERVICES_DATA,
-			       (64 * 1024 * 1024) >> EFI_PAGE_SHIFT,
+			       SZ_64M >> EFI_PAGE_SHIFT,
 			       &efi_bounce_buffer_addr) != EFI_SUCCESS)
 		return -1;
 
-	efi_bounce_buffer = (void*)(uintptr_t)efi_bounce_buffer_addr;
+	efi_bounce_buffer = map_sysmem(efi_bounce_buffer_addr, SZ_64M);
 #endif
 
 	return 0;
