@@ -1039,15 +1039,9 @@ if BLOBLIST
 
 choice
 	prompt "Bloblist location"
+	default BLOBLIST_FIXED if SANDBOX
 	help
 	  Select the location of the bloblist, via various means.
-
-config BLOBLIST_FIXED
-	bool "Place bloblist at a fixed address in memory"
-	help
-	  Select this to used a fixed memory address for the bloblist. If the
-	  bloblist exists at this address from a previous phase, it used as is.
-	  If not it is created at this address in U-Boot.
 
 config BLOBLIST_ALLOC
 	bool "Allocate bloblist"
@@ -1055,6 +1049,13 @@ config BLOBLIST_ALLOC
 	  Allocate the bloblist using malloc(). This avoids the need to
 	  specify a fixed address on systems where this is unknown or can
 	  change at runtime.
+
+config BLOBLIST_FIXED
+	bool "Place bloblist at a fixed address in memory"
+	help
+	  Select this to used a fixed memory address for the bloblist. If the
+	  bloblist exists at this address from a previous phase, it used as is.
+	  If not it is created at this address in U-Boot.
 
 endchoice
 
