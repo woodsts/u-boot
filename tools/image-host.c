@@ -9,6 +9,7 @@
  */
 
 #include "mkimage.h"
+#include <abuf.h>
 #include <bootm.h>
 #include <fdt_region.h>
 #include <image.h>
@@ -509,7 +510,7 @@ int fit_image_write_cipher(void *fit, int image_noffset, int noffset,
 static int
 fit_image_process_cipher(const char *keydir, void *keydest, void *fit,
 			 const char *image_name, int image_noffset,
-			 int node_noffset, const void *data, size_t size,
+			 int node_noffset, struct abuf *buf,
 			 const char *cmdname)
 {
 	struct image_cipher_info info;
@@ -524,7 +525,7 @@ fit_image_process_cipher(const char *keydir, void *keydest, void *fit,
 	if (ret)
 		goto out;
 
-	ret = info.cipher->encrypt(&info, data, size,
+	ret = info.cipher->encrypt(&info, buf->data, buf->size,
 				    &data_ciphered, &data_ciphered_len);
 	if (ret)
 		goto out;
@@ -546,7 +547,7 @@ fit_image_process_cipher(const char *keydir, void *keydest, void *fit,
 	}
 
 	ret = fit_image_write_cipher(fit, image_noffset, node_noffset,
-				     data, size,
+				     buf->data, buf->size,
 				     data_ciphered, data_ciphered_len);
 
  out:
@@ -562,9 +563,8 @@ int fit_image_cipher_data(const char *keydir, void *keydest,
 			  const char *cmdname)
 {
 	const char *image_name;
-	const void *data;
-	size_t size;
 	int cipher_node_offset, len;
+	struct abuf buf;
 
 	/* Get image name */
 	image_name = fit_get_name(fit, image_noffset, NULL);
@@ -574,7 +574,7 @@ int fit_image_cipher_data(const char *keydir, void *keydest,
 	}
 
 	/* Get image data and data length */
-	if (fit_image_get_emb_data(fit, image_noffset, &data, &size)) {
+	if (fit_image_get_emb_data(fit, image_noffset, &buf)) {
 		fprintf(stderr, "Can't get image data/size\n");
 		return -1;
 	}
@@ -605,7 +605,7 @@ int fit_image_cipher_data(const char *keydir, void *keydest,
 	if (!IMAGE_ENABLE_ENCRYPT || !keydir)
 		return 0;
 	return fit_image_process_cipher(keydir, keydest, fit, image_name,
-		image_noffset, cipher_node_offset, data, size, cmdname);
+		image_noffset, cipher_node_offset, &buf, cmdname);
 }
 
 /**
@@ -649,12 +649,11 @@ int fit_image_add_verification_data(const char *keydir, const char *keyfile,
 		const char *cmdname, const char* algo_name)
 {
 	const char *image_name;
-	const void *data;
-	size_t size;
+	struct abuf buf;
 	int noffset;
 
 	/* Get image data and data length */
-	if (fit_image_get_emb_data(fit, image_noffset, &data, &size)) {
+	if (fit_image_get_emb_data(fit, image_noffset, &buf)) {
 		fprintf(stderr, "Can't get image data/size\n");
 		return -1;
 	}
@@ -677,12 +676,12 @@ int fit_image_add_verification_data(const char *keydir, const char *keyfile,
 		if (!strncmp(node_name, FIT_HASH_NODENAME,
 			     strlen(FIT_HASH_NODENAME))) {
 			ret = fit_image_process_hash(fit, image_name, noffset,
-						data, size);
+						     buf.data, buf.size);
 		} else if (IMAGE_ENABLE_SIGN && (keydir || keyfile) &&
 			   !strncmp(node_name, FIT_SIG_NODENAME,
 				strlen(FIT_SIG_NODENAME))) {
 			ret = fit_image_process_sig(keydir, keyfile, keydest,
-				fit, image_name, noffset, data, size,
+				fit, image_name, noffset, buf.data, buf.size,
 				comment, require_keys, engine_id, cmdname,
 				algo_name);
 		}

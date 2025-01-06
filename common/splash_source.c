@@ -347,8 +347,6 @@ static int splash_load_fit(struct splash_location *location, u32 bmp_load_addr)
 	int res;
 	int node_offset;
 	const char *splash_file;
-	const void *internal_splash_data;
-	size_t internal_splash_size;
 	int external_splash_addr;
 	int external_splash_size;
 	bool is_splash_external = false;
@@ -356,6 +354,7 @@ static int splash_load_fit(struct splash_location *location, u32 bmp_load_addr)
 	const u32 *fit_header;
 	u32 fit_size;
 	const size_t header_size = sizeof(struct legacy_img_hdr);
+	struct abuf buf;
 
 	/* Read in image header */
 	res = splash_storage_read_raw(location, bmp_load_addr, header_size);
@@ -396,12 +395,10 @@ static int splash_load_fit(struct splash_location *location, u32 bmp_load_addr)
 
 	/* Extract the splash data from FIT */
 	/* 1. Test if splash is in FIT internal data. */
-	if (!fit_image_get_emb_data(fit_header, node_offset,
-				    &internal_splash_data,
-				    &internal_splash_size))
-		memmove((void *)(uintptr_t)bmp_load_addr, internal_splash_data, internal_splash_size);
+	if (!fit_image_get_emb_data(fit_header, node_offset, &buf)) {
+		memmove((void *)(uintptr_t)bmp_load_addr, buf.data, buf.size);
 	/* 2. Test if splash is in FIT external data with fixed position. */
-	else if (!fit_image_get_data_position(fit_header, node_offset, &external_splash_addr))
+	} else if (!fit_image_get_data_position(fit_header, node_offset, &external_splash_addr))
 		is_splash_external = true;
 	/* 3. Test if splash is in FIT external data with offset. */
 	else if (!fit_image_get_data_offset(fit_header, node_offset, &external_splash_addr)) {

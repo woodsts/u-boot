@@ -83,10 +83,8 @@ static int sec_firmware_check_copy_loadable(const void *sec_firmware_img,
 {
 	phys_addr_t sec_firmware_loadable_addr = 0;
 	int conf_node_off, ld_node_off, images;
-	const void *data;
-	size_t size;
-	ulong load;
 	const char *name, *str, *type;
+	ulong load;
 	int len;
 
 	conf_node_off = fit_conf_get_node(sec_firmware_img, NULL);
@@ -114,6 +112,8 @@ static int sec_firmware_check_copy_loadable(const void *sec_firmware_img,
 
 	for (str = name; str && ((str - name) < len);
 	     str = strchr(str, '\0') + 1) {
+		struct abuf buf;
+
 		printf("%s: '%s'\n", type, str);
 		ld_node_off = fdt_subnode_offset(sec_firmware_img, images, str);
 		if (ld_node_off < 0) {
@@ -129,7 +129,7 @@ static int sec_firmware_check_copy_loadable(const void *sec_firmware_img,
 		}
 
 		if (fit_image_get_emb_data(sec_firmware_img, ld_node_off,
-					   &data, &size)) {
+					   &buf)) {
 			printf("SEC Loadable: Can't get subimage data/size");
 			return -ENOENT;
 		}
@@ -147,9 +147,9 @@ static int sec_firmware_check_copy_loadable(const void *sec_firmware_img,
 		/* Copy loadable to secure memory and flush dcache */
 		debug("%s copied to address 0x%p\n",
 		      FIT_LOADABLE_PROP, (void *)sec_firmware_loadable_addr);
-		memcpy((void *)sec_firmware_loadable_addr, data, size);
+		memcpy((void *)sec_firmware_loadable_addr, buf.data, buf.size);
 		flush_dcache_range(sec_firmware_loadable_addr,
-				   sec_firmware_loadable_addr + size);
+				   sec_firmware_loadable_addr + buf.size);
 
 		/* Populate loadable address only for Trusted OS */
 		if (!strcmp(str, "trustedOS@1")) {

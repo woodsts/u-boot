@@ -33,6 +33,7 @@
 DECLARE_GLOBAL_DATA_PTR;
 #endif /* !USE_HOSTCC*/
 
+#include <abuf.h>
 #include <bootm.h>
 #include <image.h>
 #include <bootstage.h>
@@ -901,34 +902,20 @@ int fit_image_get_entry(const void *fit, int noffset, ulong *entry)
 	return fit_image_get_address(fit, noffset, FIT_ENTRY_PROP, entry);
 }
 
-/**
- * fit_image_get_emb_data - get data property and its size for a given component image node
- * @fit: pointer to the FIT format image header
- * @noffset: component image node offset
- * @data: double pointer to void, will hold data property's data address
- * @size: pointer to size_t, will hold data property's data size
- *
- * fit_image_get_emb_data() finds data property in a given component image node.
- * If the property is found its data start address and size are returned to
- * the caller.
- *
- * returns:
- *     0, on success
- *     -1, on failure
- */
-int fit_image_get_emb_data(const void *fit, int noffset, const void **data,
-			   size_t *size)
+int fit_image_get_emb_data(const void *fit, int noffset, struct abuf *buf)
 {
+	const void *data;
 	int len;
 
-	*data = fdt_getprop(fit, noffset, FIT_DATA_PROP, &len);
-	if (*data == NULL) {
+	data = fdt_getprop(fit, noffset, FIT_DATA_PROP, &len);
+	if (!data) {
 		fit_get_debug(fit, noffset, FIT_DATA_PROP, len);
-		*size = 0;
+		abuf_init(buf);
 		return -1;
 	}
 
-	*size = len;
+	abuf_init_const(buf, data, len);
+
 	return 0;
 }
 
@@ -1074,7 +1061,11 @@ int fit_image_get_data(const void *fit, int noffset, const void **data,
 			*size = len;
 		}
 	} else {
-		ret = fit_image_get_emb_data(fit, noffset, data, size);
+		struct abuf buf;
+
+		ret = fit_image_get_emb_data(fit, noffset, &buf);
+		*data = buf.data;
+		*size = buf.size;
 	}
 
 	return ret;

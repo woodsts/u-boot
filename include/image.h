@@ -20,6 +20,7 @@
 #include <stdbool.h>
 
 /* Define this to avoid #ifdefs later on */
+struct abuf;
 struct fdt_region;
 
 #ifdef USE_HOSTCC
@@ -1160,8 +1161,23 @@ int fit_image_get_type(const void *fit, int noffset, uint8_t *type);
 int fit_image_get_comp(const void *fit, int noffset, uint8_t *comp);
 int fit_image_get_load(const void *fit, int noffset, ulong *load);
 int fit_image_get_entry(const void *fit, int noffset, ulong *entry);
-int fit_image_get_emb_data(const void *fit, int noffset, const void **data,
-			   size_t *size);
+
+/**
+ * fit_image_get_emb_data() - get embedded data for a component-image node
+ * @fit: pointer to the FIT format image header
+ * @noffset: component image node offset
+ * @buf: returns data (inited by this function)
+ *
+ * fit_image_get_emb_data() finds data property in a given component image node.
+ * If the property is found its data start address and size are returned to
+ * the caller.
+ *
+ * returns:
+ *     0, on success
+ *     -1, on failure
+ */
+int fit_image_get_emb_data(const void *fit, int noffset, struct abuf *buf);
+
 int fit_image_get_data_offset(const void *fit, int noffset, int *data_offset);
 int fit_image_get_data_position(const void *fit, int noffset,
 				int *data_position);

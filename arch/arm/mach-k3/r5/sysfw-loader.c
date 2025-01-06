@@ -110,12 +110,21 @@ static int fit_get_data_by_name(const void *fit, int images, const char *name,
 				const void **addr, size_t *size)
 {
 	int node_offset;
+	struct abuf buf;
+	int ret;
 
 	node_offset = fdt_subnode_offset(fit, images, name);
 	if (node_offset < 0)
 		return -ENOENT;
 
-	return fit_image_get_emb_data(fit, node_offset, addr, size);
+	ret = fit_image_get_emb_data(fit, node_offset, &buf);
+	if (ret)
+		return ret;
+
+	*addr = buf.data;
+	*size = buf.size;
+
+	return 0;
 }
 
 static void k3_start_system_controller(int rproc_id, bool rproc_loaded,

@@ -214,7 +214,6 @@ static int load_simple_fit(struct spl_load_info *info, ulong fit_offset,
 	void *src;
 	ulong overhead;
 	uint8_t image_comp = -1, type = -1;
-	const void *data;
 	const void *fit = ctx->fit;
 	bool external_data = false;
 
@@ -281,14 +280,17 @@ static int load_simple_fit(struct spl_load_info *info, ulong fit_offset,
 		      src_ptr, offset, (unsigned long)length);
 		src = src_ptr + overhead;
 	} else {
+		struct abuf buf;
+
 		/* Embedded data */
-		if (fit_image_get_emb_data(fit, node, &data, &length)) {
+		if (fit_image_get_emb_data(fit, node, &buf)) {
 			puts("Cannot get image data/size\n");
 			return -ENOENT;
 		}
+		src = buf.data;
+		length = buf.size;
 		debug("Embedded data: dst=%lx, size=%lx\n", load_addr,
 		      (unsigned long)length);
-		src = (void *)data;	/* cast away const */
 	}
 
 	if (CONFIG_IS_ENABLED(FIT_SIGNATURE)) {
