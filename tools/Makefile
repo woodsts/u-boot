@@ -71,7 +71,8 @@ ifneq ($(CONFIG_CMD_BOOTEFI_SELFTEST)$(CONFIG_FWU_MDATA_GPT_BLK),)
 hostprogs-y += file2include
 endif
 
-FIT_OBJS-y := fit_common.o fit_image.o image-host.o generated/boot/image-fit.o
+FIT_OBJS-y := fit_common.o fit_image.o image-host.o generated/boot/image-fit.o \
+	generated/lib/abuf.o
 FIT_SIG_OBJS-$(CONFIG_TOOLS_LIBCRYPTO) := image-sig-host.o generated/boot/image-fit-sig.o
 FIT_CIPHER_OBJS-$(CONFIG_TOOLS_LIBCRYPTO) := generated/boot/image-cipher.o
 
