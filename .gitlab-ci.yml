@@ -12,7 +12,7 @@ default:
 
 # Grab our configured image.  The source for this is found
 # in the u-boot tree at tools/docker/Dockerfile
-image: ${MIRROR_DOCKER}/trini/u-boot-gitlab-ci-runner:jammy-20240808-03Dec2024
+image: ${MIRROR_DOCKER}/trini/u-boot-gitlab-ci-runner:jammy-20240911.1-08Dec2024
 
 # We run some tests in different order, to catch some failures quicker.
 stages:
@@ -150,6 +150,8 @@ build all PowerPC platforms:
         exit $ret;
       fi;
 
+# We exclude xtensa here due to not being able to build on aarch64
+# hosts but covering all platforms in the pytest section.
 build all other platforms:
   extends: .world_build
   tags:
@@ -157,7 +159,7 @@ build all other platforms:
   script:
     - ret=0;
       git config --global --add safe.directory "${CI_PROJECT_DIR}";
-      ./tools/buildman/buildman -o /tmp -PEWM -x arm,powerpc || ret=$?;
+      ./tools/buildman/buildman -o /tmp -PEWM -x arm,powerpc,xtensa || ret=$?;
       if [[ $ret -ne 0 ]]; then
         ./tools/buildman/buildman -o /tmp -seP;
         exit $ret;
@@ -463,6 +465,8 @@ qemu-xtensa-dc233c test.py:
   variables:
     TEST_PY_BD: "qemu-xtensa-dc233c"
     TEST_PY_TEST_SPEC: "not sleep and not efi"
+  tags:
+    - all
   <<: *buildman_and_testpy_dfn
 
 r2dplus_i82557c test.py:
@@ -526,6 +530,8 @@ xtfpga test.py:
     TEST_PY_BD: "xtfpga"
     TEST_PY_TEST_SPEC: "not sleep"
     TEST_PY_ID: "--id qemu"
+  tags:
+    - all
   <<: *buildman_and_testpy_dfn
 
 coreboot test.py:
