@@ -155,6 +155,7 @@ int vbe_get_blk(const char *storage, struct udevice **blkp);
  * @blk: Block device containing FIT
  * @area_offset: Byte offset of the VBE area in @blk containing the FIT
  * @area_size: Size of the VBE area
+ * @image: SPL image to fill in with details of the loaded image, or NULL
  * @load_addrp: If non-null, returns the address where the image was loaded
  * @lenp: If non-null, returns the size of the image loaded, in bytes
  * @namep: If non-null, returns the name of the FIT-image node that was loaded
@@ -166,6 +167,7 @@ int vbe_get_blk(const char *storage, struct udevice **blkp);
  * FIT-parsing (see fit_image_load()).
  */
 int vbe_read_fit(struct udevice *blk, ulong area_offset, ulong area_size,
-		 ulong *load_addrp, ulong *lenp, char **namep);
+		 struct spl_image_info *image, ulong *load_addrp, ulong *lenp,
+		 char **namep);
 
 #endif /* __VBE_ABREC_H */
