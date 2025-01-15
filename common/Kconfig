@@ -1083,7 +1083,7 @@ config BLOBLIST_SIZE
 	  Sets the size of the bloblist in bytes. This must include all
 	  overhead (alignment, bloblist header, record header). The bloblist
 	  is set up in the first part of U-Boot to run (TPL, SPL or U-Boot
-	  proper), and this sane bloblist is used for subsequent phases.
+	  proper), and this same bloblist is used for subsequent phases.
 
 config BLOBLIST_SIZE_RELOC
 	hex "Size of bloblist after relocation"
