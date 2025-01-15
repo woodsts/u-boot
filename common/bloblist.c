@@ -475,6 +475,9 @@ int bloblist_reloc(void *to, uint to_size)
 {
 	struct bloblist_hdr *hdr;
 
+	if (to_size == 0)
+		return 0;
+
 	if (to_size < gd->bloblist->total_size)
 		return -ENOSPC;
 
@@ -510,7 +513,7 @@ int bloblist_init(void)
 	 * install the bloblist passed from previous loader to this fixed
 	 * address.
 	 */
-	bool from_boot_arg = fixed && xpl_is_first_phase();
+	bool from_boot_arg = xpl_is_first_phase();
 
 	if (xpl_prev_phase() == PHASE_TPL && !IS_ENABLED(CONFIG_TPL_BLOBLIST))
 		from_addr = false;
