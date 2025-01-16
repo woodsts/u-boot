@@ -22,39 +22,6 @@
 #include <mmc.h>
 #include <pxe_utils.h>
 
-struct extlinux_plat {
-	bool use_fallback;
-};
-
-enum extlinux_option_type {
-	EO_FALLBACK,
-	EO_INVALID
-};
-
-struct extlinux_option {
-	char *name;
-	enum extlinux_option_type option;
-};
-
-static const struct extlinux_option options[] = {
-	{"fallback", EO_FALLBACK},
-	{NULL, EO_INVALID}
-};
-
-static enum extlinux_option_type get_option(const char *option)
-{
-	int i = 0;
-
-	while (options[i].name) {
-		if (!strcmp(options[i].name, option))
-			return options[i].option;
-
-		i++;
-	}
-
-	return EO_INVALID;
-};
-
 static int extlinux_get_state_desc(struct udevice *dev, char *buf, int maxsize)
 {
 	if (IS_ENABLED(CONFIG_SANDBOX)) {
@@ -173,64 +140,18 @@ static int extlinux_read_bootflow(struct udevice *dev, struct bootflow *bflow)
 	return 0;
 }
 
-static int extlinux_boot(struct udevice *dev, struct bootflow *bflow)
+static int extlinux_local_boot(struct udevice *dev, struct bootflow *bflow)
 {
-	struct cmd_tbl cmdtp = {};	/* dummy */
-	struct pxe_context ctx;
-	struct extlinux_info info;
-	struct extlinux_plat *plat;
-	ulong addr;
-	int ret;
-
-	addr = map_to_sysmem(bflow->buf);
-	info.dev = dev;
-	info.bflow = bflow;
-
-	plat = dev_get_plat(dev);
-
-	ret = pxe_setup_ctx(&ctx, &cmdtp, extlinux_getfile, &info, true,
-			    bflow->fname, false, plat->use_fallback);
-	if (ret)
-		return log_msg_ret("ctx", -EINVAL);
-
-	ret = pxe_process(&ctx, addr, false);
-	if (ret)
-		return log_msg_ret("bread", -EINVAL);
-
-	return 0;
+	return extlinux_boot(dev, bflow, extlinux_getfile, true, bflow->fname);
 }
 
-static int extlinux_set_property(struct udevice *dev, const char *property, const char *value)
+#if CONFIG_IS_ENABLED(BOOTSTD_FULL)
+static int extlinux_local_read_all(struct udevice *dev, struct bootflow *bflow)
 {
-	struct extlinux_plat *plat;
-	static enum extlinux_option_type option;
-
-	plat = dev_get_plat(dev);
-
-	option = get_option(property);
-	if (option == EO_INVALID) {
-		printf("Invalid option\n");
-		return -EINVAL;
-	}
-
-	switch (option) {
-	case EO_FALLBACK:
-		if (!strcmp(value, "1")) {
-			plat->use_fallback = true;
-		} else if (!strcmp(value, "0")) {
-			plat->use_fallback = false;
-		} else {
-			printf("Unexpected value '%s'\n", value);
-			return -EINVAL;
-		}
-		break;
-	default:
-		printf("Unrecognised property '%s'\n", property);
-		return -EINVAL;
-	}
-
-	return 0;
+	return extlinux_read_all(dev, bflow, extlinux_getfile, true,
+				 bflow->fname);
 }
+#endif
 
 static int extlinux_bootmeth_bind(struct udevice *dev)
 {
@@ -247,8 +168,11 @@ static struct bootmeth_ops extlinux_bootmeth_ops = {
 	.check		= extlinux_check,
 	.read_bootflow	= extlinux_read_bootflow,
 	.read_file	= bootmeth_common_read_file,
-	.boot		= extlinux_boot,
+	.boot		= extlinux_local_boot,
 	.set_property	= extlinux_set_property,
+#if CONFIG_IS_ENABLED(BOOTSTD_FULL)
+	.read_all	= extlinux_local_read_all,
+#endif
 };
 
 static const struct udevice_id extlinux_bootmeth_ids[] = {

@@ -116,21 +116,17 @@ static int extlinux_pxe_read_file(struct udevice *dev, struct bootflow *bflow,
 				  const char *file_path, ulong addr,
 				  enum bootflow_img_t type, ulong *sizep)
 {
-	char *tftp_argv[] = {"tftp", NULL, NULL, NULL};
-	struct pxe_context *ctx = dev_get_priv(dev);
-	char file_addr[17];
 	ulong size;
 	int ret;
 
-	sprintf(file_addr, "%lx", addr);
-	tftp_argv[1] = file_addr;
-	tftp_argv[2] = (void *)file_path;
-
-	if (do_tftpb(ctx->cmdtp, 0, 3, tftp_argv))
-		return -ENOENT;
-	ret = pxe_get_file_size(&size);
+	if (IS_ENABLED(CONFIG_NET_LWIP))
+		return -ENOTSUPP;
+	ret = netboot_run(TFTPGET, addr, file_path, 0, false);
 	if (ret)
 		return log_msg_ret("tftp", ret);
+	ret = pxe_get_file_size(&size);
+	if (ret)
+		return log_msg_ret("tft2", ret);
 	if (size > *sizep)
 		return log_msg_ret("spc", -ENOSPC);
 	*sizep = size;
@@ -143,27 +139,17 @@ static int extlinux_pxe_read_file(struct udevice *dev, struct bootflow *bflow,
 
 static int extlinux_pxe_boot(struct udevice *dev, struct bootflow *bflow)
 {
-	struct pxe_context *ctx = dev_get_priv(dev);
-	struct cmd_tbl cmdtp = {};	/* dummy */
-	struct extlinux_info info;
-	ulong addr;
-	int ret;
-
-	addr = map_to_sysmem(bflow->buf);
-	info.dev = dev;
-	info.bflow = bflow;
-	info.cmdtp = &cmdtp;
-	ret = pxe_setup_ctx(ctx, &cmdtp, extlinux_pxe_getfile, &info, false,
-			    bflow->subdir, false, false);
-	if (ret)
-		return log_msg_ret("ctx", -EINVAL);
-
-	ret = pxe_process(ctx, addr, false);
-	if (ret)
-		return log_msg_ret("bread", -EINVAL);
-
-	return 0;
+	return extlinux_boot(dev, bflow, extlinux_pxe_getfile, false,
+			     bflow->subdir);
 }
+
+#if CONFIG_IS_ENABLED(BOOTSTD_FULL)
+static int extlinux_pxe_read_all(struct udevice *dev, struct bootflow *bflow)
+{
+	return extlinux_read_all(dev, bflow, extlinux_pxe_getfile, false,
+				 bflow->subdir);
+}
+#endif
 
 static int extlinux_bootmeth_pxe_bind(struct udevice *dev)
 {
@@ -180,6 +166,10 @@ static struct bootmeth_ops extlinux_bootmeth_pxe_ops = {
 	.read_bootflow	= extlinux_pxe_read_bootflow,
 	.read_file	= extlinux_pxe_read_file,
 	.boot		= extlinux_pxe_boot,
+	.set_property	= extlinux_set_property,
+#if CONFIG_IS_ENABLED(BOOTSTD_FULL)
+	.read_all	= extlinux_pxe_read_all,
+#endif
 };
 
 static const struct udevice_id extlinux_bootmeth_pxe_ids[] = {
@@ -193,5 +183,5 @@ U_BOOT_DRIVER(bootmeth_zpxe) = {
 	.of_match	= extlinux_bootmeth_pxe_ids,
 	.ops		= &extlinux_bootmeth_pxe_ops,
 	.bind		= extlinux_bootmeth_pxe_bind,
-	.priv_auto	= sizeof(struct pxe_context),
+	.plat_auto	= sizeof(struct extlinux_plat)
 };
