@@ -310,7 +310,7 @@ static int found_booti_os(enum image_comp_t comp)
 			puts("kernel_comp_addr_r or kernel_comp_size is not provided!\n");
 			return -ENOTSUPP;
 		}
-		if (lmb_reserve(images.os.load, images.os.image_len) < 0)
+		if (lmb_reserve(images.os.load, images.os.image_len, LMB_NONE) < 0)
 			return -EXDEV;
 	}
 
