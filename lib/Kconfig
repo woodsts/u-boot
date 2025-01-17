@@ -970,13 +970,15 @@ config OF_LIBFDT
 config OF_LIBFDT_ASSUME_MASK
 	hex "Mask of conditions to assume for libfdt"
 	depends on OF_LIBFDT || FIT
-	default 0x0
+	default 0x30
 	help
 	  Use this to change the assumptions made by libfdt about the
 	  device tree it is working with. A value of 0 means that no assumptions
 	  are made, and libfdt is able to deal with malicious data. A value of
 	  0xff means all assumptions are made and any invalid data may cause
-	  unsafe execution. See FDT_ASSUME_PERFECT, etc. in libfdt_internal.h
+	  unsafe execution. See ASSUME_PERFECT, etc. in libfdt_internal.h. We
+	  default to assuming that libfdt itself is fine and so
+	  ASSUME_LIBFDT_FLAWLESS.
 
 config OF_LIBFDT_OVERLAY
 	bool "Enable the FDT library overlay support"
