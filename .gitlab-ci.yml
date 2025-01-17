@@ -121,6 +121,8 @@ build all platforms in a single job:
     - ret=0;
       git config --global --add safe.directory "${CI_PROJECT_DIR}";
       pip install -r tools/buildman/requirements.txt;
+      pip install pylibfdt;
+      export DTC=/usr/bin/dtc;
       ./tools/buildman/buildman -o /tmp -PEWM -x xtensa || ret=$?;
       if [[ $ret -ne 0 ]]; then
         ./tools/buildman/buildman -o /tmp -seP;
