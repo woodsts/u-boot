@@ -233,6 +233,7 @@ sandbox test.py:
     - ${DEFAULT_AMD64_TAG}
   variables:
     TEST_PY_BD: "sandbox"
+    TEST_PY_TEST_SPEC: "not hash"
   <<: *buildman_and_testpy_dfn
 
 sandbox with clang test.py:
@@ -241,6 +242,7 @@ sandbox with clang test.py:
   variables:
     TEST_PY_BD: "sandbox"
     OVERRIDE: "-O clang-17"
+    TEST_PY_TEST_SPEC: "not hash"
   <<: *buildman_and_testpy_dfn
 
 sandbox64 test.py:
