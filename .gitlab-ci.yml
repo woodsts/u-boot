@@ -65,6 +65,8 @@ stages:
     - if [ -n "${BUILD_ENV}" ]; then
         export ${BUILD_ENV};
       fi
+    - pip install pylibfdt;
+      export DTC=/usr/bin/dtc;
     - tools/buildman/buildman -o ${UBOOT_TRAVIS_BUILD_DIR} -w -E -W -e
         --board ${TEST_PY_BD} ${OVERRIDE}
     - cp /opt/grub/grub_x86.efi $UBOOT_TRAVIS_BUILD_DIR/
@@ -121,6 +123,8 @@ build all platforms in a single job:
     - ret=0;
       git config --global --add safe.directory "${CI_PROJECT_DIR}";
       pip install -r tools/buildman/requirements.txt;
+      pip install pylibfdt;
+      export DTC=/usr/bin/dtc;
       ./tools/buildman/buildman -o /tmp -PEWM -x xtensa || ret=$?;
       if [[ $ret -ne 0 ]]; then
         ./tools/buildman/buildman -o /tmp -seP;
@@ -182,6 +186,8 @@ Run binman, buildman, dtoc, Kconfig and patman testsuites:
       export UBOOT_TRAVIS_BUILD_DIR=/tmp/tools-only;
       export PYTHONPATH="${UBOOT_TRAVIS_BUILD_DIR}/scripts/dtc/pylibfdt";
       export PATH="${UBOOT_TRAVIS_BUILD_DIR}/scripts/dtc:${PATH}";
+      pip install pylibfdt;
+      export DTC=/usr/bin/dtc;
       set +e;
       ./tools/buildman/buildman -T0 -o ${UBOOT_TRAVIS_BUILD_DIR} -w
         --board tools-only;
@@ -204,6 +210,8 @@ Run pylint:
     - echo "[MASTER]" >> .pylintrc
     - echo "load-plugins=pylint.extensions.docparams" >> .pylintrc
     - export UBOOT_TRAVIS_BUILD_DIR=/tmp/tools-only
+    - pip install pylibfdt;
+    - export DTC=/usr/bin/dtc;
     - set +e
     - ./tools/buildman/buildman -T0 -o ${UBOOT_TRAVIS_BUILD_DIR} -w
         --board tools-only
