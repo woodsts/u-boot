@@ -1729,7 +1729,8 @@ struct pxe_menu *pxe_prepare(struct pxe_context *ctx, ulong pxefile_addr_r,
 		return NULL;
 	}
 
-	cfg->prompt = prompt;
+	if (prompt)
+		cfg->prompt = prompt;
 
 	return cfg;
 }
