@@ -340,8 +340,7 @@ void show_rec(int seq, struct efil_rec_hdr *rec_hdr)
 		show_ulong("pgs", (ulong)rec->pages);
 		show_addr("mem", (ulong)rec->memory);
 		if (rec_hdr->ended) {
-			show_addr("*mem",
-				  (ulong)map_to_sysmem((void *)rec->e_memory));
+			show_addr("*mem", rec->e_memory);
 			show_ret(rec_hdr->e_ret);
 		}
 		break;
@@ -349,7 +348,7 @@ void show_rec(int seq, struct efil_rec_hdr *rec_hdr)
 	case EFILT_FREE_PAGES: {
 		struct efil_free_pages *rec = start;
 
-		show_addr("mem", map_to_sysmem((void *)rec->memory));
+		show_addr("mem", rec->memory);
 		show_ulong("pag", (ulong)rec->pages);
 		if (rec_hdr->ended)
 			show_ret(rec_hdr->e_ret);
