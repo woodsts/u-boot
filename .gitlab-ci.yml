@@ -731,3 +731,8 @@ rock5b:
   variables:
     ROLE: rock5b
   <<: *lab_dfn
+
+rpi5:
+  variables:
+    ROLE: rpi5
+  <<: *lab_dfn
