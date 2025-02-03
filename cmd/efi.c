@@ -7,6 +7,7 @@
 #include <command.h>
 #include <efi.h>
 #include <efi_api.h>
+#include <efi_stub.h>
 #include <errno.h>
 #include <log.h>
 #include <malloc.h>
@@ -221,7 +222,7 @@ static int do_efi_mem(struct cmd_tbl *cmdtp, int flag, int argc,
 		      char *const argv[])
 {
 	struct efi_mem_desc *orig, *desc;
-	uint version, key;
+	uint version, key = 0;
 	int desc_size;
 	int size, ret;
 	bool skip_bs;

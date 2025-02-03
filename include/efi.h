@@ -347,16 +347,6 @@ struct efi_open_protocol_info_entry {
 	u32 open_count;
 };
 
-enum efi_entry_t {
-	EFIET_END,	/* Signals this is the last (empty) entry */
-	EFIET_MEMORY_MAP,
-	EFIET_GOP_MODE,
-	EFIET_SYS_TABLE,
-
-	/* Number of entries */
-	EFIET_MEMORY_COUNT,
-};
-
 #define EFI_TABLE_VERSION	1
 
 /**
@@ -547,7 +537,7 @@ struct efi_tpm_plat {
 extern char image_base[];
 
 /* Start and end of U-Boot image (for payload) */
-extern char _binary_u_boot_bin_start[], _binary_u_boot_bin_end[];
+extern char _binary_u_boot_bin_start[], _binary_u_boot_bin_end[], _binary_u_boot_bin_size[];
 
 /*
  * Variable Attributes
@@ -659,21 +649,6 @@ void efi_puts(struct efi_priv *priv, const char *str);
  * @ch:		Character to write (note this is not unicode)
  */
 void efi_putc(struct efi_priv *priv, const char ch);
-
-/**
- * efi_info_get() - get an entry from an EFI table
- *
- * This function is called from U-Boot proper to read information set up by the
- * EFI stub. It can only be used when running from the EFI stub, not when U-Boot
- * is running as an app.
- *
- * @type:	Entry type to search for
- * @datap:	Returns pointer to entry data
- * @sizep:	Returns entry size
- * Return: 0 if OK, -ENODATA if there is no table, -ENOENT if there is no entry
- * of the requested type, -EPROTONOSUPPORT if the table has the wrong version
- */
-int efi_info_get(enum efi_entry_t type, void **datap, int *sizep);
 
 /**
  * efi_store_memory_map() - Collect the memory-map info from EFI
