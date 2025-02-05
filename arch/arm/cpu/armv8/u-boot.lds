@@ -22,7 +22,7 @@ SECTIONS
 
 	. = ALIGN(8);
 	__image_copy_start = ADDR(.text);
-	.text :
+	.text ALIGN(4096):
 	{
 		CPUDIR/start.o (.text*)
 	}
@@ -36,9 +36,12 @@ SECTIONS
                 __efi_runtime_stop = .;
 	}
 
-	.text_rest :
+	.text_rest ALIGN(4096) :
 	{
+		__text_start = .;
 		*(.text*)
+		. = ALIGN(4096);
+		__text_end = .;
 	}
 
 #ifdef CONFIG_ARMV8_PSCI
@@ -98,17 +101,19 @@ SECTIONS
 	}
 #endif
 
-	. = ALIGN(8);
-	.rodata : { *(SORT_BY_ALIGNMENT(SORT_BY_NAME(.rodata*))) }
-
-	. = ALIGN(8);
-	.data : {
-		*(.data*)
+	.rodata ALIGN(4096): {
+	    __start_rodata = .;
+	    *(SORT_BY_ALIGNMENT(SORT_BY_NAME(.rodata*)))
+	    . = ALIGN(4096);
+	    __end_rodata = .;
 	}
 
-	. = ALIGN(8);
-
-	. = .;
+	.data ALIGN(4096) : {
+	    __start_data = .;
+		*(.data*)
+	    . = ALIGN(4096);
+	    __end_data = .;
+	}
 
 	. = ALIGN(8);
 	__u_boot_list : {
@@ -136,10 +141,10 @@ SECTIONS
 	/*
 	 * arch/arm/lib/crt0_64.S assumes __bss_start - __bss_end % 8 == 0
 	 */
-	.bss ALIGN(8) : {
+	.bss ALIGN(4096) : {
 		__bss_start = .;
 		*(.bss*)
-		. = ALIGN(8);
+		. = ALIGN(4096);
 		__bss_end = .;
 	}
 
