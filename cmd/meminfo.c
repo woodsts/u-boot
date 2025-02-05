@@ -15,6 +15,10 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
+void __weak arch_dump_mem_attrs(void)
+{
+}
+
 static void print_region(const char *name, ulong base, ulong size, ulong *uptop)
 {
 	ulong end = base + size;
@@ -54,6 +58,7 @@ static int do_meminfo(struct cmd_tbl *cmdtp, int flag, int argc,
 
 	puts("DRAM:  ");
 	print_size(gd->ram_size, "\n");
+	arch_dump_mem_attrs();
 
 	if (!IS_ENABLED(CONFIG_CMD_MEMINFO_MAP))
 		return 0;
