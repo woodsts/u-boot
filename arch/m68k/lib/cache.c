@@ -151,3 +151,5 @@ __weak void flush_dcache_range(unsigned long start, unsigned long stop)
 {
 	/* An empty stub, real implementation should be in platform code */
 }
+
+void __weak pgprot_set_attrs(phys_addr_t addr, size_t size, u64 perm) {}

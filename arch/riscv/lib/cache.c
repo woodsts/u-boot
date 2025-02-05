@@ -151,3 +151,5 @@ __weak void enable_caches(void)
 	if (!zicbom_block_size)
 		log_debug("Zicbom not initialized.\n");
 }
+
+void __weak pgprot_set_attrs(phys_addr_t addr, size_t size, u64 perm) {}

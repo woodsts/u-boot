@@ -209,3 +209,4 @@ __weak void v7_outer_cache_flush_all(void) {}
 __weak void v7_outer_cache_inval_all(void) {}
 __weak void v7_outer_cache_flush_range(u32 start, u32 end) {}
 __weak void v7_outer_cache_inval_range(u32 start, u32 end) {}
+__weak void pgprot_set_attrs(phys_addr_t addr, size_t size, u64 perm) {}

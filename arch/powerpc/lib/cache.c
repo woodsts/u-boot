@@ -58,3 +58,5 @@ void invalidate_icache_all(void)
 {
 	puts("No arch specific invalidate_icache_all available!\n");
 }
+
+void __weak pgprot_set_attrs(phys_addr_t addr, size_t size, u64 perm) {}

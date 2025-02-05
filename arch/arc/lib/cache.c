@@ -819,3 +819,5 @@ void sync_n_cleanup_cache_all(void)
 
 	__ic_entire_invalidate();
 }
+
+void __weak pgprot_set_attrs(phys_addr_t addr, size_t size, u64 perm) {}

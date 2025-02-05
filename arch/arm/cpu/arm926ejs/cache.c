@@ -88,3 +88,5 @@ void enable_caches(void)
 	dcache_enable();
 #endif
 }
+
+void __weak pgprot_set_attrs(phys_addr_t addr, size_t size, u64 perm) {}

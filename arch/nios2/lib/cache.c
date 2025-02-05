@@ -127,3 +127,5 @@ void dcache_disable(void)
 {
 	flush_dcache_all();
 }
+
+void __weak pgprot_set_attrs(phys_addr_t addr, size_t size, u64 perm) {}

@@ -69,6 +69,22 @@ void flush_dcache_range(unsigned long start, unsigned long stop);
 void invalidate_dcache_range(unsigned long start, unsigned long stop);
 void invalidate_dcache_all(void);
 void invalidate_icache_all(void);
+
+enum pgprot_attrs {
+	MMU_ATTR_RO,
+	MMU_ATTR_RX,
+	MMU_ATTR_RW,
+};
+
+/** pgprot_set_attrs() - Set page table permissions
+ *
+ * @addr: Physical address start
+ * @size: size of memory to change
+ * @perm: New permissions
+ *
+ **/
+void pgprot_set_attrs(phys_addr_t addr, size_t size, u64 perm);
+
 /**
  * noncached_init() - Initialize non-cached memory region
  *

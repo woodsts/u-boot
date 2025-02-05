@@ -170,3 +170,5 @@ __weak int arm_reserve_mmu(void)
 
 	return 0;
 }
+
+void __weak pgprot_set_attrs(phys_addr_t addr, size_t size, u64 perm) {}
