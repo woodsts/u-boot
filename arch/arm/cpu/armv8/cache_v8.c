@@ -972,10 +972,13 @@ void mmu_set_region_dcache_behaviour(phys_addr_t start, size_t size,
  * The procecess is break-before-make. The target region will be marked as
  * invalid during the process of changing.
  */
-void mmu_change_region_attr(phys_addr_t addr, size_t siz, u64 attrs)
+void mmu_change_region_attr(phys_addr_t addr, size_t siz, u64 attrs, bool bbm)
 {
 	int level;
 	u64 r, size, start;
+
+	if (!bbm)
+		goto skip_break;
 
 	start = addr;
 	size = siz;
@@ -1001,6 +1004,7 @@ void mmu_change_region_attr(phys_addr_t addr, size_t siz, u64 attrs)
 			   gd->arch.tlb_addr + gd->arch.tlb_size);
 	__asm_invalidate_tlb_all();
 
+skip_break:
 	/*
 	 * Loop through the address range until we find a page granule that fits
 	 * our alignment constraints, then set it to the new cache attributes

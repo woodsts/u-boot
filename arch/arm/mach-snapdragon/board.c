@@ -577,7 +577,7 @@ static void carve_out_reserved_memory(void)
 		if (i == count || start + size < res[i].start - SZ_2M) {
 			debug("  0x%016llx - 0x%016llx: reserved\n",
 			      start, start + size);
-			mmu_change_region_attr(start, size, PTE_TYPE_FAULT);
+			mmu_change_region_attr(start, size, PTE_TYPE_FAULT, true);
 			/* If this is the final region then quit here before we index
 			 * out of bounds...
 			 */

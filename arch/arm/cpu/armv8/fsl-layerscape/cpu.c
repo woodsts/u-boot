@@ -1573,7 +1573,7 @@ void update_early_mmu_table(void)
 					PTE_BLOCK_MEMTYPE(MT_NORMAL)	|
 					PTE_BLOCK_OUTER_SHARE		|
 					PTE_BLOCK_NS			|
-					PTE_TYPE_VALID);
+					PTE_TYPE_VALID, true);
 	} else {
 		mmu_change_region_attr(
 					CFG_SYS_SDRAM_BASE,
@@ -1581,7 +1581,7 @@ void update_early_mmu_table(void)
 					PTE_BLOCK_MEMTYPE(MT_NORMAL)	|
 					PTE_BLOCK_OUTER_SHARE		|
 					PTE_BLOCK_NS			|
-					PTE_TYPE_VALID);
+					PTE_TYPE_VALID, true);
 #ifdef CONFIG_SYS_DDR_BLOCK3_BASE
 #ifndef CONFIG_SYS_DDR_BLOCK2_SIZE
 #error "Missing CONFIG_SYS_DDR_BLOCK2_SIZE"
@@ -1594,7 +1594,7 @@ void update_early_mmu_table(void)
 					PTE_BLOCK_MEMTYPE(MT_NORMAL)	|
 					PTE_BLOCK_OUTER_SHARE		|
 					PTE_BLOCK_NS			|
-					PTE_TYPE_VALID);
+					PTE_TYPE_VALID, true);
 			mmu_change_region_attr(
 					CONFIG_SYS_DDR_BLOCK3_BASE,
 					gd->ram_size -
@@ -1603,7 +1603,7 @@ void update_early_mmu_table(void)
 					PTE_BLOCK_MEMTYPE(MT_NORMAL)	|
 					PTE_BLOCK_OUTER_SHARE		|
 					PTE_BLOCK_NS			|
-					PTE_TYPE_VALID);
+					PTE_TYPE_VALID, true);
 		} else
 #endif
 		{
@@ -1614,7 +1614,7 @@ void update_early_mmu_table(void)
 					PTE_BLOCK_MEMTYPE(MT_NORMAL)	|
 					PTE_BLOCK_OUTER_SHARE		|
 					PTE_BLOCK_NS			|
-					PTE_TYPE_VALID);
+					PTE_TYPE_VALID, true);
 		}
 	}
 }
