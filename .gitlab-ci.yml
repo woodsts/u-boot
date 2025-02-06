@@ -736,3 +736,8 @@ rpi5:
   variables:
     ROLE: rpi5
   <<: *lab_dfn
+
+zybo:
+  variables:
+    ROLE: zybo
+  <<: *lab_dfn
