@@ -1,2 +1,3 @@
 #include "sandbox_defconfig"
 # CONFIG_CMDLINE is not set
+CONFIG_BOOTCOUNT_ALTBOOTCMD="
