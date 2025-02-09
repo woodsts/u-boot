@@ -15,19 +15,19 @@ TMPDIR = '/tmp/test_trace'
 RE_LINE = re.compile(r'.*0\.\.\.\.\.? \s*([0-9.]*): func.*[|](\s*)(\S.*)?([{};])$')
 
 
-def collect_trace(cons):
+def collect_trace(ubman):
     """Build U-Boot and run it to collect a trace
 
     Args:
-        cons (ConsoleBase): U-Boot console
+        ubman (ConsoleBase): U-Boot console
 
     Returns:
         tuple:
             str: Filename of the output trace file
             int: Microseconds taken for initf_dm according to bootstage
     """
-    cons.run_command('trace pause')
-    out = cons.run_command('trace stats')
+    ubman.run_command('trace pause')
+    out = ubman.run_command('trace stats')
 
     # The output is something like this:
     #    251,003 function sites
@@ -48,10 +48,10 @@ def collect_trace(cons):
     assert int(vals['untracked function calls']) == 0
     assert int(vals['maximum observed call depth']) > 30
     assert (vals['call depth limit'] ==
-            cons.config.buildconfig.get('config_trace_call_depth_limit'))
+            ubman.config.buildconfig.get('config_trace_call_depth_limit'))
     assert int(vals['calls not traced due to depth']) > 100000
 
-    out = cons.run_command('bootstage report')
+    out = ubman.run_command('bootstage report')
     # Accumulated time:
     #           19,104  dm_r
     #           23,078  of_live
@@ -62,30 +62,30 @@ def collect_trace(cons):
     # Read out the trace data
     addr = 0x02000000
     size = 0x02000000
-    out = cons.run_command(f'trace calls {addr:x} {size:x}')
+    out = ubman.run_command(f'trace calls {addr:x} {size:x}')
     print(out)
     fname = os.path.join(TMPDIR, 'trace')
-    out = cons.run_command(
+    out = ubman.run_command(
         'host save hostfs - %x %s ${profoffset}' % (addr, fname))
     return fname, int(dm_f_time[0])
 
 
-def check_function(cons, fname, proftool, map_fname, trace_dat):
+def check_function(ubman, fname, proftool, map_fname, trace_dat):
     """Check that the 'function' output works
 
     Args:
-        cons (ConsoleBase): U-Boot console
+        ubman (ConsoleBase): U-Boot console
         fname (str): Filename of trace file
         proftool (str): Filename of proftool
         map_fname (str): Filename of System.map
         trace_dat (str): Filename of output file
     """
     out = utils.run_and_log(
-        cons, [proftool, '-t', fname, '-o', trace_dat, '-m', map_fname,
+        ubman, [proftool, '-t', fname, '-o', trace_dat, '-m', map_fname,
                'dump-ftrace'])
 
     # Check that trace-cmd can read it
-    out = utils.run_and_log(cons, ['trace-cmd', 'dump', trace_dat])
+    out = utils.run_and_log(ubman, ['trace-cmd', 'dump', trace_dat])
 
     # Tracing meta data in file /tmp/test_trace/trace.dat:
     #    [Initial format]
@@ -114,7 +114,7 @@ def check_function(cons, fname, proftool, map_fname, trace_dat):
 
     # Check that the trace has something useful
     cmd = f"trace-cmd report -l {trace_dat} |grep -E '(initf_|initr_)'"
-    out = utils.run_and_log(cons, ['sh', '-c', cmd])
+    out = utils.run_and_log(ubman, ['sh', '-c', cmd])
 
     # Format:
     #      u-boot-1     0.....    60.805596: function:             initf_malloc
@@ -141,11 +141,11 @@ def check_function(cons, fname, proftool, map_fname, trace_dat):
     assert max_delta < 5
 
 
-def check_funcgraph(cons, fname, proftool, map_fname, trace_dat):
+def check_funcgraph(ubman, fname, proftool, map_fname, trace_dat):
     """Check that the 'funcgraph' output works
 
     Args:
-        cons (ConsoleBase): U-Boot console
+        ubman (ConsoleBase): U-Boot console
         fname (str): Filename of trace file
         proftool (str): Filename of proftool
         map_fname (str): Filename of System.map
@@ -157,12 +157,12 @@ def check_funcgraph(cons, fname, proftool, map_fname, trace_dat):
 
     # Generate the funcgraph format
     out = utils.run_and_log(
-        cons, [proftool, '-t', fname, '-o', trace_dat, '-m', map_fname,
+        ubman, [proftool, '-t', fname, '-o', trace_dat, '-m', map_fname,
                'dump-ftrace', '-f', 'funcgraph'])
 
     # Check that the trace has what we expect
     cmd = f'trace-cmd report -l {trace_dat} |head -n 70'
-    out = utils.run_and_log(cons, ['sh', '-c', cmd])
+    out = utils.run_and_log(ubman, ['sh', '-c', cmd])
 
     # First look for this:
     #  u-boot-1     0.....   282.101360: funcgraph_entry:        0.004 us   |    initf_malloc();
@@ -204,7 +204,7 @@ def check_funcgraph(cons, fname, proftool, map_fname, trace_dat):
     # Now look for initf_dm() and dm_timer_init() so we can check the bootstage
     # time
     cmd = f"trace-cmd report -l {trace_dat} |grep -E '(initf_dm|dm_timer_init)'"
-    out = utils.run_and_log(cons, ['sh', '-c', cmd])
+    out = utils.run_and_log(ubman, ['sh', '-c', cmd])
 
     start_timestamp = None
     end_timestamp = None
@@ -223,14 +223,14 @@ def check_funcgraph(cons, fname, proftool, map_fname, trace_dat):
     return int((float(end_timestamp) - float(start_timestamp)) * 1000000)
 
 
-def check_flamegraph(cons, fname, proftool, map_fname, trace_fg):
+def check_flamegraph(ubman, fname, proftool, map_fname, trace_fg):
     """Check that the 'flamegraph' output works
 
     This spot checks a few call counts and estimates the time taken by the
     initf_dm() function
 
     Args:
-        cons (ConsoleBase): U-Boot console
+        ubman (ConsoleBase): U-Boot console
         fname (str): Filename of trace file
         proftool (str): Filename of proftool
         map_fname (str): Filename of System.map
@@ -242,7 +242,7 @@ def check_flamegraph(cons, fname, proftool, map_fname, trace_fg):
 
     # Generate the flamegraph format
     out = utils.run_and_log(
-        cons, [proftool, '-t', fname, '-o', trace_fg, '-m', map_fname,
+        ubman, [proftool, '-t', fname, '-o', trace_fg, '-m', map_fname,
                'dump-flamegraph'])
 
     # We expect dm_timer_init() to be called twice: once before relocation and
@@ -259,7 +259,7 @@ def check_flamegraph(cons, fname, proftool, map_fname, trace_fg):
 
     # Generate the timing graph
     utils.run_and_log(
-        cons, [proftool, '-t', fname, '-o', trace_fg, '-m', map_fname,
+        ubman, [proftool, '-t', fname, '-o', trace_fg, '-m', map_fname,
                'dump-flamegraph', '-f', 'timing'])
 
     # Add up all the time spend in initf_dm() and its children
@@ -279,26 +279,25 @@ check_flamegraph
 @pytest.mark.buildconfigspec('trace')
 def test_trace(ubman):
     """Test we can build sandbox with trace, collect and process a trace"""
-    cons = ubman
 
     if not os.path.exists(TMPDIR):
         os.mkdir(TMPDIR)
-    proftool = os.path.join(cons.config.build_dir, 'tools', 'proftool')
-    map_fname = os.path.join(cons.config.build_dir, 'System.map')
+    proftool = os.path.join(ubman.config.build_dir, 'tools', 'proftool')
+    map_fname = os.path.join(ubman.config.build_dir, 'System.map')
     trace_dat = os.path.join(TMPDIR, 'trace.dat')
     trace_fg = os.path.join(TMPDIR, 'trace.fg')
 
-    fname, dm_f_time = collect_trace(cons)
+    fname, dm_f_time = collect_trace(ubman)
 
-    check_function(cons, fname, proftool, map_fname, trace_dat)
-    trace_time = check_funcgraph(cons, fname, proftool, map_fname, trace_dat)
+    check_function(ubman, fname, proftool, map_fname, trace_dat)
+    trace_time = check_funcgraph(ubman, fname, proftool, map_fname, trace_dat)
 
     # Check that bootstage and funcgraph agree to within 10 microseconds
     diff = abs(trace_time - dm_f_time)
     print(f'trace_time {trace_time}, dm_f_time {dm_f_time}')
     assert diff / dm_f_time < 0.01
 
-    fg_time = check_flamegraph(cons, fname, proftool, map_fname, trace_fg)
+    fg_time = check_flamegraph(ubman, fname, proftool, map_fname, trace_fg)
 
     # Check that bootstage and flamegraph agree to within 30%
     # This allows for CI being slow to run
