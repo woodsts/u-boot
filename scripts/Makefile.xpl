@@ -191,14 +191,16 @@ LDPPFLAGS += \
 	$(shell $(LD) --version | \
 	  sed -ne 's/GNU ld version \([0-9][0-9]*\)\.\([0-9][0-9]*\).*/-DLD_MAJOR=\1 -DLD_MINOR=\2/p')
 
-# Turn various CONFIG symbols into IMAGE symbols for easy reuse of
-# the scripts between SPL, TPL and VPL.
+# Turn various CONFIG symbols into IMAGE_MAX_SIZE and IMAGE_TEXT_BASE symbols
+# for easy reuse of the scripts between SPL, TPL and VPL.
 ifneq ($(CONFIG_MAX_SIZE),0x0)
 LDPPFLAGS += -DIMAGE_MAX_SIZE=$(CONFIG_MAX_SIZE)
 endif
 ifneq ($(CONFIG_TEXT_BASE),)
 LDPPFLAGS += -DIMAGE_TEXT_BASE=$(CONFIG_TEXT_BASE)
 endif
+
+$(warning LDPPFLAGS $(LDPPFLAGS))
 
 MKIMAGEOUTPUT ?= /dev/null
 
@@ -417,8 +419,8 @@ LDFLAGS_$(SPL_BIN) += $(call ld-option, --no-dynamic-linker)
 LDFLAGS_$(SPL_BIN) += --build-id=none
 
 # Pick the best match (e.g. SPL_TEXT_BASE for SPL, TPL_TEXT_BASE for TPL)
-ifneq ($(CONFIG_PPL_TEXT_BASE),)
-LDFLAGS_$(SPL_BIN) += -Ttext $(CONFIG_PPL_TEXT_BASE)
+ifneq ($(CONFIG_TEXT_BASE),)
+LDFLAGS_$(SPL_BIN) += -Ttext $(CONFIG_TEXT_BASE)
 endif
 
 ifdef CONFIG_TARGET_SOCFPGA_ARRIA10
