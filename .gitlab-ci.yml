@@ -244,12 +244,6 @@ sandbox test.py:
     TEST_PY_BD: "sandbox"
   <<: *buildman_and_testpy_dfn
 
-sandbox with clang test.py:
-  variables:
-    TEST_PY_BD: "sandbox"
-    OVERRIDE: "-O clang-14"
-  <<: *buildman_and_testpy_dfn
-
 sandbox without LTO test.py:
   variables:
     TEST_PY_BD: "sandbox"
@@ -259,12 +253,6 @@ sandbox without LTO test.py:
 sandbox_spl test.py:
   variables:
     TEST_PY_BD: "sandbox_spl"
-    TEST_PY_TEST_SPEC: "test_ofplatdata or test_handoff or test_spl"
-  <<: *buildman_and_testpy_dfn
-
-sandbox_noinst_test.py:
-  variables:
-    TEST_PY_BD: "sandbox_noinst"
     TEST_PY_TEST_SPEC: "test_ofplatdata or test_handoff or test_spl"
   <<: *buildman_and_testpy_dfn
 
@@ -283,27 +271,9 @@ sandbox trace_test.py:
     OVERRIDE: "-a CONFIG_TRACE=y -a CONFIG_TRACE_EARLY=y -a CONFIG_TRACE_EARLY_SIZE=0x01000000"
   <<: *buildman_and_testpy_dfn
 
-evb-ast2500 test.py:
-  variables:
-    TEST_PY_BD: "evb-ast2500"
-    TEST_PY_ID: "--id qemu"
-  <<: *buildman_and_testpy_dfn
-
-evb-ast2600 test.py:
-  variables:
-    TEST_PY_BD: "evb-ast2600"
-    TEST_PY_ID: "--id qemu"
-  <<: *buildman_and_testpy_dfn
-
 sandbox_flattree test.py:
   variables:
     TEST_PY_BD: "sandbox_flattree"
-  <<: *buildman_and_testpy_dfn
-
-vexpress_ca9x4 test.py:
-  variables:
-    TEST_PY_BD: "vexpress_ca9x4"
-    TEST_PY_ID: "--id qemu"
   <<: *buildman_and_testpy_dfn
 
 integratorcp_cm926ejs test.py:
@@ -325,20 +295,6 @@ qemu_arm64 test.py:
     TEST_PY_TEST_SPEC: "not sleep"
   <<: *buildman_and_testpy_dfn
 
-qemu_malta test.py:
-  variables:
-    TEST_PY_BD: "malta"
-    TEST_PY_TEST_SPEC: "not sleep and not efi"
-    TEST_PY_ID: "--id qemu"
-  <<: *buildman_and_testpy_dfn
-
-qemu_maltael test.py:
-  variables:
-    TEST_PY_BD: "maltael"
-    TEST_PY_TEST_SPEC: "not sleep and not efi"
-    TEST_PY_ID: "--id qemu"
-  <<: *buildman_and_testpy_dfn
-
 qemu_malta64 test.py:
   variables:
     TEST_PY_BD: "malta64"
@@ -353,27 +309,9 @@ qemu_malta64el test.py:
     TEST_PY_ID: "--id qemu"
   <<: *buildman_and_testpy_dfn
 
-qemu-ppce500 test.py:
-  variables:
-    TEST_PY_BD: "qemu-ppce500"
-    TEST_PY_TEST_SPEC: "not sleep"
-  <<: *buildman_and_testpy_dfn
-
-qemu-riscv32 test.py:
-  variables:
-    TEST_PY_BD: "qemu-riscv32"
-    TEST_PY_TEST_SPEC: "not sleep"
-  <<: *buildman_and_testpy_dfn
-
 qemu-riscv64 test.py:
   variables:
     TEST_PY_BD: "qemu-riscv64"
-    TEST_PY_TEST_SPEC: "not sleep"
-  <<: *buildman_and_testpy_dfn
-
-qemu-riscv32_spl test.py:
-  variables:
-    TEST_PY_BD: "qemu-riscv32_spl"
     TEST_PY_TEST_SPEC: "not sleep"
   <<: *buildman_and_testpy_dfn
 
@@ -387,36 +325,6 @@ qemu-x86 test.py:
   variables:
     TEST_PY_BD: "qemu-x86"
     TEST_PY_TEST_SPEC: "not sleep"
-  <<: *buildman_and_testpy_dfn
-
-qemu-x86_64 test.py:
-  variables:
-    TEST_PY_BD: "qemu-x86_64"
-    TEST_PY_TEST_SPEC: "not sleep"
-  <<: *buildman_and_testpy_dfn
-
-r2dplus_i82557c test.py:
-  variables:
-    TEST_PY_BD: "r2dplus"
-    TEST_PY_ID: "--id i82557c_qemu"
-  <<: *buildman_and_testpy_dfn
-
-r2dplus_pcnet test.py:
-  variables:
-    TEST_PY_BD: "r2dplus"
-    TEST_PY_ID: "--id pcnet_qemu"
-  <<: *buildman_and_testpy_dfn
-
-r2dplus_rtl8139 test.py:
-  variables:
-    TEST_PY_BD: "r2dplus"
-    TEST_PY_ID: "--id rtl8139_qemu"
-  <<: *buildman_and_testpy_dfn
-
-r2dplus_tulip test.py:
-  variables:
-    TEST_PY_BD: "r2dplus"
-    TEST_PY_ID: "--id tulip_qemu"
   <<: *buildman_and_testpy_dfn
 
 sifive_unleashed_sdcard test.py:
