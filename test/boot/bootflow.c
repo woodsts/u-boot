@@ -25,7 +25,6 @@
 #include <dm/lists.h>
 #include <dm/uclass-internal.h>
 #include <linux/libfdt.h>
-#include <test/suites.h>
 #include <test/ut.h>
 #include "bootstd_common.h"
 #include "../../boot/bootflow_internal.h"
