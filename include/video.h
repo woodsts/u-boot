@@ -161,6 +161,7 @@ struct video_ops {
  *		set by the driver, but if not, the uclass will set it after
  *		probing
  * @bpix:	Encoded bits per pixel (enum video_log2_bpp)
+ * @format:	Video format (enum video_format)
  */
 struct video_handoff {
 	u64 fb;
@@ -169,6 +170,7 @@ struct video_handoff {
 	u16 ysize;
 	u32 line_length;
 	u8 bpix;
+	u8 format;
 };
 
 /** enum colour_idx - the 16 colors supported by consoles */
