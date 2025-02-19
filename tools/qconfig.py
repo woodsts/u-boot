@@ -1574,7 +1574,8 @@ def do_scan_source(path, do_update, do_update_source, show_conflicts,
                          '.src', '.inc', '.l', '.i_shipped', '.txt', '.cmd',
                          '.cfg', '.y', '.cocci', '.ini', '.asn1', '.base',
                          '.cnf', '.patch', '.mak', '.its', '.svg', '.tcl',
-                         '.css', '.config', '.conf']:
+                         '.css', '.config', '.conf', '.yaml', '.dtso', '.key',
+                         '.pem', '.toml', '.in']:
                 pass
             elif 'Kconfig' in root or 'Kbuild' in root:
                 pass
@@ -1583,6 +1584,10 @@ def do_scan_source(path, do_update, do_update_source, show_conflicts,
             elif dirname in ['configs']:
                 pass
             elif dirname.startswith('doc') or dirname.startswith('scripts/kconfig'):
+                pass
+            elif dirname.startswith('lib/mbedtls/external'):
+                pass
+            elif dirname.startswith('lib/lwip/lwip'):
                 pass
             else:
                 print(f'Not sure how to handle file {fname}')
@@ -1993,6 +1998,7 @@ def main():
     if args.scan_source:
         do_scan_source(os.getcwd(), args.update, args.update_source,
                        args.list_problems, args.commit)
+        return
     if args.imply:
         if imply(args):
             parser.print_usage()
