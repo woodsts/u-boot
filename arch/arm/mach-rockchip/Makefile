@@ -53,3 +53,6 @@ obj-spl-$(CONFIG_TPL_BUILD) =
 # Now add SPL/TPL objects back into the main build
 obj-$(CONFIG_XPL_BUILD) += $(obj-spl-y)
 obj-$(CONFIG_TPL_BUILD) += $(obj-tpl-y)
+
+$(warning CONFIG_SPL_BUILD $(CONFIG_SPL_BUILD) CONFIG_TPL_BUILD $(CONFIG_TPL_BUILD))
+$(warning obj-y $(obj-y))
