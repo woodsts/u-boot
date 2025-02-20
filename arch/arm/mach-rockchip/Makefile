@@ -7,13 +7,20 @@
 # this may have entered from ATF with the stack-pointer pointing to
 # inaccessible/protected memory (and the bootrom-helper assumes that
 # the stack-pointer is valid before switching to the U-Boot stack).
+ifdef CONFIG_XPL_BUILD
 obj-$(CONFIG_ROCKCHIP_BROM_HELPER) += bootrom.o
+endif
+ifdef CONFIG_SPL_BUILD
 obj-$(CONFIG_SPL_ROCKCHIP_COMMON_BOARD) += spl.o spl-boot-order.o spl_common.o
-obj-$(CONFIG_ROCKCHIP_BROM_HELPER) += bootrom.o
+endif
+ifdef CONFIG_TPL_BUILD
 obj-$(CONFIG_TPL_ROCKCHIP_COMMON_BOARD) += tpl.o spl_common.o
+endif
 obj-$(CONFIG_ROCKCHIP_PX30) += px30-board-tpl.o
 
 obj-$(CONFIG_ROCKCHIP_RK3036) += rk3036-board-spl.o
+
+ifeq ($(CONFIG_XPL_BUILD)$(CONFIG_TPL_BUILD),)
 
 # Always include boot_mode.o, as we bypass it (i.e. turn it off)
 # inside of boot_mode.c when CONFIG_ROCKCHIP_BOOT_MODE_REG is 0.  This way,
@@ -21,13 +28,14 @@ obj-$(CONFIG_ROCKCHIP_RK3036) += rk3036-board-spl.o
 # meaning "turn it off".
 obj-y += boot_mode.o
 obj-$(CONFIG_ROCKCHIP_COMMON_BOARD) += board.o
+endif
 
+ifeq ($(CONFIG_TPL_BUILD),)
 obj-$(CONFIG_DISPLAY_CPUINFO) += cpu-info.o
+endif
 
 obj-$(CONFIG_RAM) += sdram.o
 
-ifdef CONFIG_PPL
-# TODO: Audit these Makefiles see if they really must be PPL only
 obj-$(CONFIG_ROCKCHIP_PX30) += px30/
 obj-$(CONFIG_ROCKCHIP_RK3036) += rk3036/
 obj-$(CONFIG_ROCKCHIP_RK3066) += rk3066/
@@ -43,4 +51,3 @@ obj-$(CONFIG_ROCKCHIP_RK3568) += rk3568/
 obj-$(CONFIG_ROCKCHIP_RK3588) += rk3588/
 obj-$(CONFIG_ROCKCHIP_RV1108) += rv1108/
 obj-$(CONFIG_ROCKCHIP_RV1126) += rv1126/
-endif
