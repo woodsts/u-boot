@@ -15,7 +15,7 @@
 #include <spi_flash.h>
 #include <mmc.h>
 
-#ifndef CONFIG_SPL_LIBCOMMON_SUPPORT
+#ifndef CONFIG_LIBCOMMON_SUPPORT
 void puts(const char *str)
 {
 	while (*str)
@@ -29,7 +29,7 @@ void putc(char c)
 
 	ns16550_putc((struct ns16550 *)(CFG_SYS_NS16550_COM1), c);
 }
-#endif /* CONFIG_SPL_LIBCOMMON_SUPPORT */
+#endif /* CONFIG_LIBCOMMON_SUPPORT */
 
 void board_init_f(ulong dummy)
 {

@@ -31,7 +31,7 @@ int spl_usb_load(struct spl_image_info *spl_image,
 	}
 
 	if (err) {
-#ifdef CONFIG_SPL_LIBCOMMON_SUPPORT
+#ifdef CONFIG_LIBCOMMON_SUPPORT
 		printf("%s: usb init failed: err - %d\n", __func__, err);
 #endif
 		return err;
