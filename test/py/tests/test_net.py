@@ -349,8 +349,6 @@ def test_net_pxe_get(u_boot_console):
     if not net_set_up:
         pytest.skip("Network not initialized")
 
-    test_net_setup_static(u_boot_console)
-
     f = u_boot_console.config.env.get("env__net_pxe_readable_file", None)
     if not f:
         pytest.skip("No PXE readable file to read")
