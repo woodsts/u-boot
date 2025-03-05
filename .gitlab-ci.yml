@@ -65,6 +65,23 @@ stages:
       fi
     - tools/buildman/buildman -o ${UBOOT_TRAVIS_BUILD_DIR} -w -E -W -e
         --board ${TEST_PY_BD} ${OVERRIDE}
+    - mkdir $UBOOT_TRAVIS_BUILD_DIR/pxelinux.cfg
+    - echo 'label Linux' > $UBOOT_TRAVIS_BUILD_DIR/pxelinux.cfg/default
+    - echo '    menu label Boot kernel' >> $UBOOT_TRAVIS_BUILD_DIR/pxelinux.cfg/default
+    - echo '    kernel Image' >> $UBOOT_TRAVIS_BUILD_DIR/pxelinux.cfg/default
+    - echo '    fdt system.dtb' >> $UBOOT_TRAVIS_BUILD_DIR/pxelinux.cfg/default
+    - echo '    initrd rootfs.cpio.gz.u-boot' >> $UBOOT_TRAVIS_BUILD_DIR/pxelinux.cfg/default
+    - echo "env__net_pxe_readable_file = {" >> /tmp/uboot-test-hooks/py/travis-ci/u_boot_boardenv_qemu_arm64_na.py
+    - echo -n "  'fn':" >> /tmp/uboot-test-hooks/py/travis-ci/u_boot_boardenv_qemu_arm64_na.py
+    - echo " 'default'," >> /tmp/uboot-test-hooks/py/travis-ci/u_boot_boardenv_qemu_arm64_na.py
+    - echo -n "  'addr':" >> /tmp/uboot-test-hooks/py/travis-ci/u_boot_boardenv_qemu_arm64_na.py
+    - echo " 0x40400000," >> /tmp/uboot-test-hooks/py/travis-ci/u_boot_boardenv_qemu_arm64_na.py
+    - echo -n "  'timeout':" >> /tmp/uboot-test-hooks/py/travis-ci/u_boot_boardenv_qemu_arm64_na.py
+    - echo " 50000," >> /tmp/uboot-test-hooks/py/travis-ci/u_boot_boardenv_qemu_arm64_na.py
+    - echo -n "  'pattern':" >> /tmp/uboot-test-hooks/py/travis-ci/u_boot_boardenv_qemu_arm64_na.py
+    - echo " 'Linux'," >> /tmp/uboot-test-hooks/py/travis-ci/u_boot_boardenv_qemu_arm64_na.py
+    - echo "}" >> /tmp/uboot-test-hooks/py/travis-ci/u_boot_boardenv_qemu_arm64_na.py
+    - cat /tmp/uboot-test-hooks/py/travis-ci/u_boot_boardenv_qemu_arm64_na.py
     - cp /opt/grub/grub_x86.efi $UBOOT_TRAVIS_BUILD_DIR/
     - cp /opt/grub/grub_x64.efi $UBOOT_TRAVIS_BUILD_DIR/
     - cp /opt/grub/grubriscv64.efi $UBOOT_TRAVIS_BUILD_DIR/grub_riscv64.efi
