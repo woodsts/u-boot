@@ -7,6 +7,7 @@
 import os
 
 from subprocess import call, check_call, CalledProcessError
+from tests import fs_helper
 import pytest
 from capsule_defs import CAPSULE_DATA_DIR, CAPSULE_INSTALL_DIR, EFITOOLS_PATH
 
@@ -21,12 +22,12 @@ def efi_capsule_data(request, u_boot_config):
     request -- Pytest request object.
     u_boot_config -- U-Boot configuration.
     """
-    mnt_point = u_boot_config.persistent_data_dir + '/test_efi_capsule'
-    data_dir = mnt_point + CAPSULE_DATA_DIR
-    install_dir = mnt_point + CAPSULE_INSTALL_DIR
-    image_path = u_boot_config.persistent_data_dir + '/test_efi_capsule.img'
-
     try:
+        image_path, mnt_point = fs_helper.setup_image(u_boot_config, 0, 0xc,
+                                                      basename='test_efi_capsule')
+        data_dir = mnt_point + CAPSULE_DATA_DIR
+        install_dir = mnt_point + CAPSULE_INSTALL_DIR
+
         # Create a target device
         check_call('dd if=/dev/zero of=./spi.bin bs=1MiB count=16', shell=True)
 
@@ -88,11 +89,15 @@ def efi_capsule_data(request, u_boot_config):
         check_call('cp %s/Test* %s' % (u_boot_config.build_dir, data_dir), shell=True)
         os.environ['PYTHONPATH'] = pythonpath
 
-        # Create a disk image with EFI system partition
-        check_call('virt-make-fs --partition=gpt --size=+1M --type=vfat %s %s' %
-                   (mnt_point, image_path), shell=True)
+        # Create a 16MiB partition as the EFI system partition in the disk
+        # image
+        fsfile = fs_helper.mk_fs(u_boot_config, 'vfat', 0x1000000,
+                                 'test_efi_capsule', mnt_point)
+        check_call(f'dd if={fsfile} of={image_path} bs=1M seek=1', shell=True)
+        check_call('sgdisk --mbrtogpt %s' % image_path, shell=True)
         check_call('sgdisk %s -A 1:set:0 -t 1:C12A7328-F81F-11D2-BA4B-00A0C93EC93B' %
                    image_path, shell=True)
+        call('rm -f %s' % fsfile, shell=True)
 
     except CalledProcessError as exception:
         pytest.skip('Setup failed: %s' % exception.cmd)
