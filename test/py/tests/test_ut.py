@@ -139,8 +139,8 @@ booti ${kernel_addr_r} ${ramdisk_addr_r} ${fdt_addr_r}
         cons, f'echo here {kernel} {symlink}')
     os.symlink(kernel, symlink)
 
-    fsfile = 'ext18M.img'
-    u_boot_utils.run_and_log(cons, f'fallocate -l 18M {fsfile}')
+    fsfile = 'ext16M.img'
+    u_boot_utils.run_and_log(cons, f'fallocate -l 16M {fsfile}')
     u_boot_utils.run_and_log(cons, f'mkfs.ext4 {fsfile} -d {mnt}')
     u_boot_utils.run_and_log(cons, f'dd if={fsfile} of={fname} bs=1M seek=1')
     u_boot_utils.run_and_log(cons, f'rm -rf {mnt}')
@@ -191,8 +191,8 @@ label Fedora-Workstation-armhfp-31-1.9 (5.3.7-301.fc31.armv7hl)
     u_boot_utils.run_and_log(
         cons, f'dtc -o {dtb_file}', stdin=b'/dts-v1/; / {};')
 
-    fsfile = 'vfat18M.img'
-    u_boot_utils.run_and_log(cons, f'fallocate -l 18M {fsfile}')
+    fsfile = 'vfat16M.img'
+    u_boot_utils.run_and_log(cons, f'fallocate -l 16M {fsfile}')
     u_boot_utils.run_and_log(cons, f'mkfs.vfat {fsfile}')
     u_boot_utils.run_and_log(cons, ['sh', '-c', f'mcopy -i {fsfile} {mnt}/* ::/'])
     u_boot_utils.run_and_log(cons, f'dd if={fsfile} of={fname} bs=1M seek=1')
@@ -529,8 +529,8 @@ def setup_efi_image(cons):
     with open(efi_src, 'rb') as inf:
         with open(efi_dst, 'wb') as outf:
             outf.write(inf.read())
-    fsfile = 'vfat18M.img'
-    u_boot_utils.run_and_log(cons, f'fallocate -l 18M {fsfile}')
+    fsfile = 'vfat16M.img'
+    u_boot_utils.run_and_log(cons, f'fallocate -l 16M {fsfile}')
     u_boot_utils.run_and_log(cons, f'mkfs.vfat {fsfile}')
     u_boot_utils.run_and_log(cons, ['sh', '-c', f'mcopy -vs -i {fsfile} {mnt}/* ::/'])
     u_boot_utils.run_and_log(cons, f'dd if={fsfile} of={fname} bs=1M seek=1')

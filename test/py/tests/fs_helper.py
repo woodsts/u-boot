@@ -89,13 +89,13 @@ def setup_image(config, devnum, part_type, img_size=20, second_part=False,
     fname = os.path.join(config.source_dir, f'{basename}{devnum}.img')
     mnt = os.path.join(config.persistent_data_dir, 'scratch')
 
-    spec = f'type={part_type:x}, size={img_size - 2}M, start=1M, bootable'
+    spec = f'type={part_type:x}, size={img_size - 4}M, start=1M, bootable'
     if second_part:
         spec += '\ntype=c'
 
     try:
         check_call(f'mkdir -p {mnt}', shell=True)
-        check_call(f'qemu-img create {fname} 20M', shell=True)
+        check_call(f'qemu-img create {fname} {img_size}M', shell=True)
         check_call(f'printf "{spec}" | sfdisk {fname}', shell=True)
     except CalledProcessError:
         call(f'rm -f {fname}', shell=True)
