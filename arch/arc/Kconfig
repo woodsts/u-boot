@@ -66,28 +66,20 @@ config CPU_ARCHS38
 
 endchoice
 
-choice
-	prompt "MMU Version"
-	default ARC_MMU_V3 if CPU_ARC770D
-	default ARC_MMU_V2 if CPU_ARC750D
-	default ARC_MMU_ABSENT if CPU_ARCEM6
-	default ARC_MMU_ABSENT if CPU_ARCHS36
-	default ARC_MMU_V4 if CPU_ARCHS38
-
 config ARC_MMU_ABSENT
-	bool "No MMU"
+	bool
 	help
 	  No MMU
 
 config ARC_MMU_V2
-	bool "MMU v2"
+	bool
 	depends on CPU_ARC750D
 	help
 	  Fixed the deficiency of v1 - possible thrashing in memcpy sceanrio
 	  when 2 D-TLB and 1 I-TLB entries index into same 2way set.
 
 config ARC_MMU_V3
-	bool "MMU v3"
+	bool
 	depends on CPU_ARC770D
 	help
 	  Introduced with ARC700 4.10: New Features
@@ -95,12 +87,10 @@ config ARC_MMU_V3
 	  Shared Address Spaces (SASID)
 
 config ARC_MMU_V4
-	bool "MMU v4"
+	bool
 	depends on CPU_ARCHS38
 	help
 	  Introduced as a part of ARC HS38 release.
-
-endchoice
 
 config ARC_MMU_VER
 	int
@@ -172,14 +162,14 @@ config TARGET_AXS103
 
 config TARGET_EMSDP
 	bool "Synopsys EM Software Development Platform"
-	select CPU_ARCEM6
+	depends on CPU_ARCEM6
 
 config TARGET_HSDK
 	bool "Support Synopsys HSDK or HSDK-4xD board"
 
 config TARGET_IOT_DEVKIT
 	bool "Synopsys Brite IoT Development kit"
-	select CPU_ARCEM6
+	depends on CPU_ARCEM6
 
 endchoice
 
