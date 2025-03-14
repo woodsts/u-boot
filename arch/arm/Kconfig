@@ -648,7 +648,6 @@ config ARCH_MVEBU
 	select SPL_TIMER if SPL
 	select TIMER if !ARM64
 	select OF_CONTROL
-	select OF_SEPARATE
 	select SPI
 	imply CMD_DM
 
@@ -1110,7 +1109,6 @@ config ARCH_SNAPDRAGON
 	select GPIO_EXTRA_HEADER
 	select MSM_SMEM
 	select OF_CONTROL
-	select OF_SEPARATE
 	select SMEM
 	select SPMI
 	select BOARD_LATE_INIT
@@ -1183,7 +1181,6 @@ config ARCH_SUNXI
 	select DM_SERIAL
 	select OF_BOARD_SETUP
 	select OF_CONTROL
-	select OF_SEPARATE
 	select PINCTRL
 	select SPECIFY_CONSOLE_INDEX
 	select SPL_SEPARATE_BSS if SPL
