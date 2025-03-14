@@ -99,11 +99,6 @@ config ARC_MMU_VER
 	default 3 if ARC_MMU_V3
 	default 4 if ARC_MMU_V4
 
-config CPU_BIG_ENDIAN
-	bool "Enable Big Endian Mode"
-	help
-	  Build kernel for Big Endian Mode of ARC CPU
-
 config SYS_ICACHE_OFF
 	bool "Do not enable icache"
 	help
