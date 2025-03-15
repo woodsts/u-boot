@@ -64,7 +64,8 @@ stages:
 
   after_script:
     - cp -v /tmp/${TEST_PY_BD}/*.{html,css,xml} .
-    - rm -rf /tmp/uboot-test-hooks /tmp/venv
+    - rm -rf /tmp/uboot-test-hooks /tmp/venv /tmp/${TEST_PY_BD}
+    - git clean -dfx
   script:
     # If we've been asked to use clang only do one configuration.
     - export UBOOT_TRAVIS_BUILD_DIR=/tmp/${TEST_PY_BD}
@@ -130,11 +131,13 @@ build all platforms in a single job:
         -r tools/buildman/requirements.txt
     - ret=0;
       git config --global --add safe.directory "${CI_PROJECT_DIR}";
-      ./tools/buildman/buildman -o /tmp -PEWM -x xtensa || ret=$?;
+      ./tools/buildman/buildman -o /tmp/world -PEWM -x xtensa || ret=$?;
       if [[ $ret -ne 0 ]]; then
-        ./tools/buildman/buildman -o /tmp -seP;
+        ./tools/buildman/buildman -o /tmp/world -seP;
         exit $ret;
       fi;
+  after_script:
+    - rm -rf /tmp/world
 
 .testsuites:
   stage: testsuites
@@ -160,6 +163,9 @@ docs:
     - pip install -r doc/sphinx/requirements.txt
     - make htmldocs KDOC_WERROR=1
     - make infodocs
+  after_script:
+    - rm -rf /tmp/venvhtml
+    - git clean -dfx
 
 # ensure all configs have MAINTAINERS entries
 Check for configs without MAINTAINERS entry:
@@ -174,6 +180,8 @@ Build tools-only and envtools:
     - make tools-only_config tools-only -j$(nproc);
       make mrproper;
       make tools-only_config envtools -j$(nproc)
+  after_script:
+    - git clean -dfx
 
 Run binman, buildman, dtoc, Kconfig and patman testsuites:
   extends: .testsuites
@@ -201,6 +209,9 @@ Run binman, buildman, dtoc, Kconfig and patman testsuites:
       ./tools/dtoc/dtoc -t;
       ./tools/patman/patman test;
       make testconfig
+  after_script:
+    - rm -rf /tmp/venv /tmp/tools-only
+    - git clean -dfx
 
 # Check for any pylint regressions
 Run pylint:
@@ -223,6 +234,9 @@ Run pylint:
     - pylint --version
     - export PYTHONPATH="${UBOOT_TRAVIS_BUILD_DIR}/scripts/dtc/pylibfdt"
     - make pylint_err
+  after_script:
+    - rm -rf /tmp/venv /tmp/tools-only
+    - git clean -dfx
 
 # Check for pre-schema driver model tags
 Check for pre-schema tags:
