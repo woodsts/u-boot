@@ -330,6 +330,7 @@ evb-ast2500 test.py:
 
 evb-ast2600 test.py:
   variables:
+    TEST_PY_EXTRA: "--capture=tee-sys"
     TEST_PY_BD: "evb-ast2600"
     TEST_PY_TEST_SPEC: "not sleep"
     TEST_PY_ID: "--id qemu"
