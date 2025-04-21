@@ -515,6 +515,7 @@ vexpress_fvp test.py:
   variables:
     TEST_PY_BD: "vexpress_fvp"
     TEST_PY_TEST_SPEC: "not sleep and not hostfs"
+    TEST_PY_EXTRA: "--capture=tee-sys"
   tags:
     - ${DEFAULT_AMD64_TAG}
   <<: *buildman_and_testpy_dfn
@@ -523,6 +524,7 @@ vexpress_fvp_bloblist test.py:
   variables:
     TEST_PY_BD: "vexpress_fvp_bloblist"
     TEST_PY_TEST_SPEC: "not sleep and not hostfs"
+    TEST_PY_EXTRA: "--capture=tee-sys"
   tags:
     - ${DEFAULT_AMD64_TAG}
   <<: *buildman_and_testpy_dfn
