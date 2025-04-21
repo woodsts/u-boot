@@ -288,6 +288,7 @@ RUN mkdir /tmp/trace && \
 # Build coreboot
 RUN wget -O - https://coreboot.org/releases/coreboot-24.08.tar.xz | tar -C /tmp -xJ && \
     cd /tmp/coreboot-24.08 && \
+    sed -i 's|www.nasm.us\/pub\/nasm\/releasebuilds\/\${NASM_VERSION}|distfiles.macports.org\/nasm|' util/crossgcc/buildgcc && \
     make crossgcc-i386 CPUS=$(nproc) && \
     make -C payloads/coreinfo olddefconfig && \
     make -C payloads/coreinfo && \
