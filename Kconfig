@@ -774,6 +774,7 @@ config NET
 
 config NET_LWIP
 	bool "Use lwIP for networking stack"
+	select SPL_USE_TINY_PRINTF_POINTER_SUPPORT if SPL_USE_TINY_PRINTF
 	imply NETDEVICES
 	help
 	  Include networking support based on the lwIP (lightweight IP)
