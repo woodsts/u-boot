@@ -104,6 +104,7 @@ int board_init(void)
 #define CFG_SYS_NS16550_COM2		KW_UART1_BASE
 void reset_misc(void)
 {
+#if 0
 	int b_d;
 	printf("Synology reset...");
 	udelay(50000);
@@ -113,6 +114,7 @@ void reset_misc(void)
 	ns16550_init((struct ns16550 *)CFG_SYS_NS16550_COM2, b_d);
 	ns16550_putc((struct ns16550 *)CFG_SYS_NS16550_COM2,
 		     SOFTWARE_REBOOT);
+#endif
 }
 
 #ifdef CONFIG_RESET_PHY_R
