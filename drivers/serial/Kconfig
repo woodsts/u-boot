@@ -5,6 +5,7 @@
 menuconfig SERIAL
 	bool "Serial"
 	default y
+	select DM_SERIAL
 	help
 	  Enable support for serial drivers. This allows use of a serial UART
 	  for displaying messages while U-Boot is running. It also brings in
@@ -108,7 +109,7 @@ config CONS_INDEX
 	  Set this to match the UART number of the serial console.
 
 config DM_SERIAL
-	bool "Enable Driver Model for serial drivers"
+	bool
 	depends on DM
 	select SYS_MALLOC_F
 	help
