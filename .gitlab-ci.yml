@@ -553,15 +553,6 @@ xilinx_versal_virt test.py:
     OVERRIDE: "-a ~CONFIG_USB_DWC3"
   <<: *buildman_and_testpy_dfn
 
-xtfpga test.py:
-  variables:
-    TEST_PY_BD: "xtfpga"
-    TEST_PY_TEST_SPEC: "not sleep"
-    TEST_PY_ID: "--id qemu"
-  tags:
-    - ${DEFAULT_AMD64_TAG}
-  <<: *buildman_and_testpy_dfn
-
 coreboot test.py:
   variables:
     TEST_PY_BD: "coreboot"
