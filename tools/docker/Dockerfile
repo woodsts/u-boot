@@ -2,7 +2,7 @@
 # This Dockerfile is used to build an image containing basic stuff to be used
 # to build U-Boot and run our test suites.
 
-FROM ubuntu:jammy-20250404
+FROM ubuntu:noble-20250415.1
 LABEL org.opencontainers.image.authors="Tom Rini <trini@konsulko.com>"
 LABEL org.opencontainers.image.description=" This image is for building U-Boot inside a container"
 
@@ -120,7 +120,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	parted \
 	pkg-config \
 	python-is-python3 \
-	python2.7 \
 	python3 \
 	python3-dev \
 	python3-pip \
