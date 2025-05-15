@@ -128,6 +128,8 @@ void printdec(unsigned int value);
 			(1 << CONFIG_DEBUG_UART_SHIFT), \
 		CONFIG_DEBUG_UART_SHIFT)
 
+#ifdef CONFIG_DEBUG_UART
+
 /*
  * Now define some functions - this should be inserted into the serial driver
  */
@@ -196,5 +198,18 @@ void printdec(unsigned int value);
 		_debug_uart_init(); \
 		_DEBUG_UART_ANNOUNCE \
 	} \
+
+#else
+
+#define DEBUG_UART_FUNCS
+
+#define printch(ch) (void)(ch)
+#define printascii(str) (void)(str)
+#define printhex2(value) (void)(value)
+#define printhex4(value) (void)(value)
+#define printhex8(value) (void)(value)
+#define printdec(value) (void)(value)
+
+#endif
 
 #endif
