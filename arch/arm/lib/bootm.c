@@ -283,9 +283,9 @@ static void switch_to_el1(void)
 #endif
 
 /* Subcommand: GO */
+#ifdef CONFIG_ARM64
 static void boot_jump_linux(struct bootm_headers *images, int flag)
 {
-#ifdef CONFIG_ARM64
 	void (*kernel_entry)(void *fdt_addr, void *res0, void *res1,
 			void *res2);
 	int fake = (flag & BOOTM_STATE_OS_FAKE_GO);
@@ -323,7 +323,13 @@ static void boot_jump_linux(struct bootm_headers *images, int flag)
 					    ES_TO_AARCH64);
 #endif
 	}
+}
 #else
+static bool boot_jump_via_optee;
+static unsigned long boot_jump_via_optee_addr;
+
+static void boot_jump_linux(struct bootm_headers *images, int flag)
+{
 	unsigned long machid = gd->bd->bi_arch_number;
 	char *s;
 	void (*kernel_entry)(int zero, int arch, uint params);
@@ -335,6 +341,13 @@ static void boot_jump_linux(struct bootm_headers *images, int flag)
 	ulong addr = (ulong)kernel_entry | 1;
 	kernel_entry = (void *)addr;
 #endif
+
+	if (IS_ENABLED(CONFIG_ARMV7_NONSEC) && armv7_boot_nonsec() &&
+	    boot_jump_via_optee) {
+		printf("Cannot start OpTee-OS from NS\n");
+		return;
+	}
+
 	s = env_get("machid");
 	if (s) {
 		if (strict_strtoul(s, 16, &machid) < 0) {
@@ -354,18 +367,30 @@ static void boot_jump_linux(struct bootm_headers *images, int flag)
 	else
 		r2 = gd->bd->bi_boot_params;
 
-	if (!fake) {
-#ifdef CONFIG_ARMV7_NONSEC
-		if (armv7_boot_nonsec()) {
-			armv7_init_nonsec();
-			secure_ram_addr(_do_nonsec_entry)(kernel_entry,
-							  0, machid, r2);
-		} else
-#endif
-			kernel_entry(0, machid, r2);
+	if (fake)
+		return;
+
+	if (armv7_boot_nonsec())
+		armv7_init_nonsec();
+
+	if (boot_jump_via_optee)
+		boot_jump_linux_via_optee(kernel_entry, machid, r2, boot_jump_via_optee_addr);
+
+	if (IS_ENABLED(CONFIG_ARMV7_NONSEC) && armv7_boot_nonsec()) {
+		armv7_init_nonsec();
+		secure_ram_addr(_do_nonsec_entry)(kernel_entry, 0, machid, r2);
+	} else {
+		kernel_entry(0, machid, r2);
 	}
-#endif
 }
+
+static void arch_tee_image_process(ulong image, size_t size)
+{
+	boot_jump_via_optee = true;
+	boot_jump_via_optee_addr = image;
+}
+U_BOOT_FIT_LOADABLE_HANDLER(IH_TYPE_TEE, arch_tee_image_process);
+#endif
 
 /* Main Entry point for arm bootm implementation
  *
