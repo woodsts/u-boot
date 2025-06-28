@@ -1,18 +1,16 @@
 # SPDX-License-Identifier: GPL-2.0+
 
 variables:
-  DEFAULT_ALL_TAG: "all"
-  DEFAULT_ARM64_TAG: "arm64"
-  DEFAULT_FAST_ARM64_TAG: "fast arm64"
-  DEFAULT_AMD64_TAG: "amd64"
-  DEFAULT_FAST_AMD64_TAG: "fast amd64"
+  DEFAULT_ALL_TAG: "konsulko-puma"
+  DEFAULT_AMD64_TAG: "konsulko-puma"
+  DEFAULT_FAST_AMD64_TAG: "konsulko-puma"
   MIRROR_DOCKER: docker.io
   SJG_LAB: ""
   PLATFORM: linux/amd64,linux/arm64
 
 default:
   tags:
-    - ${DEFAULT_ALL_TAG}
+    - "konsulko-puma"
 
 workflow:
   rules:
@@ -134,12 +132,6 @@ stages:
 build all platforms in a single job:
   stage: world build
   dependencies: []
-  parallel:
-    matrix:
-      - HOST: "fast arm64"
-      - HOST: "fast amd64"
-  tags:
-    - ${HOST}
   script:
     # Prepare python environment
     - python3 -m venv /tmp/venv;
@@ -262,59 +254,29 @@ Check packing of Python tools:
 
 # Test sandbox with test.py
 sandbox test.py:
-  parallel:
-    matrix:
-      - HOST: "arm64"
-      - HOST: "amd64"
-  tags:
-    - ${HOST}
   variables:
     TEST_PY_BD: "sandbox"
     TEST_PY_EXTRA: "--timing"
   <<: *buildman_and_testpy_dfn
 
 sandbox with clang test.py:
-  parallel:
-    matrix:
-      - HOST: "arm64"
-      - HOST: "amd64"
-  tags:
-    - ${HOST}
   variables:
     TEST_PY_BD: "sandbox"
     OVERRIDE: "-O clang-18"
   <<: *buildman_and_testpy_dfn
 
 sandbox64 test.py:
-  parallel:
-    matrix:
-      - HOST: "arm64"
-      - HOST: "amd64"
-  tags:
-    - ${HOST}
   variables:
     TEST_PY_BD: "sandbox64"
   <<: *buildman_and_testpy_dfn
 
 sandbox64 with clang test.py:
-  parallel:
-    matrix:
-      - HOST: "arm64"
-      - HOST: "amd64"
-  tags:
-    - ${HOST}
   variables:
     TEST_PY_BD: "sandbox64"
     OVERRIDE: "-O clang-18"
   <<: *buildman_and_testpy_dfn
 
 sandbox64_lwip test.py:
-  parallel:
-    matrix:
-      - HOST: "arm64"
-      - HOST: "amd64"
-  tags:
-    - ${HOST}
   variables:
     TEST_PY_BD: "sandbox64_lwip"
   <<: *buildman_and_testpy_dfn
