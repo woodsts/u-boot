@@ -504,6 +504,22 @@ static int do_env_load(struct cmd_tbl *cmdtp, int flag, int argc,
 static int do_env_select(struct cmd_tbl *cmdtp, int flag, int argc,
 			 char *const argv[])
 {
+	struct getopt_state gs;
+	int opt;
+
+	if (!argv[1])
+		return CMD_RET_USAGE;
+
+	getopt_init_state(&gs);
+	while ((opt = getopt(&gs, argc, argv, "l")) > 0) {
+		switch (opt) {
+		case 'l': /* list */
+			return env_select_print_list() ? 1 : 0;
+		default:
+			return CMD_RET_USAGE;
+		}
+	}
+
 	return env_select(argv[1]) ? 1 : 0;
 }
 #endif
@@ -1180,7 +1196,7 @@ U_BOOT_LONGHELP(env,
 	"env load - load environment\n"
 #endif
 #if defined(CONFIG_CMD_NVEDIT_SELECT)
-	"env select [target] - select environment target\n"
+	"env select [-l] [target] - list/select environment target(s)\n"
 #endif
 #if defined(CONFIG_CMD_NVEDIT_EFI)
 	"env set -e [-nv][-bs][-rt][-at][-a][-i addr:size][-v] name [arg ...]\n"

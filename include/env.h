@@ -287,6 +287,13 @@ int env_save(void);
 int env_erase(void);
 
 /**
+ * env_select_print_list() - Print available environment targets
+ *
+ * Return: 0 if OK, -ve on error
+ */
+int env_select_print_list(void);
+
+/**
  * env_select() - Select the environment storage
  *
  * Return: 0 if OK, -ve on error
