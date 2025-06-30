@@ -2,6 +2,7 @@ menu "Environment"
 
 config ENV_SUPPORT
 	def_bool y
+	select GETOPT
 
 config ENV_SOURCE_FILE
 	string "Environment file to use"
