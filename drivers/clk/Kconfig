@@ -169,7 +169,7 @@ config CLK_K210_SET_RATE
 
 config CLK_MPC83XX
 	bool "Enable MPC83xx clock driver"
-	depends on CLK
+	depends on CLK && MPC83xx
 	help
 	  Support for the clock driver of the MPC83xx series of SoCs.
 
