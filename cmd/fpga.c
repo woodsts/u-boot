@@ -301,7 +301,7 @@ static int do_fpga_loadmk(struct cmd_tbl *cmdtp, int flag, int argc,
 
 			data = image_get_load(hdr);
 
-			if (gunzip((void *)data, ~0UL, (void *)image_buf,
+			if (gunzip((void *)data, image_size, (void *)image_buf,
 				   &image_size) != 0) {
 				puts("GUNZIP: error\n");
 				return CMD_RET_FAILURE;
