@@ -1543,7 +1543,7 @@ config CMD_NVME
 
 config CMD_ONENAND
 	bool "onenand - access to onenand device"
-	depends on MTD
+	depends on SAMSUNG_ONENAND
 	help
 	  OneNAND is a brand of NAND ('Not AND' gate) flash which provides
 	  various useful features. This command allows reading, writing,

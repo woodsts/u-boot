@@ -37,12 +37,10 @@
 #define ONENAND_MAIN_SPARE_ACCESS	0x16
 #define ONENAND_PIPELINE_READ		0x4000
 
-#if defined(CONFIG_S5P)
 #define MAP_00				(0x0 << 26)
 #define MAP_01				(0x1 << 26)
 #define MAP_10				(0x2 << 26)
 #define MAP_11				(0x3 << 26)
-#endif
 
 /* read/write of XIP buffer */
 #define CMD_MAP_00(mem_addr)		(MAP_00 | ((mem_addr) << 1))
@@ -86,12 +84,10 @@ static void s3c_write_cmd(int value, unsigned int cmd)
  * return the buffer address on the memory device
  * It will be combined with CMD_MAP_XX
  */
-#if defined(CONFIG_S5P)
 static unsigned int s3c_mem_addr(int fba, int fpa, int fsa)
 {
 	return (fba << 13) | (fpa << 7) | (fsa << 5);
 }
-#endif
 
 static void s3c_onenand_reset(void)
 {
@@ -546,10 +542,8 @@ void s3c_onenand_init(struct mtd_info *mtd)
 
 	onenand->mtd = mtd;
 
-#if defined(CONFIG_S5P)
 	onenand->base = (void *)0xE7100000;
 	onenand->ahb_addr = (void *)0xB0000000;
-#endif
 	onenand->mem_addr = s3c_mem_addr;
 	onenand->reg = (struct samsung_onenand *)onenand->base;
 
