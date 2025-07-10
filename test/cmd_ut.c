@@ -67,6 +67,7 @@ SUITE_DECL(log);
 SUITE_DECL(mbr);
 SUITE_DECL(measurement);
 SUITE_DECL(mem);
+SUITE_DECL(nvedit);
 SUITE_DECL(optee);
 SUITE_DECL(pci_mps);
 SUITE_DECL(seama);
@@ -94,6 +95,7 @@ static struct suite suites[] = {
 	SUITE(mbr, "mbr command"),
 	SUITE(measurement, "TPM-based measured boot"),
 	SUITE(mem, "memory-related commands"),
+	SUITE(nvedit, "env command"),
 	SUITE(optee, "OP-TEE"),
 	SUITE(pci_mps, "PCI Express Maximum Payload Size"),
 	SUITE(seama, "seama command parameters loading and decoding"),

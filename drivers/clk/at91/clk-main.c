@@ -12,6 +12,7 @@
 #include <asm/processor.h>
 #include <clk-uclass.h>
 #include <dm.h>
+#include <linux/compat.h>
 #include <linux/clk-provider.h>
 #include <linux/clk/at91_pmc.h>
 #include <linux/delay.h>

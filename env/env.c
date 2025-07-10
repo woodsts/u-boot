@@ -353,6 +353,22 @@ int env_init(void)
 	return ret;
 }
 
+int env_select_print_list(void)
+{
+	struct env_driver *drv;
+	int prio;
+
+	printf("Available Environment targets:\n");
+	for (prio = 0; (drv = env_driver_lookup(ENVOP_INIT, prio)); prio++) {
+		if (gd->env_load_prio == prio)
+			printf("* ");
+		else
+			printf("  ");
+		printf("%s\n", drv->name);
+	}
+	return 0;
+}
+
 int env_select(const char *name)
 {
 	struct env_driver *drv;

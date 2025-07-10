@@ -103,7 +103,7 @@ static int cdce9xx_clk_probe(struct udevice *dev)
 	u32 val;
 	struct clk clk;
 
-	val = (u32)dev_read_addr_ptr(dev);
+	val = (ulong)dev_read_addr_ptr(dev);
 
 	ret = i2c_get_chip(dev->parent, val, 1, &data->i2c);
 	if (ret) {
@@ -226,10 +226,10 @@ static ulong cdce9xx_clk_set_rate(struct clk *clk, ulong rate)
 }
 
 static const struct udevice_id cdce9xx_clk_of_match[] = {
-	{ .compatible = "ti,cdce913", .data = (u32)&cdce913_chip_info },
-	{ .compatible = "ti,cdce925", .data = (u32)&cdce925_chip_info },
-	{ .compatible = "ti,cdce937", .data = (u32)&cdce937_chip_info },
-	{ .compatible = "ti,cdce949", .data = (u32)&cdce949_chip_info },
+	{ .compatible = "ti,cdce913", .data = (ulong)&cdce913_chip_info },
+	{ .compatible = "ti,cdce925", .data = (ulong)&cdce925_chip_info },
+	{ .compatible = "ti,cdce937", .data = (ulong)&cdce937_chip_info },
+	{ .compatible = "ti,cdce949", .data = (ulong)&cdce949_chip_info },
 	{ /* sentinel */ },
 };
 
