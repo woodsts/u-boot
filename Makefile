@@ -349,7 +349,9 @@ __build_one_by_one:
 
 else
 
-include scripts/Kbuild.include
+include scripts/Kbuild.uboot
+
+include scripts/Makefile.compiler
 
 # Read UBOOTRELEASE from include/config/uboot.release (if it exists)
 UBOOTRELEASE = $(shell cat include/config/uboot.release 2> /dev/null)
@@ -2304,7 +2306,7 @@ dtbs_check: export CHECK_DTBS=1
 dtbs_check: dt_binding_check
 
 dtbs_install:
-	$(Q)$(MAKE) $(dtbinst)=$(dtstree)
+	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.dtbinst obj=$(dtstree)
 
 ifdef CONFIG_OF_EARLY_FLATTREE
 all: dtbs

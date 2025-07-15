@@ -49,7 +49,9 @@ subdir-ccflags-y :=
 -include include/config/auto.conf
 -include $(prefix)/include/autoconf.mk
 
-include scripts/Kbuild.include
+# include scripts/Kbuild.include
+include scripts/Kbuild.uboot
+include scripts/Makefile.compiler
 
 # The filename Kbuild has precedence over Makefile
 kbuild-dir := $(if $(filter /%,$(src)),$(src),$(srctree)/$(src))

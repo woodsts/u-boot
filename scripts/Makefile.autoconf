@@ -24,7 +24,8 @@ endif
 
 include include/config/auto.conf
 
-include scripts/Kbuild.include
+# include scripts/Kbuild.include
+include scripts/Kbuild.uboot
 
 # Need to define CC and CPP again here in case the top Makefile did not
 # include config.mk.  Some architectures expect CROSS_COMPILE to be defined

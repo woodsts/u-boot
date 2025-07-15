@@ -17,7 +17,9 @@ src := $(obj)
 # Create output directory if not already present
 _dummy := $(shell [ -d $(obj) ] || mkdir -p $(obj))
 
-include $(srctree)/scripts/Kbuild.include
+include $(srctree)/scripts/Kbuild.uboot
+
+include scripts/Makefile.compiler
 
 -include include/config/auto.conf
 
