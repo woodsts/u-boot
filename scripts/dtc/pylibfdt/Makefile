@@ -26,7 +26,7 @@ quiet_cmd_pymod = PYMOD   $@
 		SWIG_OPTS="-I$(LIBFDT_srcdir) -I$(LIBFDT_srcdir)/.." \
 		$(PYTHON3) $< --quiet build_ext --inplace
 
-rebuild: $(src)/setup.py $(PYLIBFDT_srcs)
+rebuild: $(src)/setup.py $(PYLIBFDT_srcs) FORCE
 	@# Remove the library since otherwise Python doesn't seem to regenerate
 	@# the libfdt.py file if it is missing.
 	@rm -f $(obj)/_libfdt*.so

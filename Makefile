@@ -1432,10 +1432,10 @@ MKIMAGEFLAGS_fit-dtb.blob = -f auto -A $(ARCH) -T firmware -C none -O u-boot \
 MKIMAGEFLAGS_fit-dtb.blob += -B 0x8
 
 ifneq ($(EXT_DTB),)
-u-boot-fit-dtb.bin: u-boot-nodtb.bin $(EXT_DTB)
+u-boot-fit-dtb.bin: u-boot-nodtb.bin $(EXT_DTB) FORCE
 		$(call if_changed,cat)
 else
-u-boot-fit-dtb.bin: u-boot-nodtb.bin $(FINAL_DTB_CONTAINER)
+u-boot-fit-dtb.bin: u-boot-nodtb.bin $(FINAL_DTB_CONTAINER) FORCE
 	$(call if_changed,cat)
 endif
 
@@ -1932,7 +1932,7 @@ quiet_cmd_u-boot-elf ?= LD      $@
 	$(if $(CONFIG_SYS_BIG_ENDIAN),-EB,-EL) \
 	-T u-boot-elf.lds --defsym=$(CONFIG_PLATFORM_ELFENTRY)=$(CONFIG_TEXT_BASE) \
 	-Ttext=$(CONFIG_TEXT_BASE)
-u-boot.elf: u-boot.bin u-boot-elf.lds
+u-boot.elf: u-boot.bin u-boot-elf.lds FORCE
 	$(Q)$(OBJCOPY) -I binary $(PLATFORM_ELFFLAGS) $< u-boot-elf.o
 	$(call if_changed,u-boot-elf)
 
@@ -1949,7 +1949,7 @@ PHONY += prepare0
 ifeq ($(CONFIG_SPL),y)
 spl/u-boot-spl-mtk.bin: spl/u-boot-spl
 
-u-boot-mtk.bin: u-boot-with-spl.bin
+u-boot-mtk.bin: u-boot-with-spl.bin FORCE
 	$(call if_changed,copy)
 else
 MKIMAGEFLAGS_u-boot-mtk.bin = -T mtk_image \
@@ -1982,9 +1982,9 @@ quiet_cmd_keep_syms_lto_cc = KSLCC   $@
       cmd_keep_syms_lto_cc = \
 	$(CC) $(filter-out $(LTO_CFLAGS),$(c_flags)) -c -o $@ $<
 
-$(u-boot-keep-syms-lto_c): $(u-boot-main)
+$(u-boot-keep-syms-lto_c): $(u-boot-main) FORCE
 	$(call if_changed,keep_syms_lto)
-$(u-boot-keep-syms-lto): $(u-boot-keep-syms-lto_c)
+$(u-boot-keep-syms-lto): $(u-boot-keep-syms-lto_c) FORCE
 	$(call if_changed,keep_syms_lto_cc)
 else
 u-boot-keep-syms-lto :=
@@ -2424,7 +2424,7 @@ checkarmreloc: u-boot
 		false; \
 	fi
 
-tools/version.h: include/version.h
+tools/version.h: include/version.h FORCE
 	$(Q)mkdir -p $(dir $@)
 	$(call if_changed,copy)
 

@@ -365,7 +365,7 @@ cmd_dtoc = $(DTOC_ARGS) -c $(obj)/dts -C include/generated all
 quiet_cmd_plat = PLAT    $@
 cmd_plat = $(CC) $(c_flags) -c $< -o $(filter-out $(PHONY),$@)
 
-$(obj)/dts/dt-%.o: $(obj)/dts/dt-%.c $(platdata-hdr)
+$(obj)/dts/dt-%.o: $(obj)/dts/dt-%.c $(platdata-hdr) FORCE
 	$(call if_changed,plat)
 
 # Don't use dts_dir here, since it forces running this expensive rule every time
@@ -462,7 +462,7 @@ cmd_sunxi_spl_image_builder = $(objtree)/tools/sunxi-spl-image-builder \
 				-u $(CONFIG_NAND_SUNXI_SPL_USABLE_PAGE_SIZE) \
 				-e $(CONFIG_SYS_NAND_BLOCK_SIZE) \
 				-s -b $< $@
-$(obj)/sunxi-spl-with-ecc.bin: $(obj)/sunxi-spl.bin
+$(obj)/sunxi-spl-with-ecc.bin: $(obj)/sunxi-spl.bin FORCE
 	$(call if_changed,sunxi_spl_image_builder)
 
 
@@ -494,9 +494,9 @@ quiet_cmd_keep_syms_lto_cc = KSLCC   $@
       cmd_keep_syms_lto_cc = \
 	$(CC) $(filter-out $(LTO_CFLAGS),$(c_flags)) -c -o $@ $<
 
-$(u-boot-spl-keep-syms-lto_c): $(u-boot-spl-main) $(u-boot-spl-platdata)
+$(u-boot-spl-keep-syms-lto_c): $(u-boot-spl-main) $(u-boot-spl-platdata) FORCE
 	$(call if_changed,keep_syms_lto)
-$(u-boot-spl-keep-syms-lto): $(u-boot-spl-keep-syms-lto_c)
+$(u-boot-spl-keep-syms-lto): $(u-boot-spl-keep-syms-lto_c) FORCE
 	$(call if_changed,keep_syms_lto_cc)
 else
 u-boot-spl-keep-syms-lto :=
@@ -595,7 +595,7 @@ $(sort $(dir $(SHRUNK_ARCH_DTB))):
 	$(shell [ -d $@ ] || mkdir -p $@)
 
 .SECONDEXPANSION:
-$(SHRUNK_ARCH_DTB): $$(patsubst $(obj)/dts/%, $(dt_dir)/%, $$@) $(dir $(SHRUNK_ARCH_DTB))
+$(SHRUNK_ARCH_DTB): $$(patsubst $(obj)/dts/%, $(dt_dir)/%, $$@) $(dir $(SHRUNK_ARCH_DTB)) FORCE
 	$(call if_changed,fdtgrep)
 
 targets += $(SPL_OF_LIST_TARGETS)
