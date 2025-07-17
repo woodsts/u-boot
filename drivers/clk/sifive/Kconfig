@@ -2,7 +2,7 @@
 
 config CLK_SIFIVE
 	bool "SiFive SoC driver support"
-	depends on CLK && RISCV
+	depends on CLK
 	help
 	  SoC drivers for SiFive Linux-capable SoCs.
 
