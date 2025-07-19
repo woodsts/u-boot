@@ -881,8 +881,6 @@ config VIDEO_SANDBOX_SDL
 
 source "drivers/video/stm32/Kconfig"
 
-source "drivers/video/tidss/Kconfig"
-
 source "drivers/video/bridge/Kconfig"
 
 source "drivers/video/tegra/Kconfig"
@@ -1151,7 +1149,6 @@ config SPL_VIDEO
 	  used as U-Boot proper.
 
 if SPL_VIDEO
-source "drivers/video/tidss/Kconfig"
 
 config SPL_VIDEO_HANDOFF
 	bool "Pass the video frame-buffer through to U-Boot proper"
