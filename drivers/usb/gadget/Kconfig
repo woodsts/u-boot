@@ -92,6 +92,7 @@ config USB_GADGET_PRODUCT_NUM
 
 config USB_GADGET_ATMEL_USBA
 	bool "Atmel USBA"
+	depends on ARCH_AT91
 	select USB_GADGET_DUALSPEED
 	help
 	  USBA is the integrated high-speed USB Device controller on
@@ -103,6 +104,7 @@ config USB_GADGET_AT91
 
 config USB_GADGET_DWC2_OTG
 	bool "DesignWare USB2.0 HS OTG controller (gadget mode)"
+	depends on ARM
 	select USB_GADGET_DUALSPEED
 	help
 	  The Designware USB2.0 high-speed gadget controller
