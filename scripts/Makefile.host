@@ -75,8 +75,9 @@ _hostcxx_flags = $(KBUILD_HOSTCXXFLAGS) $(HOST_EXTRACXXFLAGS) \
 # $(objtree)/$(obj) for including generated headers from checkin source files
 ifeq ($(KBUILD_EXTMOD),)
 ifdef building_out_of_srctree
-_hostc_flags   += -I $(objtree)/$(obj)
-_hostcxx_flags += -I $(objtree)/$(obj)
+# $(error objtree=$(objtree), obj=$(obj))
+_hostc_flags   += -I $(srctree)/$(src) -I $(objtree)/$(obj)
+_hostcxx_flags += -I $(srctree)/$(src) -I $(objtree)/$(obj)
 endif
 endif
 

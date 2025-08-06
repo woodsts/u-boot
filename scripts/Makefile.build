@@ -478,6 +478,7 @@ __build: $(if $(KBUILD_BUILTIN), $(targets-for-builtin)) \
 	@:
 #	@echo "My hostprogs => $(hostprogs)"
 #	@echo "My obj=$(obj)"
+#	@echo "My src=$(src)"
 #	@echo "My target-stem=$(target-stem)"
 #	@echo "My need-builtin=$(need-builtin)"
 

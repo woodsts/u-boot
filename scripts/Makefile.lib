@@ -141,6 +141,16 @@ orig_a_flags   = $(KBUILD_CPPFLAGS) $(KBUILD_AFLAGS) \
 _a_flags       = $(filter-out $(AFLAGS_REMOVE_$(basetarget).o), $(orig_a_flags))
 _cpp_flags     = $(KBUILD_CPPFLAGS) $(cppflags-y) $(CPPFLAGS_$(@F))
 
+# $(srctree)/$(src) for including checkin headers from generated source files
+# $(objtree)/$(obj) for including generated headers from checkin source files
+ifeq ($(KBUILD_EXTMOD),)
+ifdef building_out_of_srctree
+_c_flags   += -I $(srctree)/$(src) -I $(objtree)/$(obj)
+_a_flags   += -I $(srctree)/$(src) -I $(objtree)/$(obj)
+_cpp_flags += -I $(srctree)/$(src) -I $(objtree)/$(obj)
+endif
+endif
+
 #
 # Enable gcov profiling flags for a file, directory or for all files depending
 # on variables GCOV_PROFILE_obj.o, GCOV_PROFILE and CONFIG_GCOV_PROFILE_ALL
@@ -181,7 +191,7 @@ __cpp_flags     = $(_cpp_flags)
 # If building the kernel in a separate objtree expand all occurrences
 # of -Idir to -I$(srctree)/dir except for absolute paths (starting with '/').
 ifeq ($(KBUILD_EXTMOD),)
-ifneq ($(KBUILD_SRC),)
+ifdef building_out_of_srctree
 # -I$(obj) locates generated .h files
 # $(call addtree,-I$(obj)) locates .h files in srctree, from generated .c files
 #   and locates generated .h files
