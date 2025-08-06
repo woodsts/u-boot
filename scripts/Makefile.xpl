@@ -546,11 +546,11 @@ $(sort $(u-boot-spl-init) $(u-boot-spl-main)): $(u-boot-spl-dirs) ;
 
 PHONY += $(u-boot-spl-dirs)
 $(u-boot-spl-dirs): $(u-boot-spl-platdata) prepare
-	$(Q)$(MAKE) $(build)=$@
+	$(Q)$(MAKE) $(build)=$@ need-builtin=1
 
 PHONY += prepare
 prepare:
-	$(Q)$(MAKE) $(build)=$(obj)/.
+	$(Q)$(MAKE) $(build)=$(obj)/. need-builtin=1
 
 quiet_cmd_cpp_lds = LDS     $@
 cmd_cpp_lds = $(CPP) -Wp,-MD,$(depfile) $(cpp_flags) $(LDPPFLAGS) -ansi \
@@ -573,7 +573,7 @@ PHONY += FORCE
 FORCE:
 
 $(obj)/dts/dt-$(SPL_NAME).dtb: dts/dt.dtb
-	$(Q)$(MAKE) $(build)=$(obj)/dts spl_dtbs
+	$(Q)$(MAKE) $(build)=$(obj)/dts spl_dtbs need-builtin=1
 
 ifeq ($(CONFIG_OF_UPSTREAM),y)
 ifeq ($(CONFIG_ARM64),y)

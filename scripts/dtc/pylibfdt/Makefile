@@ -39,6 +39,6 @@ rebuild: $(src)/setup.py $(PYLIBFDT_srcs) FORCE
 $(obj)/_libfdt.so $(obj)/libfdt.py &: rebuild
 	@:
 
-always += _libfdt.so libfdt.py
+always-y += _libfdt.so libfdt.py
 
 clean-files += libfdt.i _libfdt.so libfdt.py libfdt_wrap.c

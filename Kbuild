@@ -7,7 +7,7 @@
 
 generic-offsets-file := include/generated/generic-asm-offsets.h
 
-always  := $(generic-offsets-file)
+always-y  := $(generic-offsets-file)
 targets := lib/asm-offsets.s
 
 CFLAGS_REMOVE_asm-offsets.o := $(LTO_CFLAGS)
@@ -22,7 +22,7 @@ ifneq ($(wildcard $(srctree)/arch/$(ARCH)/lib/asm-offsets.c),)
 offsets-file := include/generated/asm-offsets.h
 endif
 
-always  += $(offsets-file)
+always-y  += $(offsets-file)
 targets += arch/$(ARCH)/lib/asm-offsets.s
 
 CFLAGS_asm-offsets.o := -DDO_DEPS_ONLY

@@ -14,4 +14,4 @@ INPUTS-y += u-boot-align.bin
 u-boot-align.bin: u-boot.bin FORCE
 	$(call if_changed,mkalign_eds)
 
-HOSTCFLAGS_autoconf.mk.dep = -Wno-variadic-macros
+HOSTCFLAGS_include/autoconf.mk.dep = -Wno-variadic-macros
