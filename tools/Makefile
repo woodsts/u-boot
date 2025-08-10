@@ -291,7 +291,7 @@ cmd_wrap = echo "\#include <../$(patsubst $(obj)/generated/%,%,$@)>" >$@
 $(obj)/generated/%.c:
 	$(call cmd,wrap)
 
-clean-dirs := generated
+clean-files := generated
 
 # Host tool to dump the currently configured default environment,
 # build it on demand, i.e. not add it to 'always'.

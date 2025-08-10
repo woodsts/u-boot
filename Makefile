@@ -12,6 +12,9 @@ NAME =
 # Comments in this file are targeted only to the developer, do not
 # expect to learn how to build the kernel reading this file.
 
+$(if $(filter __%, $(MAKECMDGOALS)), \
+	$(error targets prefixed with '__' are only for internal use))
+
 # That's our default target when none is given on the command line
 PHONY := __all
 __all:
@@ -596,6 +599,14 @@ export PYTHON_ENABLE
 ifeq ($(NO_PYTHON),)
 PYTHON_ENABLE=y
 endif
+
+# Files to ignore in find ... statements
+
+export RCS_FIND_IGNORE := \( -name SCCS -o -name BitKeeper -o -name .svn -o    \
+			  -name CVS -o -name .pc -o -name .hg -o -name .git \) \
+			  -prune -o
+export RCS_TAR_IGNORE := --exclude SCCS --exclude BitKeeper --exclude .svn \
+			 --exclude CVS --exclude .pc --exclude .hg --exclude .git
 
 # ===========================================================================
 # Rules shared between *config targets and build targets
@@ -2494,7 +2505,7 @@ CHANGELOG:
 # make distclean Remove editor backup files, patch leftover files and the like
 
 # Directories & files removed with 'make clean'
-CLEAN_DIRS  += $(MODVERDIR) \
+CLEAN_FILES  += $(MODVERDIR) \
 	       $(foreach d, spl tpl vpl, $(patsubst %,$d/%, \
 			$(filter-out include, $(shell ls -1 $d 2>/dev/null))))
 
@@ -2512,7 +2523,7 @@ CLEAN_FILES += include/autoconf.mk* include/bmp_logo.h include/bmp_logo_data.h \
 	       mkimage.imx-boot.u-boot mkimage-out.imx-boot.spl mkimage-out.imx-boot.u-boot
 
 # Directories & files removed with 'make mrproper'
-MRPROPER_DIRS  += include/config include/generated spl tpl vpl \
+MRPROPER_FILES  += include/config include/generated spl tpl vpl \
 		  .tmp_objdiff doc/output include/asm
 
 # Remove include/asm symlink created by U-Boot before v2014.01
@@ -2522,37 +2533,14 @@ MRPROPER_FILES += .config .config.old include/autoconf.mk* include/config.h \
 
 # clean - Delete most, but leave enough to build external modules
 #
-clean: rm-dirs  := $(CLEAN_DIRS)
 clean: rm-files := $(CLEAN_FILES)
-clean-dirs	:= $(foreach f,$(u-boot-alldirs),$(if $(wildcard $(srctree)/$f/Makefile),$f))
-clean-dirs      := $(addprefix _clean_, $(clean-dirs))
 
-PHONY += $(clean-dirs) clean archclean
-$(clean-dirs):
-	$(Q)$(MAKE) $(clean)=$(patsubst _clean_%,%,$@)
+PHONY += archclean
 
-clean: $(clean-dirs)
-	$(call cmd,rmdirs)
-	$(call cmd,rmfiles)
-	@find $(if $(KBUILD_EXTMOD), $(KBUILD_EXTMOD), .) $(RCS_FIND_IGNORE) \
-		\( -name '*.[oas]' -o -name '*.ko' -o -name '.*.cmd' \
-		-o -name '*.ko.*' -o -name '*.su' -o -name '*.pyc' \
-		-o -name '*.dtb' -o -name '*.dtbo' \
-		-o -name '*.dtb.S' -o -name '*.dtbo.S' \
-		-o -name '.*.d' -o -name '.*.tmp' -o -name '*.mod.c' \
-		-o -name '*.lex.c' -o -name '*.tab.[ch]' \
-		-o -name '*.asn1.[ch]' \
-		-o -name '*.symtypes' -o -name 'modules.order' \
-		-o -name modules.builtin -o -name '.tmp_*.o.*' \
-		-o -name 'dsdt_generated.aml' -o -name 'dsdt_generated.asl.tmp' \
-		-o -name 'dsdt_generated.c' \
-		-o -name 'generated_defconfig' \
-		-o -name '*.efi' -o -name '*.gcno' -o -name '*.so' \) \
-		-type f -print | xargs rm -f
+clean: archclean
 
 # mrproper - Delete all generated files, including .config
 #
-mrproper: rm-dirs  := $(wildcard $(MRPROPER_DIRS))
 mrproper: rm-files := $(wildcard $(MRPROPER_FILES))
 mrproper-dirs      := $(addprefix _mrproper_,scripts)
 
@@ -2561,22 +2549,49 @@ $(mrproper-dirs):
 	$(Q)$(MAKE) $(clean)=$(patsubst _mrproper_%,%,$@)
 
 mrproper: clean $(mrproper-dirs)
-	$(call cmd,rmdirs)
 	$(call cmd,rmfiles)
-	@rm -f arch/*/include/asm/arch
 
 # distclean
 #
 PHONY += distclean
 
 distclean: mrproper
-	@find $(srctree) $(RCS_FIND_IGNORE) \
+	@find . $(RCS_FIND_IGNORE) \
 		\( -name '*.orig' -o -name '*.rej' -o -name '*~' \
-		-o -name '*.bak' -o -name '#*#' -o -name '.*.orig' \
-		-o -name '.*.rej' -o -name '*%' -o -name 'core' \
-		-o -name '*.pyc' \) \
+		-o -name '*.bak' -o -name '#*#' -o -name '*%' \
+		-o -name 'core' -o -name tags -o -name TAGS -o -name 'cscope*' \
+		-o -name GPATH -o -name GRTAGS -o -name GSYMS -o -name GTAGS \) \
 		-type f -print | xargs rm -f
-	@rm -f boards.cfg CHANGELOG .binman_stamp
+
+# Modified for U-Boot, the kernel figures this out through it's own variable
+clean-dirs	:= $(foreach f,$(u-boot-alldirs),$(if $(wildcard $(srctree)/$f/Makefile),$f))
+clean-dirs := $(addprefix _clean_, $(clean-dirs))
+PHONY += $(clean-dirs) clean
+$(clean-dirs):
+	$(Q)$(MAKE) $(clean)=$(patsubst _clean_%,%,$@)
+
+clean: $(clean-dirs)
+	$(call cmd,rmfiles)
+	@find $(or $(KBUILD_EXTMOD), .) $(RCS_FIND_IGNORE) \
+		\( -name '*.[aios]' -o -name '*.ko' -o -name '.*.cmd' \
+		-o -name '*.ko.*' -o -name '*.su' -o -name '*.pyc' \
+		-o -name '*.dtb' -o -name '*.dtbo' -o -name '*.dtb.S' -o -name '*.dt.yaml' \
+		-o -name '*.dwo' -o -name '*.lst' \
+		-o -name '*.su' -o -name '*.mod' -o -name '*.usyms' \
+		-o -name '.*.d' -o -name '.*.tmp' -o -name '*.mod.c' \
+		-o -name '*.lex.c' -o -name '*.tab.[ch]' \
+		-o -name '*.asn1.[ch]' \
+		-o -name '*.symtypes' -o -name 'modules.order' \
+		-o -name '.tmp_*' \
+		-o -name '*.c.[012]*.*' \
+		-o -name '*.ll' \
+		-o -name 'dsdt_generated.aml' -o -name 'dsdt_generated.asl.tmp' \
+		-o -name 'dsdt_generated.c' \
+		-o -name 'generated_defconfig' \
+		-o -name '*.gcno' \
+		-o -name '*.efi' -o -name '*.gcno' -o -name '*.so' \
+		-o -name '*.*.symversions' \) -type f -print | xargs rm -f
+
 
 # See doc/develop/python_cq.rst
 PHONY += pylint pylint_err
@@ -2810,11 +2825,8 @@ coccicheck:
 # FIXME Should go into a make.lib or something
 # ===========================================================================
 
-quiet_cmd_rmdirs = $(if $(wildcard $(rm-dirs)),CLEAN   $(wildcard $(rm-dirs)))
-      cmd_rmdirs = rm -rf $(rm-dirs)
-
 quiet_cmd_rmfiles = $(if $(wildcard $(rm-files)),CLEAN   $(wildcard $(rm-files)))
-      cmd_rmfiles = rm -f $(rm-files)
+      cmd_rmfiles = rm -rf $(rm-files)
 
 # Run depmod only if we have System.map and depmod is executable
 quiet_cmd_depmod = DEPMOD  $(KERNELRELEASE)
