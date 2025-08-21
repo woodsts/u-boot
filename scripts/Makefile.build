@@ -381,7 +381,7 @@ $(subdir-modorder): $(obj)/%/modules.order: $(obj)/% ;
 quiet_cmd_ar_builtin = AR      $@
 # Modified for U-Boot, we create thin archives directly, instead of using the kernel script
 # Check f49821ee32b76 and 6358d6e8b98 in kernel
-      cmd_ar_builtin = rm -f $@; $(AR) rcTP$(KBUILD_ARFLAGS) $@ $(real-prereqs)
+      cmd_ar_builtin = rm -f $@; $(AR) rcTP $@ $(real-prereqs)
 
 $(obj)/built-in.a: $(real-obj-y) FORCE
 	$(call if_changed,ar_builtin)
