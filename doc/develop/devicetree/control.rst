@@ -207,6 +207,7 @@ devicetree for your board, searching for them in `arch/<arch>/dts/` in this
 order::
 
    <orig_filename>-u-boot.dtsi
+   <CONFIG_SYS_CONFIG_NAME>-u-boot.dtsi
    <CONFIG_SYS_SOC>-u-boot.dtsi
    <CONFIG_SYS_CPU>-u-boot.dtsi
    <CONFIG_SYS_VENDOR>-u-boot.dtsi
