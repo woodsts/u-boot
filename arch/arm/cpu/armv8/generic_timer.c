@@ -19,6 +19,10 @@ DECLARE_GLOBAL_DATA_PTR;
 unsigned long notrace get_tbclk(void)
 {
 	unsigned long cntfrq;
+
+	if (gd->arch.timer_rate_hz)
+		return gd->arch.timer_rate_hz;
+
 	asm volatile("mrs %0, cntfrq_el0" : "=r" (cntfrq));
 	return cntfrq;
 }
