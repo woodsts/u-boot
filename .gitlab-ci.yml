@@ -20,7 +20,7 @@ workflow:
 
 # Grab our configured image.  The source for this is found
 # in the u-boot tree at tools/docker/Dockerfile
-image: ${MIRROR_DOCKER}/trini/u-boot-gitlab-ci-runner:jammy-20250714-25Jul2025
+image: ${MIRROR_DOCKER}/trini/u-boot-gitlab-ci-runner:noble-20251001-31Oct2025
 
 # We run some tests in different order, to catch some failures quicker.
 stages:
@@ -146,6 +146,7 @@ build all platforms in a single job:
       . /tmp/venv/bin/activate;
       pip install -r tools/binman/requirements.txt
         -r tools/buildman/requirements.txt
+        setuptools
     - ret=0;
       git config --global --add safe.directory "${CI_PROJECT_DIR}";
       ./tools/buildman/buildman -o /tmp -PEWM -x xtensa || ret=$?;
@@ -271,6 +272,8 @@ sandbox test.py:
   variables:
     TEST_PY_BD: "sandbox"
     TEST_PY_EXTRA: "--timing"
+    # addr2line in Ubuntu 'Noble' and later are broken.
+    TEST_PY_TEST_SPEC: "not event_dump"
   <<: *buildman_and_testpy_dfn
 
 sandbox with clang test.py:
@@ -283,6 +286,8 @@ sandbox with clang test.py:
   variables:
     TEST_PY_BD: "sandbox"
     OVERRIDE: "-O clang-18"
+    # addr2line in Ubuntu 'Noble' and later are broken.
+    TEST_PY_TEST_SPEC: "not event_dump"
   <<: *buildman_and_testpy_dfn
 
 sandbox64 test.py:
