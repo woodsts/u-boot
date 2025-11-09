@@ -9,7 +9,6 @@
       when: manual
       allow_failure: true
   dependencies: []
-  needs: [ "sandbox test.py" ]
   tags: [ 'konsulko-sage-labgrid' ]
   before_script:
     # Clone uboot-test-hooks
