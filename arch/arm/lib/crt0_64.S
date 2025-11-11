@@ -132,6 +132,13 @@ ENTRY(_main)
 	b	relocate_code
 
 relocation_return:
+#if (IS_ENABLED(CONFIG_BLOBLIST))
+	/* Calculate the PC-relative address of saved_args */
+	adrp    x9, saved_args
+	add     x9, x9, :lo12:saved_args
+	stp     x19, x20, [x9]
+	stp     x21, x22, [x9, #16]
+#endif
 
 /*
  * Set up final (full) environment

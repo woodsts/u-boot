@@ -386,11 +386,10 @@ ENDPROC(c_runtime_cpu_setup)
 
 WEAK(save_boot_params)
 #if (IS_ENABLED(CONFIG_BLOBLIST))
-	/* Calculate the PC-relative address of saved_args */
-	adrp	x9, saved_args
-	add	x9, x9, :lo12:saved_args
-	stp 	x0, x1, [x9]
-	stp 	x2, x3, [x9, #16]
+	mov     x0, x19
+	mov     x1, x20
+	mov     x2, x21
+	mov     x3, x22
 #endif
 	b	save_boot_params_ret	/* back to my caller */
 ENDPROC(save_boot_params)
