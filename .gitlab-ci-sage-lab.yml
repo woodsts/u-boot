@@ -68,7 +68,7 @@
         --build-dir "$UBOOT_TRAVIS_BUILD_DIR"
         --junitxml=/tmp/${TEST_PY_BD}/results.xml;
       RC=`echo $?`;
-      cp -v /tmp/${TEST_PY_BD}/*.{html,css,xml} .;
+      cp -v /tmp/${TEST_PY_BD}/{u-boot,*.{html,css,xml}} .;
     # Release and power off everything.
     - labgrid-client -p ${LG_PLACE} power off
     - labgrid-client -p ${LG_PLACE} release
@@ -78,9 +78,19 @@
     - exit $RC
   artifacts:
     when: always
+    name: "${CI_JOB_NAME}"
     paths:
       - "*.html"
       - "*.css"
+      - results.xml
+    reports:
+      junit: results.xml
+    expire_in: 1 week
+  artifacts:
+    when: on_failure
+    name: "${CI_JOB_NAME}"
+    paths:
+      - "u-boot"
       - results.xml
     reports:
       junit: results.xml
