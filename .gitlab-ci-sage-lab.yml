@@ -1,6 +1,7 @@
 # Definition for the lab connected to the "sage" host and managed with labgrid
 
 .sage_lab_template: &sage_lab_dfn
+  image: ${MIRROR_DOCKER}/trini/u-boot-gitlab-ci-runner:noble-20251001-14Nov2025
   stage: sage-lab
   rules:
     - if: $SAGE_LAB == "1"
