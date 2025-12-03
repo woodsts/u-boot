@@ -273,6 +273,7 @@ config VPL_SYSCON
 config DEVRES
 	bool "Managed device resources"
 	depends on DM
+	default y
 	help
 	  This option enables the Managed device resources core support.
 	  Device resources managed by the devres framework are automatically
