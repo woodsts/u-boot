@@ -1,8 +1,35 @@
 HISTORY of the LZMA SDK
 -----------------------
 
+9.38 beta      2015-01-03
+-------------------------
+- The BUG in 9.30-9.37 was fixed:
+  IArchiveGetRawProps interface was disabled for 7z archives.
+- The BUG in 9.26-9.36 was fixed:
+  Some code in CPP\7zip\Archive\7z\ worked correctly only under Windows.
+
+
+9.36 beta      2014-12-26
+-------------------------
+- The BUG in command line version was fixed:
+  7-Zip created temporary archive in current folder during update archive
+  operation, if -w{Path} switch was not specified.
+  The fixed 7-Zip creates temporary archive in folder that contains updated archive.
+- The BUG in 9.33-9.35 was fixed:
+  7-Zip silently ignored file reading errors during 7z or gz archive creation,
+  and the created archive contained only part of file that was read before error.
+  The fixed 7-Zip stops archive creation and it reports about error.
+
+
+9.35 beta      2014-12-07
+-------------------------
+- 7zr.exe now support AES encryption.
+- SFX mudules were added to LZMA SDK
+- Some bugs were fixed.
+
+
 9.21 beta      2011-04-11
--------------------------	
+-------------------------
 - New class FString for file names at file systems.
 - Speed optimization in CRC code for big-endian CPUs.
 - The BUG in Lzma2Dec.c was fixed:
@@ -84,7 +111,7 @@ HISTORY of the LZMA SDK
 
 4.57           2007-12-12
 -------------------------
-- Speed optimizations in Ã‘++ LZMA Decoder.
+- Speed optimizations in Ñ++ LZMA Decoder.
 - Small changes for more compatibility with some C/C++ compilers.
 
 
