@@ -1,14 +1,14 @@
-/* Types.h -- Basic types
-2010-10-09 : Igor Pavlov : Public domain */
+/* 7zTypes.h -- Basic types
+2013-11-12 : Igor Pavlov : Public domain */
 
 #ifndef __7Z_TYPES_H
 #define __7Z_TYPES_H
 
-#include <stddef.h>
-
 #ifdef _WIN32
-#include <windows.h>
+/* #include <windows.h> */
 #endif
+
+#include <stddef.h>
 
 #define SZ_OK 0
 
@@ -31,7 +31,8 @@
 typedef int SRes;
 
 #ifdef _WIN32
-typedef DWORD WRes;
+/* typedef DWORD WRes; */
+typedef unsigned WRes;
 #else
 typedef int WRes;
 #endif
@@ -97,6 +98,7 @@ typedef int Bool;
 
 #else
 
+#define MY_NO_INLINE
 #define MY_CDECL
 #define MY_FAST_CALL
 
