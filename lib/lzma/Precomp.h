@@ -84,7 +84,6 @@
   #endif
 #endif // Z7_WIN32_WINNT_MIN
 
-
 #ifndef Z7_DO_NOT_DEFINE_WIN32_WINNT
 #ifdef _WIN32_WINNT
   // #error Stop_Compiling_Bad_WIN32_WINNT
@@ -100,7 +99,6 @@ Z7_DIAGNOSTIC_IGNORE_END_RESERVED_MACRO_IDENTIFIER
   #define WINVER  _WIN32_WINNT
 #endif
 #endif // Z7_DO_NOT_DEFINE_WIN32_WINNT
-
 
 #ifndef _MBCS
 #ifndef Z7_NO_UNICODE

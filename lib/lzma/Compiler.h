@@ -100,7 +100,6 @@ typedef void (*Z7_void_Function)(void);
 #endif
 #endif
 
-
 #ifdef _MSC_VER
 
   #ifdef UNDER_CE
@@ -122,7 +121,7 @@ typedef void (*Z7_void_Function)(void);
 // winnt.h: 'Int64ShllMod32'
 #pragma warning(disable : 4514) // unreferenced inline function has been removed
 #endif
-    
+
 #if _MSC_VER < 1300
 // #pragma warning(disable : 4702) // unreachable code
 // Bra.c : -O1:
@@ -163,7 +162,6 @@ typedef void (*Z7_void_Function)(void);
 #endif // _MSC_VER > 1200
 #endif // _MSC_VER
 
-
 #if defined(__clang__) && (__clang_major__ >= 4)
   #define Z7_PRAGMA_OPT_DISABLE_LOOP_UNROLL_VECTORIZE \
     _Pragma("clang loop unroll(disable)") \
@@ -191,8 +189,6 @@ typedef void (*Z7_void_Function)(void);
   #define Z7_PRAGMA_OPTIMIZE_DEFAULT
 #endif
 
-
-
 #if defined(MY_CPU_X86_OR_AMD64) && ( \
        defined(__clang__) && (__clang_major__ >= 4) \
     || defined(__GNUC__) && (__GNUC__ >= 5))
@@ -204,7 +200,6 @@ typedef void (*Z7_void_Function)(void);
 #define Z7_ATTRIB_NO_VECTOR \
   Z7_ATTRIB_NO_VECTORIZE \
   Z7_ATTRIB_NO_SSE
-
 
 #if defined(__clang__) && (__clang_major__ >= 8) \
   || defined(__GNUC__) && (__GNUC__ >= 1000) \
@@ -219,7 +214,6 @@ typedef void (*Z7_void_Function)(void);
   #define Z7_UNLIKELY(x) (x)
   // #define Z7_likely
 #endif
-
 
 #if (defined(Z7_CLANG_VERSION) && (Z7_CLANG_VERSION >= 30600))
 

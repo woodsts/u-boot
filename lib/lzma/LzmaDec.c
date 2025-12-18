@@ -68,7 +68,6 @@
 
 #endif // Z7_LZMA_DEC_OPT
 
-
 #define NORMALIZE_CHECK if (range < kTopValue) { if (buf >= bufLimit) return DUMMY_INPUT_EOF; range <<= 8; code = (code << 8) | (*buf++); }
 
 #define IF_BIT_0_CHECK(p) ttt = *(p); NORMALIZE_CHECK bound = (range >> kNumBitModelTotalBits) * (UInt32)ttt; if (code < bound)
@@ -81,11 +80,9 @@
 #define TREE_DECODE_CHECK(probs, limit, i) \
   { i = 1; do { GET_BIT_CHECK(probs + i, i) } while (i < limit); i -= limit; }
 
-
 #define REV_BIT_CHECK(p, i, m) IF_BIT_0_CHECK(p + i) \
   { UPDATE_0_CHECK  i += m; m += m; } else \
   { UPDATE_1_CHECK  m += m; i += m; }
-
 
 #define kNumPosBitsMax 4
 #define kNumPosStatesMax (1 << kNumPosBitsMax)
@@ -160,11 +157,9 @@
   #error Stop_Compiling_Bad_LZMA_PROBS
 #endif
 
-
 #define LZMA_LIT_SIZE 0x300
 
 #define LzmaProps_GetNumProbs(p) (NUM_BASE_PROBS + ((UInt32)LZMA_LIT_SIZE << ((p)->lc + (p)->lp)))
-
 
 #define CALC_POS_STATE(processedPos, pbMask) (((processedPos) & (pbMask)) << 4)
 #define COMBINED_PS_STATE (posState + state)
@@ -224,7 +219,6 @@ Out:
       p->remainLen : undefined
       p->reps[*]    : undefined
 */
-
 
 #ifdef Z7_LZMA_DEC_OPT
 
@@ -619,8 +613,6 @@ int Z7_FASTCALL LZMA_DECODE_REAL(CLzmaDec *p, SizeT limit, const Byte *bufLimit)
 }
 #endif
 
-
-
 static void Z7_FASTCALL LzmaDec_WriteRem(CLzmaDec *p, SizeT limit)
 {
   unsigned len = (unsigned)p->remainLen;
@@ -659,7 +651,6 @@ static void Z7_FASTCALL LzmaDec_WriteRem(CLzmaDec *p, SizeT limit)
   }
 }
 
-
 /*
 At staring of new stream we have one of the following symbols:
   - Literal        - is allowed
@@ -674,7 +665,6 @@ We use early check of (RangeCoder:Code) over kBadRepCode to simplify main decodi
 #if kBadRepCode != (0xC0000000 - 0x400)
   #error Stop_Compiling_Bad_LZMA_Check
 #endif
-
 
 /*
 LzmaDec_DecodeReal2():
@@ -707,8 +697,6 @@ static int Z7_FASTCALL LzmaDec_DecodeReal2(CLzmaDec *p, SizeT limit, const Byte 
   }
 }
 
-
-
 typedef enum
 {
   DUMMY_INPUT_EOF, /* need more input data */
@@ -716,7 +704,6 @@ typedef enum
   DUMMY_MATCH,
   DUMMY_REP
 } ELzmaDummy;
-
 
 #define IS_DUMMY_END_MARKER_POSSIBLE(dummyRes) ((dummyRes) == DUMMY_MATCH)
 
@@ -933,7 +920,6 @@ void LzmaDec_Init(CLzmaDec *p)
   LzmaDec_InitDicAndState(p, True, True);
 }
 
-
 /*
 LZMA supports optional end_marker.
 So the decoder can lookahead for one additional LZMA-Symbol to check end_marker.
@@ -950,12 +936,10 @@ When the decoder lookahead, and the lookahead symbol is not end_marker, we have 
      LZMA_STATUS_FINISHED_WITH_MARK or LZMA_STATUS_MAYBE_FINISHED_WITHOUT_MARK.
 */
 
-
 #define RETURN_NOT_FINISHED_FOR_FINISH \
   *status = LZMA_STATUS_NOT_FINISHED; \
   return SZ_ERROR_DATA; // for strict mode
   // return SZ_OK; // for relaxed mode
-
 
 SRes LzmaDec_DecodeToDic(CLzmaDec *p, SizeT dicLimit, const Byte *src, SizeT *srcLen,
     ELzmaFinishMode finishMode, ELzmaStatus *status)
@@ -1202,8 +1186,6 @@ SRes LzmaDec_DecodeToDic(CLzmaDec *p, SizeT dicLimit, const Byte *src, SizeT *sr
   p->remainLen = kMatchSpecLen_Error_Fail;
   return SZ_ERROR_FAIL;
 }
-
-
 
 SRes LzmaDec_DecodeToBuf(CLzmaDec *p, Byte *dest, SizeT *destLen, const Byte *src, SizeT *srcLen, ELzmaFinishMode finishMode, ELzmaStatus *status)
 {

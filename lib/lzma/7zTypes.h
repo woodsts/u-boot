@@ -44,7 +44,6 @@ EXTERN_C_BEGIN
 
 typedef int SRes;
 
-
 #ifdef _MSC_VER
   #if _MSC_VER > 1200
     #define MY_ALIGN(n) __declspec(align(n))
@@ -59,7 +58,6 @@ typedef int SRes;
   */
   #define MY_ALIGN(n) __attribute__ ((aligned(n)))
 #endif
-
 
 #ifdef _WIN32
 
@@ -165,7 +163,6 @@ typedef unsigned long UINT_PTR;
 
 #endif
 
-
 #ifndef RINOK
 #define RINOK(x) { const int _result_ = (x); if (_result_ != 0) return _result_; }
 #endif
@@ -185,7 +182,6 @@ typedef unsigned long UInt32;
 typedef int Int32;
 typedef unsigned int UInt32;
 #endif
-
 
 #ifndef _WIN32
 
@@ -218,9 +214,7 @@ typedef size_t SIZE_T;
 
 #endif //  _WIN32
 
-
 #define MY_HRES_ERROR_INTERNAL_ERROR  ((HRESULT)0x8007054FL)
-
 
 #ifdef Z7_DECL_Int64_AS_long
 
@@ -248,7 +242,6 @@ typedef unsigned long long int UInt64;
 
 #define UINT64_CONST(n) n
 
-
 #ifdef Z7_DECL_SizeT_AS_unsigned_int
 typedef unsigned int SizeT;
 #else
@@ -268,7 +261,6 @@ typedef int BoolInt;
 /* typedef BoolInt Bool; */
 #define True 1
 #define False 0
-
 
 #ifdef _WIN32
 #define Z7_STDCALL __stdcall
@@ -318,7 +310,6 @@ typedef int BoolInt;
 
 #endif //  _MSC_VER
 
-
 /* The following interfaces use first parameter as pointer to structure */
 
 // #define Z7_C_IFACE_CONST_QUAL
@@ -330,20 +321,17 @@ typedef int BoolInt;
   typedef struct a ## _ a; \
   struct a ## _
 
-
 Z7_C_IFACE_DECL (IByteIn)
 {
   Byte (*Read)(IByteInPtr p); /* reads one byte, returns 0 in case of EOF or error */
 };
 #define IByteIn_Read(p) (p)->Read(p)
 
-
 Z7_C_IFACE_DECL (IByteOut)
 {
   void (*Write)(IByteOutPtr p, Byte b);
 };
 #define IByteOut_Write(p, b) (p)->Write(p, b)
-
 
 Z7_C_IFACE_DECL (ISeqInStream)
 {
@@ -360,7 +348,6 @@ SRes SeqInStream_ReadMax(ISeqInStreamPtr stream, void *buf, size_t *processedSiz
 // SRes SeqInStream_Read2(ISeqInStreamPtr stream, void *buf, size_t size, SRes errorType);
 SRes SeqInStream_ReadByte(ISeqInStreamPtr stream, Byte *buf);
 
-
 Z7_C_IFACE_DECL (ISeqOutStream)
 {
   size_t (*Write)(ISeqOutStreamPtr p, const void *buf, size_t size);
@@ -376,7 +363,6 @@ typedef enum
   SZ_SEEK_END = 2
 } ESzSeek;
 
-
 Z7_C_IFACE_DECL (ISeekInStream)
 {
   SRes (*Read)(ISeekInStreamPtr p, void *buf, size_t *size);  /* same as ISeqInStream::Read */
@@ -384,7 +370,6 @@ Z7_C_IFACE_DECL (ISeekInStream)
 };
 #define ISeekInStream_Read(p, buf, size)   (p)->Read(p, buf, size)
 #define ISeekInStream_Seek(p, pos, origin) (p)->Seek(p, pos, origin)
-
 
 Z7_C_IFACE_DECL (ILookInStream)
 {
@@ -404,7 +389,6 @@ Z7_C_IFACE_DECL (ILookInStream)
 #define ILookInStream_Read(p, buf, size)   (p)->Read(p, buf, size)
 #define ILookInStream_Seek(p, pos, origin) (p)->Seek(p, pos, origin)
 
-
 SRes LookInStream_LookRead(ILookInStreamPtr stream, void *buf, size_t *size);
 SRes LookInStream_SeekTo(ILookInStreamPtr stream, UInt64 offset);
 
@@ -412,15 +396,14 @@ SRes LookInStream_SeekTo(ILookInStreamPtr stream, UInt64 offset);
 SRes LookInStream_Read2(ILookInStreamPtr stream, void *buf, size_t size, SRes errorType);
 SRes LookInStream_Read(ILookInStreamPtr stream, void *buf, size_t size);
 
-
 typedef struct
 {
   ILookInStream vt;
   ISeekInStreamPtr realStream;
- 
+
   size_t pos;
   size_t size; /* it's data size */
-  
+
   /* the following variables must be set outside */
   Byte *buf;
   size_t bufSize;
@@ -430,7 +413,6 @@ void LookToRead2_CreateVTable(CLookToRead2 *p, int lookahead);
 
 #define LookToRead2_INIT(p) { (p)->pos = (p)->size = 0; }
 
-
 typedef struct
 {
   ISeqInStream vt;
@@ -438,8 +420,6 @@ typedef struct
 } CSecToLook;
 
 void SecToLook_CreateVTable(CSecToLook *p);
-
-
 
 typedef struct
 {
@@ -449,7 +429,6 @@ typedef struct
 
 void SecToRead_CreateVTable(CSecToRead *p);
 
-
 Z7_C_IFACE_DECL (ICompressProgress)
 {
   SRes (*Progress)(ICompressProgressPtr p, UInt64 inSize, UInt64 outSize);
@@ -458,8 +437,6 @@ Z7_C_IFACE_DECL (ICompressProgress)
 };
 
 #define ICompressProgress_Progress(p, inSize, outSize) (p)->Progress(p, inSize, outSize)
-
-
 
 typedef struct ISzAlloc ISzAlloc;
 typedef const ISzAlloc * ISzAllocPtr;
@@ -477,10 +454,6 @@ struct ISzAlloc
 #define IAlloc_Alloc(p, size) ISzAlloc_Alloc(p, size)
 #define IAlloc_Free(p, a) ISzAlloc_Free(p, a)
 
-
-
-
-
 #ifndef MY_offsetof
   #ifdef offsetof
     #define MY_offsetof(type, m) offsetof(type, m)
@@ -491,8 +464,6 @@ struct ISzAlloc
     #define MY_offsetof(type, m) ((size_t)&(((type *)0)->m))
   #endif
 #endif
-
-
 
 #ifndef Z7_container_of
 
@@ -556,17 +527,14 @@ struct ISzAlloc
 #define Z7_CONTAINER_FROM_VTBL_TO_DECL_VAR_pp_vt_p(type) \
   Z7_CONTAINER_FROM_VTBL_TO_DECL_VAR(pp, type, vt, p)
 
-
 // #define ZIP7_DECLARE_HANDLE(name)  typedef void *name;
 #define Z7_DECLARE_HANDLE(name)  struct name##_dummy{int unused;}; typedef struct name##_dummy *name;
-
 
 #define Z7_memset_0_ARRAY(a)  memset((a), 0, sizeof(a))
 
 #ifndef Z7_ARRAY_SIZE
 #define Z7_ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
 #endif
-
 
 #ifdef _WIN32
 
