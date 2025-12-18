@@ -1,5 +1,5 @@
 /* LzmaDec.c -- LZMA Decoder
-2016-05-16 : Igor Pavlov : Public domain */
+2017-04-03 : Igor Pavlov : Public domain */
 
 #include "Precomp.h"
 
@@ -67,6 +67,7 @@
 #define TREE_DECODE_CHECK(probs, limit, i) \
   { i = 1; do { GET_BIT_CHECK(probs + i, i) } while (i < limit); i -= limit; }
 
+
 #define kNumPosBitsMax 4
 #define kNumPosStatesMax (1 << kNumPosBitsMax)
 
@@ -83,6 +84,7 @@
 #define LenMid (LenLow + (kNumPosStatesMax << kLenNumLowBits))
 #define LenHigh (LenMid + (kNumPosStatesMax << kLenNumMidBits))
 #define kNumLenProbs (LenHigh + kLenNumHighSymbols)
+
 
 #define kNumStates 12
 #define kNumLitStates 7
@@ -384,7 +386,6 @@ static int MY_FAST_CALL LzmaDec_DecodeReal(CLzmaDec *p, SizeT limit, const Byte 
             {
               UInt32 mask = 1;
               unsigned i = 1;
-
               do
               {
                 GET_BIT2(prob + i, i, ; , distance |= mask);
@@ -396,7 +397,6 @@ static int MY_FAST_CALL LzmaDec_DecodeReal(CLzmaDec *p, SizeT limit, const Byte 
           else
           {
             numDirectBits -= kNumAlignBits;
-
             do
             {
               NORMALIZE
@@ -482,14 +482,12 @@ static int MY_FAST_CALL LzmaDec_DecodeReal(CLzmaDec *p, SizeT limit, const Byte 
           ptrdiff_t src = (ptrdiff_t)pos - (ptrdiff_t)dicPos;
           const Byte *lim = dest + curLen;
           dicPos += curLen;
-
           do
             *(dest) = (Byte)*(dest + src);
           while (++dest != lim);
         }
         else
         {
-
           do
           {
             dic[dicPos++] = dic[pos];
@@ -775,6 +773,7 @@ static ELzmaDummy LzmaDec_TryDummy(const CLzmaDec *p, const Byte *buf, SizeT inS
   return res;
 }
 
+
 void LzmaDec_InitDicAndState(CLzmaDec *p, Bool initDic, Bool initState)
 {
   p->needFlush = 1;
@@ -984,19 +983,19 @@ SRes LzmaDec_DecodeToBuf(CLzmaDec *p, Byte *dest, SizeT *destLen, const Byte *sr
   }
 }
 
-void LzmaDec_FreeProbs(CLzmaDec *p, ISzAlloc *alloc)
+void LzmaDec_FreeProbs(CLzmaDec *p, ISzAllocPtr alloc)
 {
-  alloc->Free(alloc, p->probs);
+  ISzAlloc_Free(alloc, p->probs);
   p->probs = NULL;
 }
 
-static void LzmaDec_FreeDict(CLzmaDec *p, ISzAlloc *alloc)
+static void LzmaDec_FreeDict(CLzmaDec *p, ISzAllocPtr alloc)
 {
-  alloc->Free(alloc, p->dic);
+  ISzAlloc_Free(alloc, p->dic);
   p->dic = NULL;
 }
 
-void LzmaDec_Free(CLzmaDec *p, ISzAlloc *alloc)
+void LzmaDec_Free(CLzmaDec *p, ISzAllocPtr alloc)
 {
   LzmaDec_FreeProbs(p, alloc);
   LzmaDec_FreeDict(p, alloc);
@@ -1028,13 +1027,13 @@ SRes LzmaProps_Decode(CLzmaProps *p, const Byte *data, unsigned size)
   return SZ_OK;
 }
 
-static SRes LzmaDec_AllocateProbs2(CLzmaDec *p, const CLzmaProps *propNew, ISzAlloc *alloc)
+static SRes LzmaDec_AllocateProbs2(CLzmaDec *p, const CLzmaProps *propNew, ISzAllocPtr alloc)
 {
   UInt32 numProbs = LzmaProps_GetNumProbs(propNew);
   if (!p->probs || numProbs != p->numProbs)
   {
     LzmaDec_FreeProbs(p, alloc);
-    p->probs = (CLzmaProb *)alloc->Alloc(alloc, numProbs * sizeof(CLzmaProb));
+    p->probs = (CLzmaProb *)ISzAlloc_Alloc(alloc, numProbs * sizeof(CLzmaProb));
     p->numProbs = numProbs;
     if (!p->probs)
       return SZ_ERROR_MEM;
@@ -1042,7 +1041,7 @@ static SRes LzmaDec_AllocateProbs2(CLzmaDec *p, const CLzmaProps *propNew, ISzAl
   return SZ_OK;
 }
 
-SRes LzmaDec_AllocateProbs(CLzmaDec *p, const Byte *props, unsigned propsSize, ISzAlloc *alloc)
+SRes LzmaDec_AllocateProbs(CLzmaDec *p, const Byte *props, unsigned propsSize, ISzAllocPtr alloc)
 {
   CLzmaProps propNew;
   RINOK(LzmaProps_Decode(&propNew, props, propsSize));
@@ -1051,7 +1050,7 @@ SRes LzmaDec_AllocateProbs(CLzmaDec *p, const Byte *props, unsigned propsSize, I
   return SZ_OK;
 }
 
-SRes LzmaDec_Allocate(CLzmaDec *p, const Byte *props, unsigned propsSize, ISzAlloc *alloc)
+SRes LzmaDec_Allocate(CLzmaDec *p, const Byte *props, unsigned propsSize, ISzAllocPtr alloc)
 {
   CLzmaProps propNew;
   SizeT dicBufSize;
@@ -1071,7 +1070,7 @@ SRes LzmaDec_Allocate(CLzmaDec *p, const Byte *props, unsigned propsSize, ISzAll
   if (!p->dic || dicBufSize != p->dicBufSize)
   {
     LzmaDec_FreeDict(p, alloc);
-    p->dic = (Byte *)alloc->Alloc(alloc, dicBufSize);
+    p->dic = (Byte *)ISzAlloc_Alloc(alloc, dicBufSize);
     if (!p->dic)
     {
       LzmaDec_FreeProbs(p, alloc);
@@ -1085,7 +1084,7 @@ SRes LzmaDec_Allocate(CLzmaDec *p, const Byte *props, unsigned propsSize, ISzAll
 
 SRes LzmaDecode(Byte *dest, SizeT *destLen, const Byte *src, SizeT *srcLen,
     const Byte *propData, unsigned propSize, ELzmaFinishMode finishMode,
-    ELzmaStatus *status, ISzAlloc *alloc)
+    ELzmaStatus *status, ISzAllocPtr alloc)
 {
   CLzmaDec p;
   SRes res;
@@ -1102,7 +1101,6 @@ SRes LzmaDecode(Byte *dest, SizeT *destLen, const Byte *src, SizeT *srcLen,
   *srcLen = inSize;
   res = LzmaDec_DecodeToDic(&p, outSize, src, srcLen, finishMode, status);
   *destLen = p.dicPos;
-
   if (res == SZ_OK && *status == LZMA_STATUS_NEEDS_MORE_INPUT)
     res = SZ_ERROR_INPUT_EOF;
   LzmaDec_FreeProbs(&p, alloc);
