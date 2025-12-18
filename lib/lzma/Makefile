@@ -6,6 +6,6 @@
 # (C) Copyright 2003-2006
 # Wolfgang Denk, DENX Software Engineering, wd@denx.de.
 
-ccflags-y += -DZ7_LZMA_PROB32 -DZ7_LZMA_SIZE_OPT
+ccflags-y += -DZ7_LZMA_PROB32
 
 obj-y += LzmaDec.o LzmaTools.o
