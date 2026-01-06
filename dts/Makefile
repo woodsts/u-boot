@@ -36,12 +36,17 @@ $(obj)/dt-$(SPL_NAME).dtb: dts/dt.dtb $(objtree)/tools/fdtgrep FORCE
 	mkdir -p $(dir $@)
 	$(call if_changed,fdtgrep)
 
+ifeq ($(CONFIG_OF_OMIT_DTB),y)
+$(obj)/dt.dtb: arch-dtbs $(local_dtbos)
+	@:
+else
 ifeq ($(CONFIG_OF_DTB_PROPS_REMOVE),y)
 $(obj)/dt.dtb: $(DTB) $(objtree)/tools/fdtgrep FORCE
 	$(call if_changed,fdt_rm_props)
 else
 $(obj)/dt.dtb: $(DTB) FORCE
 	$(call if_changed,copy)
+endif
 endif
 
 targets += dt.dtb
