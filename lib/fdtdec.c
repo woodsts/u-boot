@@ -1860,7 +1860,8 @@ int fdtdec_setup(void)
 	}
 
 	/* Allow the board to override the fdt address. */
-	if (IS_ENABLED(CONFIG_OF_BOARD)) {
+	if (IS_ENABLED(CONFIG_OF_BOARD) &&
+	    !IS_ENABLED(CONFIG_BLOBLIST_PASSAGE_MANDATORY)) {
 		void *blob;
 
 		blob = (void *)gd->fdt_blob;
