@@ -23,15 +23,13 @@ SECTIONS
 		*(SORT_BY_ALIGNMENT(SORT_BY_NAME(.rodata*)))
 	} > .spl_mem
 
-	. = ALIGN(4);
-	.data : {
+	.data ALIGN(4) : SUBALIGN(8) {
 		*(SORT_BY_ALIGNMENT(.data*))
 		*(SORT_BY_ALIGNMENT(.sdata*))
 	} > .spl_mem
 
 #if defined(CONFIG_SPL_DM) || defined(CONFIG_SPL_LOADER_SUPPORT)
-	. = ALIGN(4);
-	__u_boot_list : {
+	__u_boot_list ALIGN(4) : SUBALIGN(8) {
 		KEEP(*(SORT(__u_boot_list*)));
 	} > .spl_mem
 #endif

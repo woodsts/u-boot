@@ -35,10 +35,8 @@ SECTIONS
 	__u_boot_list : {
 		KEEP(*(SORT(__u_boot_list*)));
 	} >.sram
-	. = ALIGN(4);
 
-	.machine_param : { *(.machine_param) } >.sram
-	. = ALIGN(4);
+	.machine_param ALIGN(4) : SUBALIGN(8) { *(.machine_param) } >.sram
 
 	__image_copy_end = .;
 	_end = .;

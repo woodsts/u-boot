@@ -86,9 +86,8 @@ SECTIONS
 	__rel_dyn_end = .;
 	. = ALIGN(4);
 
-	.dynamic : { *(.dynamic) }
+	.dynamic : SUBALIGN(8) { *(.dynamic) }
 
-	. = ALIGN(4);
 	_end = .;
 
 	.bss __rel_dyn_start (OVERLAY) : {

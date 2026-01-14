@@ -29,9 +29,7 @@ SECTIONS
 	. = ALIGN(4);
 	.rodata : { *(SORT_BY_ALIGNMENT(.rodata*)) } >.sram
 
-	. = ALIGN(4);
-	.data : { *(SORT_BY_ALIGNMENT(.data*)) } >.sram
-	. = ALIGN(4);
+	.data ALIGN(4) : SUBALIGN(8) { *(SORT_BY_ALIGNMENT(.data*)) } >.sram
 	__image_copy_end = .;
 	_end = .;
 

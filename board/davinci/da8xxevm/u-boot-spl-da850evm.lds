@@ -38,8 +38,7 @@ SECTIONS
 	. = ALIGN(4);
 	__u_boot_list : { KEEP(*(SORT(__u_boot_list*))); } >.sram
 
-	. = ALIGN(4);
-	.rel.dyn : {
+	.rel.dyn ALIGN(4) : SUBALIGN(8) {
 		__rel_dyn_start = .;
 		*(.rel*)
 		__rel_dyn_end = .;

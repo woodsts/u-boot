@@ -39,12 +39,10 @@ SECTIONS
 		*(.data*)
 	}
 
-	__u_boot_list : {
-		. = ALIGN(8);
+	__u_boot_list ALIGN(8) : SUBALIGN(8) {
 		KEEP(*(SORT(__u_boot_list*)));
 	}
 
-	. = ALIGN(8);
 	__image_copy_end = .;
 	_end = .;
 	_image_binary_end = .;

@@ -21,7 +21,7 @@ SECTIONS
 		__priv_data_end = .;
 	}
 
-	_u_boot_sandbox_getopt : {
+	_u_boot_sandbox_getopt : SUBALIGN(8) {
 		*(_u_boot_sandbox_getopt_start)
 		KEEP(*(_u_boot_sandbox_getopt))
 		*(_u_boot_sandbox_getopt_end)

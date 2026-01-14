@@ -55,13 +55,12 @@ SECTIONS
 	 * not needed.
 	 */
 
-	.sdata :
+	.sdata : SUBALIGN(4)
 	{
 	  *(.sdata)
 	  *(.sdata.*)
 	  *(.gnu.linkonce.s.*)
 	}
-	. = ALIGN(4);
 
 	_edata = .;
 	PROVIDE (edata = .);

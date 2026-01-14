@@ -37,9 +37,7 @@ SECTIONS
 		KEEP(*(SORT(__u_boot_list*)));
 	} > .spl_mem
 
-	. = ALIGN(4);
-
-	.binman_sym_table : {
+	.binman_sym_table ALIGN(4) : SUBALIGN(8) {
 		__binman_sym_start = .;
 		KEEP(*(SORT(.binman_sym*)));
 		__binman_sym_end = .;

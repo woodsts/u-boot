@@ -67,15 +67,11 @@ SECTIONS
 		__rel_dyn_end = .;
 	}
 
-	. = ALIGN(8);
-
-	.dynsym : {
+	.dynsym ALIGN(8) : SUBALIGN(8) {
 		__dyn_sym_start = .;
 		*(.dynsym)
 		__dyn_sym_end = .;
 	}
-
-	. = ALIGN(8);
 
 	_end = .;
 

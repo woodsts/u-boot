@@ -40,12 +40,10 @@ SECTIONS
 	. = ALIGN(4);
 	.data : { *(SORT_BY_ALIGNMENT(.data*)) } >.nor
 
-	. = ALIGN(4);
-	__u_boot_list : {
+	__u_boot_list ALIGN(4) : SUBALIGN(8) {
 		KEEP(*(SORT(__u_boot_list*)));
 	} > .nor
 
-	. = ALIGN(4);
 	__image_copy_end = .;
 	_end = .;
 

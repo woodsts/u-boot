@@ -43,7 +43,7 @@ SECTIONS
 	__data_end = .;
 	__init_end = .;
 	. = ALIGN(4);
-	.binman_sym_table : {
+	.binman_sym_table : SUBALIGN(8) {
 		__binman_sym_start = .;
 		KEEP(*(SORT(.binman_sym*)));
 		__binman_sym_end = .;

@@ -41,7 +41,7 @@ SECTIONS
 	__image_copy_end = .;
 	__init_end = .;
 
-	.data.reloc : {
+	.data.reloc : SUBALIGN(8) {
 		__rel_start = .;
 		/*
 		 * Space for relocation table
@@ -56,7 +56,6 @@ SECTIONS
 		. += CONFIG_MIPS_RELOCATION_TABLE_SIZE - 4;
 	}
 
-	. = ALIGN(8);
 	_end = .;
 
 	.bss __rel_start (OVERLAY) : {

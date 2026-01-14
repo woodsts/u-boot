@@ -36,12 +36,9 @@ SECTIONS
 		*(.data*)
 	} > .sram
 
-	. = ALIGN(4);
-	__u_boot_list : {
+	__u_boot_list ALIGN(4) : SUBALIGN(8) {
 		KEEP(*(SORT(__u_boot_list*)));
 	} > .sram
-
-	. = ALIGN(4);
 
 	_image_binary_end = .;
 

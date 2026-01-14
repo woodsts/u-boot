@@ -142,7 +142,7 @@ SECTIONS
 	. = ALIGN(8);
 	__image_copy_end = .;
 
-	.rela.dyn ALIGN(8) : {
+	.rela.dyn ALIGN(8) : SUBALIGN(8) {
 		__rel_dyn_start = .;
 		*(.rela*)
 		__rel_dyn_end = .;
