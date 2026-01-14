@@ -35,9 +35,9 @@ SECTIONS
 	. = 0x00000000;
 
 	. = ALIGN(4);
-	__image_copy_start = ADDR(.text);
 	.text :
 	{
+		__image_copy_start = .;
 		*(.vectors)
 		CPUDIR/start.o (.text*)
 	}
@@ -153,8 +153,11 @@ SECTIONS
 		__efi_runtime_rel_stop = .;
 	}
 
-	. = ALIGN(8);
-	__image_copy_end = .;
+	.image_copy_end :
+	{
+		. = ALIGN(8);
+		__image_copy_end = .;
+	}
 
 	/*
 	 * if CONFIG_USE_ARCH_MEMSET is not selected __bss_end - __bss_start

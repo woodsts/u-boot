@@ -23,9 +23,9 @@ OUTPUT_ARCH(aarch64)
 ENTRY(_start)
 SECTIONS
 {
-	__image_copy_start = ADDR(.text);
 	.text : {
 		. = ALIGN(8);
+		__image_copy_start = .;
 		CPUDIR/start.o (.text*)
 		*(.text*)
 	} >.sram
@@ -54,8 +54,10 @@ SECTIONS
 		KEEP(*(SORT(__u_boot_list*)));
 	} >.sram
 
-	. = ALIGN(8);
-	__image_copy_end = .;
+	.image_copy_end : {
+		. = ALIGN(8);
+		__image_copy_end = .;
+	} >.sram
 
 	.end : {
 		. = ALIGN(8);
