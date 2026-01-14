@@ -56,8 +56,10 @@ SECTIONS
 		. += CONFIG_MIPS_RELOCATION_TABLE_SIZE - 4;
 	}
 
-	. = ALIGN(8);
-	_end = .;
+	.end : {
+		. = ALIGN(8);
+		_end = .;
+	}
 
 	.bss __rel_start (OVERLAY) : {
 		__bss_start = .;

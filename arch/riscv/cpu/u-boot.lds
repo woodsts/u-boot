@@ -75,9 +75,12 @@ SECTIONS
 		__dyn_sym_end = .;
 	}
 
-	. = ALIGN(8);
 
-	_end = .;
+	.end : {
+		. = ALIGN(8);
+
+		_end = .;
+	}
 
 	.bss : {
 		__bss_start = .;

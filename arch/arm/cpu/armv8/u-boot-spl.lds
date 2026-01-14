@@ -62,9 +62,9 @@ SECTIONS
 	.end : {
 		. = ALIGN(8);
 		_end = .;
+		_image_binary_end = .;
 	} >.sram
 
-	_image_binary_end = .;
 
 #ifdef CONFIG_SPL_SEPARATE_BSS
 	.bss : {

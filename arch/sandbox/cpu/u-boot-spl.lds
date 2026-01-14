@@ -27,7 +27,10 @@ SECTIONS
 		*(_u_boot_sandbox_getopt_end)
 	}
 
-	_image_binary_end = .;
+	.end : {
+		. = ALIGN(8);
+		_image_binary_end = .;
+	}
 }
 
 INSERT AFTER .data;

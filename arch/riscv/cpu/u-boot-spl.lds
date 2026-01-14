@@ -45,9 +45,12 @@ SECTIONS
 		__binman_sym_end = .;
 	} > .spl_mem
 
-	_end = .;
-	_image_binary_end = .;
-	__image_copy_end = .;
+	.end : {
+		. = ALIGN(8);
+		_end = .;
+		_image_binary_end = .;
+		__image_copy_end = .;
+	} > .spl_mem
 
 	.bss : {
 		__bss_start = .;

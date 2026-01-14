@@ -53,8 +53,12 @@ SECTIONS
 		. = ALIGN(4);
 		__bss_end = .;
 	}
-	_end = . ;
-	_image_binary_end = .;
+
+	.end : {
+		. = ALIGN(8);
+		_end = . ;
+		_image_binary_end = .;
+	}
 }
 
 #if defined(CONFIG_SPL_MAX_FOOTPRINT)

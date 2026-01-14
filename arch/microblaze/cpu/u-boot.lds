@@ -67,7 +67,7 @@ SECTIONS
 		*(.scommon)
 		*(.bss*)
 		*(COMMON)
-		. = ALIGN(4);
+		. = ALIGN(8);
 		__bss_end = .;
 	}
 	_end = . ;

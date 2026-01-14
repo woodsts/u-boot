@@ -41,11 +41,11 @@ SECTIONS
 		KEEP(*(SORT(__u_boot_list*)));
 	} > .sram
 
-	. = ALIGN(4);
-
-	_image_binary_end = .;
-
-	_end = .;
+	.end : {
+		. = ALIGN(8);
+		_image_binary_end = .;
+		_end = .;
+	}
 
 	/* Move BSS section to RAM because of FAT */
 	.bss (NOLOAD) : {

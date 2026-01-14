@@ -90,8 +90,10 @@ SECTIONS
 	}
 	__dyn_sym_end = .;
 
-	. = ALIGN(8);
-	_end = .;
+	.end : {
+		. = ALIGN(8);
+		_end = .;
+	}
 
 	__bss_start = .;
 	.bss (NOLOAD)       :

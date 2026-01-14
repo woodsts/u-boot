@@ -36,11 +36,13 @@ SECTIONS
 	} > .spl_mem
 #endif
 
-	. = ALIGN(4);
-	__image_copy_end = .;
-	__image_copy_len = __image_copy_end - __text_start;
+	.end : {
+	. = ALIGN(8);
+		__image_copy_end = .;
+		__image_copy_len = __image_copy_end - __text_start;
 
-	_image_binary_end = .;
+		_image_binary_end = .;
+	}
 
 	.bss (NOLOAD) : {
 		__bss_start = .;

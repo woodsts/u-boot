@@ -45,9 +45,11 @@ SECTIONS
 		KEEP(*(SORT(__u_boot_list*)));
 	} > .nor
 
-	. = ALIGN(4);
-	__image_copy_end = .;
-	_end = .;
+	.end : {
+		. = ALIGN(8);
+		__image_copy_end = .;
+		_end = .;
+	}
 
 	.bss :
 	{

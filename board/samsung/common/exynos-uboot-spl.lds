@@ -44,6 +44,7 @@ SECTIONS
 
 	.end :
 	{
+		. = ALIGN(8);
 		_end = .;
 	} >.sram
 
