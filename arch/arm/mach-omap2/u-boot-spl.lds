@@ -34,6 +34,7 @@ SECTIONS
 
 	__u_boot_list ALIGN(4) : SUBALIGN(8) {
 		KEEP(*(SORT(__u_boot_list*)));
+		. = ALIGN(8);
 	} >.sram
 
 	__image_copy_end = .;
