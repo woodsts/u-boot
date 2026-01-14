@@ -56,7 +56,12 @@ SECTIONS
 
 	. = ALIGN(8);
 	__image_copy_end = .;
-	_end = .;
+
+	.end : {
+		. = ALIGN(8);
+		_end = .;
+	} >.sram
+
 	_image_binary_end = .;
 
 #ifdef CONFIG_SPL_SEPARATE_BSS

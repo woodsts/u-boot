@@ -49,7 +49,11 @@ SECTIONS
 		__bss_end = .;
 	}
 
-	_end = .;
+	.end :
+	{
+		_end = .;
+	}
+
 	_image_binary_end = .;
 
 	.dynsym _image_binary_end : { *(.dynsym) }

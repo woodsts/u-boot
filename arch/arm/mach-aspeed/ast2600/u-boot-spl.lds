@@ -61,7 +61,11 @@ SECTIONS
 		__rel_dyn_end = .;
 	} > .nor
 
-	_end = .;
+	.end :
+	{
+		_end = .;
+	} > .nor
+
 	_image_binary_end = .;
 
 	.bss : {

@@ -46,7 +46,12 @@ SECTIONS
 
 	. = ALIGN(8);
 	__image_copy_end = .;
-	_end = .;
+
+	.end : {
+		. = ALIGN(8);
+		_end = .;
+	}
+
 	_image_binary_end = .;
 
 	.bss ALIGN(8) : {

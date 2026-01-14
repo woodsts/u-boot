@@ -166,7 +166,11 @@ SECTIONS
 		__rel_dyn_end = .;
 	}
 
-	_end = .;
+	.end :
+	{
+		_end = .;
+	}
+
 	_image_binary_end = .;
 
 /*
