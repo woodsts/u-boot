@@ -175,3 +175,5 @@ SECTIONS
 #include "linux-kernel-image-header-vars.h"
 #endif
 }
+
+ASSERT(_end % 8 == 0, "_end must be 8-byte aligned for device tree");
