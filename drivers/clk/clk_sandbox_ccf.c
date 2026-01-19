@@ -229,6 +229,7 @@ static const struct udevice_id sandbox_clk_ccf_test_ids[] = {
 
 static const char *const usdhc_sels[] = { "pll3_60m", "pll3_80m", };
 static const char *const i2c_sels[] = { "pll3_60m", "pll3_80m", };
+static const char *const i2s_sels[] = { "pll3_60m", "pll3_80m", };
 
 static int sandbox_clk_ccf_probe(struct udevice *dev)
 {
@@ -276,6 +277,15 @@ static int sandbox_clk_ccf_probe(struct udevice *dev)
 
 	dev_clk_dm(dev, SANDBOX_CLK_I2C_ROOT,
 		   sandbox_clk_gate2("i2c_root", "i2c", base + 0x7c, 0));
+
+	/* Register i2s_root(child) and i2s(parent) in reverse order to test CLK_LAZY_REPARENT */
+	dev_clk_dm(dev, SANDBOX_CLK_I2S_ROOT,
+		   sandbox_clk_gate2("i2s_root", "i2s", base + 0x80, 0));
+
+	reg = BIT(29) | BIT(25) | BIT(17);
+	dev_clk_dm(dev, SANDBOX_CLK_I2S,
+		   sandbox_clk_composite("i2s", i2s_sels, ARRAY_SIZE(i2s_sels),
+					 &reg, CLK_SET_RATE_UNGATE));
 
 	return 0;
 }
