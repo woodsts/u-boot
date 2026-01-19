@@ -51,6 +51,18 @@ config VPL_CLK
 	  setting up clocks within TPL, and allows the same drivers to be
 	  used as U-Boot proper.
 
+config CLK_LAZY_REPARENT
+	bool "Enable clock lazy reparenting feature"
+	depends on CLK_CCF
+	default n if SPL_CLK || TPL_CLK || VPL_CLK
+	default y
+	help
+	  This option allows registering clocks in a less strict order that
+	  Parent clocks can be registered before their children. The clock subsystem
+	  will cache the parent's name and resolve it to the real parent device "lazily".
+	  This is the default behavior in Linux clock subsystem. Enabling this feature
+	  should simplifies the porting of Linux clock drivers to U-Boot.
+
 config CLK_BCM6345
 	bool "Clock controller driver for BCM6345"
 	depends on CLK && ARCH_BMIPS
