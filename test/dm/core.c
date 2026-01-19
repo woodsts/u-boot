@@ -696,9 +696,10 @@ DM_TEST(dm_test_children, 0);
 static int dm_test_device_reparent(struct unit_test_state *uts)
 {
 	struct udevice *top[NODE_COUNT];
-	struct udevice *child[NODE_COUNT];
+	struct udevice *child[NODE_COUNT], *temp_child = NULL;
 	struct udevice *grandchild[NODE_COUNT];
 	struct udevice *dev;
+	struct udevice *orphan;
 	int total;
 	int ret;
 	int i;
@@ -720,8 +721,11 @@ static int dm_test_device_reparent(struct unit_test_state *uts)
 		ut_assertok(create_children(uts, child[i], NODE_COUNT, 50 * i,
 					    i == 2 ? grandchild : NULL));
 
+	/* Create an orphan device */
+	ut_assertok(create_children(uts, NULL, 1, 49, &orphan));
+
 	/* Check total number of devices */
-	total = NODE_COUNT * (3 + NODE_COUNT);
+	total = NODE_COUNT * (3 + NODE_COUNT) + 1;
 	ut_asserteq(total, dm_testdrv_op_count[DM_TEST_OP_BIND]);
 
 	/* Probe everything */
@@ -737,6 +741,14 @@ static int dm_test_device_reparent(struct unit_test_state *uts)
 	ut_assertnonnull(dev);
 
 	ut_assertok(device_reparent(top[4], top[0]));
+
+	/* Ensure it's reparented */
+	ut_asserteq_ptr(top[4]->parent, top[0]);
+	device_foreach_child(temp_child, top[0]) {
+		if (temp_child == top[4])
+			break;
+	}
+	ut_asserteq_ptr(temp_child, top[4]);
 
 	/* try to get devices */
 	ret = uclass_find_first_device(UCLASS_TEST, &dev);
@@ -772,6 +784,24 @@ static int dm_test_device_reparent(struct unit_test_state *uts)
 	ret = uclass_find_first_device(UCLASS_TEST, &dev);
 	ut_assert(!ret);
 	ut_assertnonnull(dev);
+
+	/* Re-parent orphant device */
+	ut_assertok(device_reparent(orphan, top[0]));
+
+	/* try to get the device */
+	ret = uclass_find_first_device(UCLASS_TEST, &dev);
+	ut_assert(!ret);
+	ut_assertnonnull(dev);
+
+	/* ensure it's reparented */
+	ut_asserteq_ptr(orphan->parent, top[0]);
+
+	temp_child = NULL;
+	device_foreach_child(temp_child, top[0]) {
+		if (temp_child == orphan)
+			break;
+	}
+	ut_asserteq_ptr(temp_child, orphan);
 
 	/* Remove re-pareneted devices. */
 	ut_assertok(device_remove(top[3], DM_REMOVE_NORMAL));
