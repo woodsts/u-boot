@@ -31,18 +31,17 @@ SECTIONS
 	.data : {
 		*(.data*)
 	} > .spl_mem
-	. = ALIGN(4);
-
-	__u_boot_list : {
-		KEEP(*(SORT(__u_boot_list*)));
-	} > .spl_mem
 
 	. = ALIGN(4);
-
 	.binman_sym_table : {
 		__binman_sym_start = .;
 		KEEP(*(SORT(.binman_sym*)));
 		__binman_sym_end = .;
+	} > .spl_mem
+
+	. = ALIGN(4);
+	__u_boot_list : {
+		KEEP(*(SORT(__u_boot_list*)));
 		. = ALIGN(8);
 	} > .spl_mem
 

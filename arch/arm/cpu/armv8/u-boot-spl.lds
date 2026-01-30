@@ -49,12 +49,6 @@ SECTIONS
 	} >.sram
 #endif
 
-	__u_boot_list : {
-		. = ALIGN(8);
-		KEEP(*(SORT(__u_boot_list*)));
-		. = ALIGN(8);
-	} >.sram
-
 	.binman_sym_table : {
 		. = ALIGN(8);
 		__binman_sym_start = .;
@@ -62,6 +56,12 @@ SECTIONS
 		__binman_sym_end = .;
 		. = ALIGN(8);
 	} > .sram
+
+	__u_boot_list : {
+		. = ALIGN(8);
+		KEEP(*(SORT(__u_boot_list*)));
+		. = ALIGN(8);
+	} >.sram
 
 	__image_copy_end = .;
 	_end = .;
