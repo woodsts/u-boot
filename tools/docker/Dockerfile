@@ -2,7 +2,7 @@
 # This Dockerfile is used to build an image containing basic stuff to be used
 # to build U-Boot and run our test suites.
 
-FROM ubuntu:noble-20251013
+FROM ubuntu:noble-20260113
 LABEL org.opencontainers.image.authors="Tom Rini <trini@konsulko.com>"
 LABEL org.opencontainers.image.description=" This image is for building U-Boot inside a container"
 
@@ -23,7 +23,7 @@ ENV ARCHS="aarch64 arc i386 m68k mips microblaze nios2 powerpc riscv64 riscv32 s
 ENV MIRROR=https://mirrors.edge.kernel.org/pub/tools/crosstool/files/bin
 
 # Toolchain version
-ENV TCVER=14.2.0
+ENV TCVER=15.2.0
 
 RUN echo "Building on $BUILDPLATFORM, for target $TARGETPLATFORM"
 
@@ -60,6 +60,7 @@ RUN echo deb http://apt.llvm.org/noble/ llvm-toolchain-noble-20 main | tee /etc/
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update && apt-get install -y \
+	autoconf-archive \
 	automake \
 	autopoint \
 	bc \
@@ -155,7 +156,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 # Build GRUB UEFI targets for ARM & RISC-V, 32-bit and 64-bit
 RUN git clone https://https.git.savannah.gnu.org/git/grub.git /tmp/grub && \
 	cd /tmp/grub && \
-	git checkout grub-2.12 && \
+	git checkout grub-2.14 && \
 	git config --global user.name "GitLab CI Runner" && \
 	git config --global user.email trini@konsulko.com && \
 	GNULIB_URL=https://https.git.savannah.gnu.org/git/gnulib.git ./bootstrap && \
@@ -322,7 +323,7 @@ RUN git clone https://github.com/stefanberger/swtpm /tmp/swtpm && \
 # Build coreboot
 RUN wget -O - https://coreboot.org/releases/coreboot-25.03.tar.xz | tar -C /tmp -xJ && \
     cd /tmp/coreboot-25.03 && \
-    make BUILDGCC_OPTIONS="--mirror" crossgcc-i386 CPUS=$(nproc) && \
+    make crossgcc-i386 CPUS=$(nproc) && \
     make -C payloads/coreinfo olddefconfig && \
     make -C payloads/coreinfo && \
     make olddefconfig && \
