@@ -35,12 +35,14 @@ static int dm_test_clk_ccf(struct unit_test_state *uts)
 	ret = clk_get_by_id(CLK_ID(dev, SANDBOX_CLK_ECSPI_ROOT), &clk);
 	ut_assertok(ret);
 	ut_asserteq_str("ecspi_root", clk->dev->name);
+	ut_assertnull(clk->parent_name);
 	ut_asserteq(CLK_SET_RATE_PARENT, clk->flags);
 
 	/* Test for clk_get_parent_rate() */
 	ret = clk_get_by_id(CLK_ID(dev, SANDBOX_CLK_ECSPI1), &clk);
 	ut_assertok(ret);
 	ut_asserteq_str("ecspi1", clk->dev->name);
+	ut_assertnull(clk->parent_name);
 	ut_asserteq(CLK_SET_RATE_PARENT, clk->flags);
 
 	rate = clk_get_parent_rate(clk);
@@ -50,6 +52,7 @@ static int dm_test_clk_ccf(struct unit_test_state *uts)
 	ret = clk_get_by_id(CLK_ID(dev, SANDBOX_CLK_ECSPI0), &clk);
 	ut_assertok(ret);
 	ut_asserteq_str("ecspi0", clk->dev->name);
+	ut_assertnull(clk->parent_name);
 	ut_asserteq(CLK_SET_RATE_PARENT, clk->flags);
 
 	rate = clk_get_parent_rate(clk);
@@ -59,6 +62,7 @@ static int dm_test_clk_ccf(struct unit_test_state *uts)
 	ret = clk_get_by_id(CLK_ID(dev, SANDBOX_CLK_USDHC1_SEL), &clk);
 	ut_assertok(ret);
 	ut_asserteq_str("usdhc1_sel", clk->dev->name);
+	ut_assertnull(clk->parent_name);
 	ut_asserteq(CLK_SET_RATE_NO_REPARENT, clk->flags);
 
 	rate = clk_get_parent_rate(clk);
@@ -71,6 +75,7 @@ static int dm_test_clk_ccf(struct unit_test_state *uts)
 	ut_asserteq_64(60000000, rate);
 
 	ret = clk_get_by_id(CLK_ID(dev, SANDBOX_CLK_PLL3_80M), &pclk);
+	ut_assertnull(clk->parent_name);
 	ut_assertok(ret);
 
 	ret = clk_set_parent(clk, pclk);
@@ -82,6 +87,7 @@ static int dm_test_clk_ccf(struct unit_test_state *uts)
 	ret = clk_get_by_id(CLK_ID(dev, SANDBOX_CLK_USDHC2_SEL), &clk);
 	ut_assertok(ret);
 	ut_asserteq_str("usdhc2_sel", clk->dev->name);
+	ut_assertnull(clk->parent_name);
 	ut_asserteq(CLK_SET_RATE_NO_REPARENT, clk->flags);
 
 	rate = clk_get_parent_rate(clk);
@@ -98,6 +104,7 @@ static int dm_test_clk_ccf(struct unit_test_state *uts)
 	ut_asserteq_64(80000000, rate);
 
 	ret = clk_get_by_id(CLK_ID(dev, SANDBOX_CLK_PLL3_60M), &pclk);
+	ut_assertnull(clk->parent_name);
 	ut_assertok(ret);
 
 	ret = clk_set_parent(clk, pclk);
@@ -110,6 +117,7 @@ static int dm_test_clk_ccf(struct unit_test_state *uts)
 	ret = clk_get_by_id(CLK_ID(dev, SANDBOX_CLK_I2C), &clk);
 	ut_assertok(ret);
 	ut_asserteq_str("i2c", clk->dev->name);
+	ut_assertnull(clk->parent_name);
 	ut_asserteq(CLK_SET_RATE_UNGATE, clk->flags);
 
 	rate = clk_get_rate(clk);
@@ -124,11 +132,13 @@ static int dm_test_clk_ccf(struct unit_test_state *uts)
 	ret = clk_get_by_index(test_dev, SANDBOX_CLK_TEST_ID_I2C_ROOT, &clk_ccf);
 	ut_assertok(ret);
 	ut_asserteq_str("clk-ccf", clk_ccf.dev->name);
+	ut_assertnull(clk->parent_name);
 	ut_asserteq(CLK_ID(clk_ccf.dev, SANDBOX_CLK_I2C_ROOT), clk_ccf.id);
 
 	ret = clk_get_by_id(CLK_ID(dev, SANDBOX_CLK_I2C_ROOT), &clk);
 	ut_assertok(ret);
 	ut_asserteq_str("i2c_root", clk->dev->name);
+	ut_assertnull(clk->parent_name);
 	ut_asserteq(SANDBOX_CLK_I2C_ROOT, clk_get_id(clk));
 
 	ret = clk_enable(&clk_ccf);
@@ -138,6 +148,7 @@ static int dm_test_clk_ccf(struct unit_test_state *uts)
 	ut_asserteq(1, ret);
 
 	ret = clk_get_by_id(CLK_ID(dev, SANDBOX_CLK_I2C), &pclk);
+	ut_assertnull(clk->parent_name);
 	ut_assertok(ret);
 
 	ret = sandbox_clk_enable_count(pclk);
@@ -156,6 +167,7 @@ static int dm_test_clk_ccf(struct unit_test_state *uts)
 	ret = clk_get_by_id(CLK_ID(dev, SANDBOX_CLK_USDHC1_SEL), &clk);
 	ut_assertok(ret);
 	ut_asserteq_str("usdhc1_sel", clk->dev->name);
+	ut_assertnull(clk->parent_name);
 
 	pclk = clk_get_parent(clk);
 	ut_assertok_ptr(pclk);
@@ -169,6 +181,7 @@ static int dm_test_clk_ccf(struct unit_test_state *uts)
 
 	ret = clk_get_by_id(CLK_ID(dev, clkid), &pclk);
 	ut_assertok(ret);
+	ut_assertnull(clk->parent_name);
 	ret = clk_set_parent(clk, pclk);
 	ut_assertok(ret);
 	pclk = clk_get_parent(clk);
@@ -179,6 +192,7 @@ static int dm_test_clk_ccf(struct unit_test_state *uts)
 	ret = clk_get_by_id(CLK_ID(dev, SANDBOX_CLK_I2C_ROOT), &clk);
 	ut_assertok(ret);
 	ut_asserteq_str("i2c_root", clk->dev->name);
+	ut_assertnull(clk->parent_name);
 
 	/* Disable it, if any. */
 	ret = sandbox_clk_enable_count(clk);
@@ -209,3 +223,29 @@ static int dm_test_clk_ccf(struct unit_test_state *uts)
 	return 1;
 }
 DM_TEST(dm_test_clk_ccf, UTF_SCAN_FDT);
+
+#if CONFIG_IS_ENABLED(CLK_LAZY_REPARENT)
+/* Test CLK_LAZY_REPARENT feature */
+static int dm_test_clk_lazy_reparent(struct unit_test_state *uts)
+{
+	struct udevice *dev;
+	struct clk *clk_i2s, *clk_i2s_root;
+
+	/* Get the device using the clk device */
+	ut_assertok(uclass_get_device_by_name(UCLASS_CLK, "clk-ccf", &dev));
+
+	ut_assertok(clk_get_by_id(CLK_ID(dev, SANDBOX_CLK_I2S_ROOT), &clk_i2s_root));
+	ut_assertok(clk_get_by_id(CLK_ID(dev, SANDBOX_CLK_I2S), &clk_i2s));
+
+	ut_asserteq_str(clk_i2s_root->parent_name, "i2s");
+	ut_assertnull(clk_i2s_root->dev->parent);
+
+	ut_assertok(clk_enable(clk_i2s_root));
+
+	ut_assertnull(clk_i2s_root->parent_name);
+	ut_asserteq_ptr(clk_i2s_root->dev->parent, clk_i2s->dev);
+
+	return 0;
+}
+DM_TEST(dm_test_clk_lazy_reparent, UTF_SCAN_FDT);
+#endif

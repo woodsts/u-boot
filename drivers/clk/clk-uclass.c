@@ -496,6 +496,32 @@ ulong clk_get_rate(struct clk *clk)
 	return ops->get_rate(clk);
 }
 
+static struct udevice *clk_reparent(struct clk *clk, const char *parent_name)
+{
+	struct udevice *pdev;
+	int ret;
+
+	if (!clk_valid(clk))
+		return NULL;
+
+	if (!parent_name)
+		return NULL;
+
+	debug("%s(clk=%p) reparenting to %s\n", __func__, clk, parent_name);
+
+	ret = uclass_get_device_by_name(UCLASS_CLK, parent_name, &pdev);
+	if (ret) {
+		log_err("%s(clk=%p) failed to find parent \"%s\"\n", __func__, clk, parent_name);
+		return NULL;
+	}
+
+	ret = device_reparent(clk->dev, pdev);
+	if (ret)
+		return NULL;
+
+	return pdev;
+}
+
 struct clk *clk_get_parent(struct clk *clk)
 {
 	struct udevice *pdev;
@@ -506,8 +532,22 @@ struct clk *clk_get_parent(struct clk *clk)
 		return NULL;
 
 	pdev = dev_get_parent(clk->dev);
-	if (!pdev)
+	if (!pdev) {
+		if (CONFIG_IS_ENABLED(CLK_LAZY_REPARENT)) {
+			pdev = clk_reparent(clk, clk->parent_name);
+			free(clk->parent_name);
+			clk->parent_name = NULL;
+
+			if (!pdev)
+				return ERR_PTR(-ENODEV);
+		} else {
+			return ERR_PTR(-ENODEV);
+		}
+	}
+
+	if (device_get_uclass_id(pdev) != UCLASS_CLK)
 		return ERR_PTR(-ENODEV);
+
 	pclk = dev_get_clk_ptr(pdev);
 	if (!pclk)
 		return ERR_PTR(-ENODEV);
@@ -627,6 +667,10 @@ int clk_set_parent(struct clk *clk, struct clk *parent)
 	debug("%s(clk=%p, parent=%p)\n", __func__, clk, parent);
 	if (!clk_valid(clk))
 		return 0;
+
+	free(clk->parent_name);
+	clk->parent_name = NULL;
+
 	ops = clk_dev_ops(clk->dev);
 
 	if (!ops->set_parent)
@@ -660,7 +704,7 @@ int clk_set_parent(struct clk *clk, struct clk *parent)
 int clk_enable(struct clk *clk)
 {
 	const struct clk_ops *ops;
-	struct clk *clkp = NULL;
+	struct clk *clkp = NULL, *clk_parent;
 	int ret;
 
 	debug("%s(clk=%p name=%s)\n", __func__, clk, clk ? clk->dev->name : "NULL");
@@ -676,9 +720,10 @@ int clk_enable(struct clk *clk)
 				clkp->enable_count++;
 				return 0;
 			}
-			if (clkp->dev->parent &&
-			    device_get_uclass_id(clkp->dev->parent) == UCLASS_CLK) {
-				ret = clk_enable(dev_get_clk_ptr(clkp->dev->parent));
+
+			clk_parent = clk_get_parent(clkp);
+			if (!IS_ERR_OR_NULL(clk_parent)) {
+				ret = clk_enable(clk_parent);
 				if (ret) {
 					printf("Enable %s failed\n",
 					       clkp->dev->parent->name);
@@ -751,13 +796,16 @@ int clk_disable(struct clk *clk)
 				return ret;
 		}
 
-		if (clkp && clkp->dev->parent &&
-		    device_get_uclass_id(clkp->dev->parent) == UCLASS_CLK) {
-			ret = clk_disable(dev_get_clk_ptr(clkp->dev->parent));
-			if (ret) {
-				printf("Disable %s failed\n",
-				       clkp->dev->parent->name);
-				return ret;
+		if (clkp) {
+			struct clk *clk_parent = clk_get_parent(clkp);
+
+			if (!IS_ERR_OR_NULL(clk_parent)) {
+				ret = clk_disable(clk_parent);
+				if (ret) {
+					printf("Disable %s failed\n",
+					       clkp->dev->parent->name);
+					return ret;
+				}
 			}
 		}
 	} else {

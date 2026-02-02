@@ -24,8 +24,18 @@ int clk_register(struct clk *clk, const char *drv_name,
 	if (parent_name) {
 		ret = uclass_get_device_by_name(UCLASS_CLK, parent_name, &parent);
 		if (ret) {
-			log_err("%s: failed to get %s device (parent of %s)\n",
-				__func__, parent_name, name);
+			log_debug("%s: failed to get %s device (parent of %s)\n",
+				  __func__, parent_name, name);
+
+			if (CONFIG_IS_ENABLED(CLK_LAZY_REPARENT)) {
+				/*
+				 * The parent is not yet registered.
+				 * Cache the parent name and resolve it later.
+				 */
+				clk->parent_name = strdup(parent_name);
+				if (!clk->parent_name)
+					return -ENOMEM;
+			}
 		} else {
 			log_debug("%s: name: %s parent: %s [0x%p]\n", __func__, name,
 				  parent->name, parent);
