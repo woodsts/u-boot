@@ -56,3 +56,7 @@ SECTIONS
 		__bss_end = .;
 	} > .sdram
 }
+
+#if !defined(CONFIG_SPL_SEPARATE_BSS)
+ASSERT(_image_binary_end == __bss_start, "_image_binary_end != __bss_start");
+#endif

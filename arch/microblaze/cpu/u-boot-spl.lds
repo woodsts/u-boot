@@ -57,6 +57,10 @@ SECTIONS
 	_image_binary_end = .;
 }
 
+#if !defined(CONFIG_SPL_SEPARATE_BSS)
+ASSERT(_image_binary_end == __bss_start, "_image_binary_end != __bss_start");
+#endif
+
 #if defined(CONFIG_SPL_MAX_FOOTPRINT)
 ASSERT(_end - _start <= (CONFIG_SPL_MAX_FOOTPRINT), \
         "SPL image plus BSS too big");

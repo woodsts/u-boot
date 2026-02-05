@@ -91,3 +91,11 @@ SECTIONS
 
 ASSERT(ADDR(.bss) % 8 == 0, \
        ".bss must be 8-byte aligned");
+
+#if !defined(CONFIG_SPL_SEPARATE_BSS)
+ASSERT(_image_binary_end == __bss_start, "_image_binary_end != __bss_start");
+#endif
+
+#if !defined(CONFIG_SPL_SEPARATE_BSS)
+ASSERT(_image_binary_end == __bss_start, "_image_binary_end != __bss_start");
+#endif
