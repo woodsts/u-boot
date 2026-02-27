@@ -1018,13 +1018,15 @@ static int fit_config_get_regions(const void *fit, int conf_noffset,
 		return -EINVAL;
 	}
 
-	/* Build our list of data blocks */
-	region = fit_region_make_list(fit, fdt_regions, count, NULL);
+	/* Allocate the region array, +2 for the hashed-nodes region. */
+	region = calloc(count+2, sizeof(*region));
 	if (!region) {
 		fprintf(stderr, "Out of memory hashing configuration '%s/%s'\n",
 			conf_name, sig_name);
 		return -ENOMEM;
 	}
+	/* Build our list of data blocks */
+	fit_region_make_list(fit, fdt_regions, count, region);
 
 	/* Create a list of all hashed properties */
 	debug("Hash nodes:\n");
@@ -1042,6 +1044,9 @@ static int fit_config_get_regions(const void *fit, int conf_noffset,
 	     len += strlen(node_inc.strings[i]) + 1, i++)
 		strcpy(region_prop + len, node_inc.strings[i]);
 	strlist_free(&node_inc);
+
+	/* Add the hashed-nodes. */
+	count = fit_region_add_hashed_nodes(region, count, region_prop, len);
 
 	*region_countp = count;
 	*regionp = region;

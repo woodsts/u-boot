@@ -44,12 +44,6 @@ struct image_region *fit_region_make_list(const void *fit,
 	debug("Hash regions:\n");
 	debug("%10s %10s\n", "Offset", "Size");
 
-	/*
-	 * Use malloc() except in SPL (to save code size). In SPL the caller
-	 * must allocate the array.
-	 */
-	if (!IS_ENABLED(CONFIG_XPL_BUILD) && !region)
-		region = calloc(sizeof(*region), count);
 	if (!region)
 		return NULL;
 	for (i = 0; i < count; i++) {
@@ -60,6 +54,23 @@ struct image_region *fit_region_make_list(const void *fit,
 	}
 
 	return region;
+}
+
+int fit_region_add_hashed_nodes(struct image_region *region, int count,
+					const char* hashed_nodes, int hashed_nodes_len)
+{
+	/* Add the spacer to ensure the hashed strings and hashed-nodes cannot "overlap". */
+	const char* HASHED_NODES_SPACER = "hashed-nodes";
+	region[count].data = HASHED_NODES_SPACER;
+	region[count].size = strlen(HASHED_NODES_SPACER);
+	count++;
+
+	region[count].data = hashed_nodes;
+	region[count].size = hashed_nodes_len;
+	count++;
+
+	/* Now add the actual hashed-nodes value. */
+	return count;
 }
 
 static int fit_image_setup_verify(struct image_sign_info *info,
@@ -376,10 +387,14 @@ static int fit_config_check_sig(const void *fit, int noffset, int conf_noffset,
 		count++;
 	}
 
-	/* Allocate the region list on the stack */
-	struct image_region region[count];
+	/* Allocate the region list on the stack, +2 for the hashed-nodes */
+	struct image_region region[count+2];
 
 	fit_region_make_list(fit, fdt_regions, count, region);
+
+	/* Add the hashed-nodes */
+	count = fit_region_add_hashed_nodes(region, count, prop, prop_len);
+
 	if (info.crypto->verify(&info, region, count, fit_value,
 				fit_value_len)) {
 		*err_msgp = "Verification failed";

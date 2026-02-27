@@ -1771,6 +1771,18 @@ struct image_region *fit_region_make_list(const void *fit,
 		struct fdt_region *fdt_regions, int count,
 		struct image_region *region);
 
+/**
+ * fit_region_add_hashed_nodes() - Add a list of hashed nodes to the regions
+ *
+ * @region:		List of regions to add to
+ * @count:		Number of existing regions (Note: region needs to have space for an additional two regions)
+ * @hashed_nodes:		List of hashed nodes
+ * @hashed_nodes_len:	Length of list
+ * Return: The updated count value (i.e. count+2).
+ */
+int fit_region_add_hashed_nodes(struct image_region *region, int count,
+		const char* hashed_nodes, int hashed_nodes_len);
+
 static inline int fit_image_check_target_arch(const void *fdt, int node)
 {
 #ifndef USE_HOSTCC
