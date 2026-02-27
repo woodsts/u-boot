@@ -15,7 +15,7 @@ config ROCKCHIP_STIMER_BASE
 config SYS_SOC
 	default "rk3576"
 
-source board/firefly/roc-pc-rk3576/Kconfig
+source "board/firefly/roc-pc-rk3576/Kconfig"
 
 config SYS_CONFIG_NAME
 	default "rk3576_common"
