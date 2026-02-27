@@ -674,6 +674,7 @@ static int do_exit(void)
 				  "Your configuration changes were NOT saved.",
 				  1,
 				  "<OK>");
+		conf_write_autoconf(0);
 		break;
 	default:
 		btn_dialog(
@@ -686,6 +687,7 @@ static int do_exit(void)
 	global_exit = 1;
 	return 0;
 }
+
 
 static void search_conf(void)
 {
@@ -729,6 +731,7 @@ again:
 	str_free(&res);
 	str_free(&title);
 }
+
 
 static void build_conf(struct menu *menu)
 {
