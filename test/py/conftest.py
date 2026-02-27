@@ -313,13 +313,7 @@ def pytest_configure(config):
 
     ubconfig.buildconfig = dict()
 
-    # buildman -k puts autoconf.mk in the rootdir, so handle this as well
-    # as the standard U-Boot build which leaves it in include/autoconf.mk
     parse_config('.config')
-    if os.path.exists(build_dir + '/' + 'autoconf.mk'):
-        parse_config('autoconf.mk')
-    else:
-        parse_config('include/autoconf.mk')
 
     ubconfig.test_py_dir = TEST_PY_DIR
     ubconfig.source_dir = source_dir
