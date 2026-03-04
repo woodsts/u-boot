@@ -196,7 +196,7 @@ config SANDBOX
 	select DM
 	select DM_EVENT
 	select DM_FUZZING_ENGINE
-	select DM_GPIO
+	select DM_GPIO if GPIO
 	select DM_I2C
 	select DM_KEYBOARD
 	select DM_SERIAL
