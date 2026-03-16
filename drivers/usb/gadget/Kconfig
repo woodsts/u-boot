@@ -44,6 +44,10 @@ config SPL_USB_GADGET
 	  Enable USB Gadget API which allows to enable USB device functions
 	  in SPL.
 
+# Selected by UDC drivers that support high-speed operation.
+config USB_GADGET_DUALSPEED
+	bool
+
 if USB_GADGET
 
 config USB_GADGET_MANUFACTURER
@@ -178,10 +182,6 @@ config USB_GADGET_VBUS_DRAW
 config SDP_LOADADDR
 	hex "Default load address at SDP_WRITE and SDP_JUMP"
 	default 0x0
-
-# Selected by UDC drivers that support high-speed operation.
-config USB_GADGET_DUALSPEED
-	bool
 
 config USB_GADGET_DOWNLOAD
 	bool "Enable USB download gadget"
