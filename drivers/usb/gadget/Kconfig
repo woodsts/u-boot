@@ -179,10 +179,6 @@ config SDP_LOADADDR
 	hex "Default load address at SDP_WRITE and SDP_JUMP"
 	default 0x0
 
-# Selected by UDC drivers that support high-speed operation.
-config USB_GADGET_DUALSPEED
-	bool
-
 config USB_GADGET_DOWNLOAD
 	bool "Enable USB download gadget"
 	help
@@ -372,3 +368,11 @@ config SPL_SDP_USB_DEV
 	  so it can be used in compiled environment.
 
 endif # SPL_USB_GADGET
+
+if USB_GADGET || SPL_USB_GADGET
+
+# Selected by UDC drivers that support high-speed operation.
+config USB_GADGET_DUALSPEED
+	bool
+
+endif
