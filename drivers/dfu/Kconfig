@@ -20,7 +20,7 @@ if DFU
 config DFU_TFTP
 	bool "DFU via TFTP"
 	depends on NETDEVICES
-	depends on !NET_LWIP
+	depends on NET # Legacy stack only
 	select UPDATE_COMMON
 	select DFU_OVER_TFTP
 	help
