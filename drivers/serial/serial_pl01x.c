@@ -185,95 +185,6 @@ static int pl01x_generic_setbrg(struct pl01x_regs *regs, enum pl01x_type type,
 	return 0;
 }
 
-#if !CONFIG_IS_ENABLED(DM_SERIAL)
-static void pl01x_serial_init_baud(int baudrate)
-{
-	int clock = 0;
-
-#if defined(CONFIG_PL011_SERIAL)
-	pl01x_type = TYPE_PL011;
-	clock = CFG_PL011_CLOCK;
-#endif
-	base_regs = (struct pl01x_regs *)port[CONFIG_CONS_INDEX];
-
-	pl01x_generic_serial_init(base_regs, pl01x_type);
-	pl01x_generic_setbrg(base_regs, pl01x_type, clock, baudrate);
-}
-
-/*
- * Integrator AP has two UARTs, we use the first one, at 38400-8-N-1
- * Integrator CP has two UARTs, use the first one, at 38400-8-N-1
- * Versatile PB has four UARTs.
- */
-int pl01x_serial_init(void)
-{
-	pl01x_serial_init_baud(CONFIG_BAUDRATE);
-
-	return 0;
-}
-
-static void pl01x_serial_putc(const char c)
-{
-	if (c == '\n')
-		while (pl01x_putc(base_regs, '\r') == -EAGAIN);
-
-	while (pl01x_putc(base_regs, c) == -EAGAIN);
-}
-
-static int pl01x_serial_getc(void)
-{
-	while (1) {
-		int ch = pl01x_getc(base_regs);
-
-		if (ch == -EAGAIN) {
-			schedule();
-			continue;
-		}
-
-		return ch;
-	}
-}
-
-static int pl01x_serial_tstc(void)
-{
-	return pl01x_tstc(base_regs);
-}
-
-static void pl01x_serial_setbrg(void)
-{
-	/*
-	 * Flush FIFO and wait for non-busy before changing baudrate to avoid
-	 * crap in console
-	 */
-	while (!(readl(&base_regs->fr) & UART_PL01x_FR_TXFE))
-		schedule();
-	while (readl(&base_regs->fr) & UART_PL01x_FR_BUSY)
-		schedule();
-	pl01x_serial_init_baud(gd->baudrate);
-}
-
-static struct serial_device pl01x_serial_drv = {
-	.name	= "pl01x_serial",
-	.start	= pl01x_serial_init,
-	.stop	= NULL,
-	.setbrg	= pl01x_serial_setbrg,
-	.putc	= pl01x_serial_putc,
-	.puts	= default_serial_puts,
-	.getc	= pl01x_serial_getc,
-	.tstc	= pl01x_serial_tstc,
-};
-
-void pl01x_serial_initialize(void)
-{
-	serial_register(&pl01x_serial_drv);
-}
-
-__weak struct serial_device *default_serial_console(void)
-{
-	return &pl01x_serial_drv;
-}
-#else
-
 static int pl01x_serial_getinfo(struct udevice *dev,
 				struct serial_device_info *info)
 {
@@ -429,7 +340,6 @@ U_BOOT_DRIVER(serial_pl01x) = {
 
 DM_DRIVER_ALIAS(serial_pl01x, arm_pl011)
 DM_DRIVER_ALIAS(serial_pl01x, arm_pl010)
-#endif
 
 #if defined(CONFIG_DEBUG_UART_PL010) || defined(CONFIG_DEBUG_UART_PL011)
 
