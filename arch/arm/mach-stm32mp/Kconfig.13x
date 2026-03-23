@@ -19,6 +19,7 @@ config TARGET_ST_STM32MP13X
 
 config TARGET_DH_STM32MP13X
 	bool "DH electronics STM32MP13x boards"
+	select BOARD_EARLY_INIT_F
 	imply BOOTSTAGE
 	imply CMD_BOOTSTAGE
 	imply CMD_CLS if CMD_BMP

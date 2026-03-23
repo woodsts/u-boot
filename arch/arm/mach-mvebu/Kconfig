@@ -163,6 +163,7 @@ config TARGET_TURRIS_MOX
 config TARGET_MVEBU_ARMADA_8K
 	bool "Support Armada 7k/8k platforms"
 	select ARMADA_8K
+	select BOARD_EARLY_INIT_F
 	select BOARD_LATE_INIT
 	imply SCSI
 
@@ -173,6 +174,7 @@ config TARGET_MVEBU_ALLEYCAT5
 config TARGET_OCTEONTX2_CN913x
 	bool "Support CN913x platforms"
 	select ARMADA_8K
+	select BOARD_EARLY_INIT_F
 	imply BOARD_EARLY_INIT_R
 	select BOARD_LATE_INIT
 	imply SCSI

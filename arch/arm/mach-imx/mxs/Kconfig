@@ -40,6 +40,7 @@ choice
 
 config TARGET_BTT
 	bool "Support BTT"
+	select BOARD_EARLY_INIT_F
 	select PL01X_SERIAL
 	imply OF_UPSTREAM
 
@@ -50,6 +51,7 @@ config TARGET_MX28EVK
 
 config TARGET_XEA
 	bool "Support XEA"
+	select BOARD_EARLY_INIT_F
 	select PL01X_SERIAL
 
 endchoice

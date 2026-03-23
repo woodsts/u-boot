@@ -5,6 +5,7 @@ choice
 
 config TARGET_EVB_RV1108
 	bool "EVB_RV1108"
+	select BOARD_EARLY_INIT_F
 	help
 	  RV1108 EVB is a evaluation board for Rockchp RV1108.
 
@@ -22,6 +23,7 @@ config TARGET_EVB_RV1108
 
 config TARGET_ELGIN_RV1108
 	bool "ELGIN_RV1108"
+	select BOARD_EARLY_INIT_F
 	help
 	  RV1108 ELGIN is a board based on the Rockchip RV1108.
 

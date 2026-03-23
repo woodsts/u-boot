@@ -19,6 +19,7 @@ config TARGET_CM_T54
 
 config TARGET_DRA7XX_EVM
 	bool "TI DRA7XX"
+	select BOARD_EARLY_INIT_F
 	select BOARD_LATE_INIT
 	select DRA7XX
 	select PHYS_64BIT
@@ -34,6 +35,7 @@ config TARGET_DRA7XX_EVM
 
 config TARGET_AM57XX_EVM
 	bool "AM57XX"
+	select BOARD_EARLY_INIT_F
 	select BOARD_LATE_INIT
 	select CMD_DDR3
 	select DRA7XX
@@ -56,7 +58,7 @@ config OMAP_PLATFORM_RESET_TIME_MAX_USEC
 	help
 	  Most OMAPs' provide a way to specify the time for which the reset
 	  should be held low while the voltages and Oscillator outputs
-	  stabilize.
+	  STABIlize.
 	  This time is mostly board and PMIC dependent. Hence the boards are
 	  expected to specify a pre-computed time using the above option.
 	  This value can be computed using a summation of the below 3

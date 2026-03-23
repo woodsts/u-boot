@@ -34,11 +34,13 @@ config TARGET_KP_IMX53
 
 config TARGET_M53MENLO
 	bool "Support m53menlo"
+	select BOARD_EARLY_INIT_F
 	select MX53
 	select SUPPORT_SPL
 
 config TARGET_MX51EVK
 	bool "Support mx51evk"
+	select BOARD_EARLY_INIT_F
 	select BOARD_LATE_INIT
 	select MX51
 
@@ -52,17 +54,20 @@ config TARGET_MX53CX9020
 
 config TARGET_MX53LOCO
 	bool "Support mx53loco"
+	select BOARD_EARLY_INIT_F
 	select BOARD_LATE_INIT
 	select MX53
 
 config TARGET_MX53PPD
 	bool "Support mx53ppd"
+	select BOARD_EARLY_INIT_F
 	select MX53
 	help
 	  Enable support for the GE Healthcare PPD.
 
 config TARGET_USBARMORY
 	bool "Support USB armory"
+	select BOARD_EARLY_INIT_F
 	select MX53
 
 endchoice

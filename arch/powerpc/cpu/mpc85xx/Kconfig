@@ -454,6 +454,7 @@ config ARCH_MPC8560
 config ARCH_P1010
 	bool
 	select A003399_NOR_WORKAROUND if SYS_FSL_ERRATUM_IFC_A003399 && !SPL
+	select BOARD_EARLY_INIT_F
 	select BTB
 	select FSL_LAW
 	select SYS_CACHE_SHIFT_5
@@ -505,6 +506,7 @@ config ARCH_P1011
 
 config ARCH_P1020
 	bool
+	select BOARD_EARLY_INIT_F
 	select BTB
 	select FSL_LAW
 	select SYS_CACHE_SHIFT_5
@@ -604,6 +606,7 @@ config ARCH_P1025
 
 config ARCH_P2020
 	bool
+	select BOARD_EARLY_INIT_F
 	select BTB
 	select FSL_LAW
 	select SYS_CACHE_SHIFT_5
@@ -627,6 +630,7 @@ config ARCH_P2020
 config ARCH_P2041
 	bool
 	select BACKSIDE_L2_CACHE
+	select BOARD_EARLY_INIT_F
 	select E500MC
 	select FSL_LAW
 	select SYS_CACHE_SHIFT_6
@@ -772,6 +776,7 @@ config ARCH_QEMU_E500
 config ARCH_T1024
 	bool
 	select BACKSIDE_L2_CACHE
+	select BOARD_EARLY_INIT_F
 	select E500MC
 	select E5500
 	select FSL_CORENET
@@ -804,6 +809,7 @@ config ARCH_T1024
 config ARCH_T1040
 	bool
 	select BACKSIDE_L2_CACHE
+	select BOARD_EARLY_INIT_F
 	select E500MC
 	select E5500
 	select FSL_CORENET
@@ -837,6 +843,7 @@ config ARCH_T1040
 config ARCH_T1042
 	bool
 	select BACKSIDE_L2_CACHE
+	select BOARD_EARLY_INIT_F
 	select E500MC
 	select E5500
 	select FSL_CORENET

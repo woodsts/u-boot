@@ -111,12 +111,14 @@ config TARGET_DRAAK
 
 config TARGET_EAGLE
 	bool "Eagle board"
+	select BOARD_EARLY_INIT_F
 	imply R8A77970
 	help
           Support for Renesas R-Car Gen3 Eagle platform
 
 config TARGET_V3MSK
 	bool "V3MSK board"
+	select BOARD_EARLY_INIT_F
 	help
           Support for Renesas R-Car Gen3 V3MSK platform
 

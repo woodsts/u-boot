@@ -83,6 +83,7 @@ config TARGET_GURNARD
 	bool "Support gurnard"
 	select AT91SAM9G45
 	select AT91_WANTS_COMMON_PHY
+	select BOARD_EARLY_INIT_F
 	select BOARD_LATE_INIT
 	select DM
 	select DM_GPIO
@@ -258,11 +259,13 @@ config TARGET_SAMA5D4EK
 config TARGET_MEESC
 	bool "Support meesc"
 	select AT91SAM9263
+	select BOARD_EARLY_INIT_F
 
 config TARGET_CORVUS
 	bool "Support corvus"
 	select AT91SAM9M10G45
 	select AT91_WANTS_COMMON_PHY
+	select BOARD_EARLY_INIT_F
 	select DM
 	select DM_GPIO
 	select DM_SERIAL
@@ -294,6 +297,7 @@ config TARGET_TAURUS
 	bool "Support taurus"
 	select AT91SAM9G20
 	select AT91_WANTS_COMMON_PHY
+	select BOARD_EARLY_INIT_F
 	select DM
 	select DM_GPIO
 	select DM_SERIAL
@@ -307,6 +311,7 @@ config TARGET_SMARTWEB
 	bool "Support smartweb"
 	select AT91SAM9260
 	select AT91_WANTS_COMMON_PHY
+	select BOARD_EARLY_INIT_F
 	select DM
 	select DM_GPIO
 	select DM_SERIAL
@@ -315,6 +320,7 @@ config TARGET_SMARTWEB
 
 config TARGET_VINCO
 	bool "Support VINCO"
+	select BOARD_EARLY_INIT_F
 	select DM
 	select DM_SPI
 	select MTD

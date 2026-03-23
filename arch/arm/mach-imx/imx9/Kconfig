@@ -117,6 +117,7 @@ config TARGET_IMX93_FRDM
 
 config TARGET_IMX93_VAR_SOM
 	bool "imx93_var_som"
+	select BOARD_EARLY_INIT_F
 	select IMX93
 	select IMX9_LPDDR4X
 

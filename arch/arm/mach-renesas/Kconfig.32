@@ -50,12 +50,14 @@ choice
 
 config TARGET_BLANCHE
 	bool "Blanche board"
+	select BOARD_EARLY_INIT_F
 	select DM
 	select DM_SERIAL
 	imply CMD_DM
 
 config TARGET_GOSE
 	bool "Gose board"
+	select BOARD_EARLY_INIT_F
 	select DM
 	select DM_SERIAL
 	select SPL_TINY_MEMSET
@@ -65,6 +67,7 @@ config TARGET_GOSE
 
 config TARGET_KOELSCH
 	bool "Koelsch board"
+	select BOARD_EARLY_INIT_F
 	select DM
 	select DM_SERIAL
 	select SPL_TINY_MEMSET
@@ -74,6 +77,7 @@ config TARGET_KOELSCH
 
 config TARGET_LAGER
 	bool "Lager board"
+	select BOARD_EARLY_INIT_F
 	select DM
 	select DM_SERIAL
 	select SPL_TINY_MEMSET
@@ -83,6 +87,7 @@ config TARGET_LAGER
 
 config TARGET_ALT
 	bool "Alt board"
+	select BOARD_EARLY_INIT_F
 	select DM
 	select DM_SERIAL
 	select SPL_TINY_MEMSET
@@ -92,6 +97,7 @@ config TARGET_ALT
 
 config TARGET_SILK
 	bool "Silk board"
+	select BOARD_EARLY_INIT_F
 	select DM
 	select DM_SERIAL
 	select SPL_TINY_MEMSET
@@ -101,6 +107,7 @@ config TARGET_SILK
 
 config TARGET_PORTER
 	bool "Porter board"
+	select BOARD_EARLY_INIT_F
 	select DM
 	select DM_SERIAL
 	select SPL_TINY_MEMSET
@@ -110,6 +117,7 @@ config TARGET_PORTER
 
 config TARGET_STOUT
 	bool "Stout board"
+	select BOARD_EARLY_INIT_F
 	select DM
 	select DM_SERIAL
 	select SPL_TINY_MEMSET

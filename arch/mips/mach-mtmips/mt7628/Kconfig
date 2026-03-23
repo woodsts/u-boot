@@ -6,6 +6,7 @@ choice
 
 config BOARD_GARDENA_SMART_GATEWAY_MT7688
 	bool "GARDENA smart Gateway"
+	select BOARD_EARLY_INIT_F
 	select BOARD_LATE_INIT
 	help
 	  GARDENA smart Gateway boards have a MT7688 SoC with 128 MiB of RAM
@@ -13,6 +14,7 @@ config BOARD_GARDENA_SMART_GATEWAY_MT7688
 
 config BOARD_LINKIT_SMART_7688
 	bool "LinkIt Smart 7688"
+	select BOARD_EARLY_INIT_F
 	help
 	  Seeed LinkIt Smart 7688 boards have a MT7688 SoC with 128 MiB of RAM
 	  and 32 MiB of flash (SPI).

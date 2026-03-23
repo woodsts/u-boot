@@ -15,6 +15,7 @@ choice
 config TARGET_MALTA
 	bool "Support malta"
 	select HAS_FIXED_TIMER_FREQUENCY
+	select BOARD_EARLY_INIT_F
 	select BOARD_EARLY_INIT_R
 	select DM
 	select DM_SERIAL

@@ -166,9 +166,11 @@ config TARGET_NSIM
 
 config TARGET_AXS101
 	bool "Support Synopsys Designware SDP board AXS101"
+	select BOARD_EARLY_INIT_F
 
 config TARGET_AXS103
 	bool "Support Synopsys Designware SDP board AXS103"
+	select BOARD_EARLY_INIT_F
 
 config TARGET_EMSDP
 	bool "Synopsys EM Software Development Platform"
@@ -176,6 +178,7 @@ config TARGET_EMSDP
 
 config TARGET_HSDK
 	bool "Support Synopsys HSDK or HSDK-4xD board"
+	select BOARD_EARLY_INIT_F
 
 config TARGET_IOT_DEVKIT
 	bool "Synopsys Brite IoT Development kit"

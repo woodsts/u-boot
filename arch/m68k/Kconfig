@@ -196,6 +196,7 @@ config TARGET_STMARK2
 
 config TARGET_QEMU_M68K
     bool "Support QEMU m68k virt"
+    select BOARD_EARLY_INIT_F
     select M68040
     imply CMD_DM
     help

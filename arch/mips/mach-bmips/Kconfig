@@ -229,6 +229,7 @@ config BOARD_NETGEAR_DGND3700V2
 	bool "Netgear DGND3700v2"
 	depends on SOC_BMIPS_BCM6362
 	select BMIPS_SUPPORTS_BOOT_RAM
+	select BOARD_EARLY_INIT_F
 	help
 	  Netgear DGND3700v2 boards have a BCM6362 SoC with 64 MB of RAM and
 	  32 MB of flash (NAND).

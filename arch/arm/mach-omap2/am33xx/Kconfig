@@ -205,6 +205,7 @@ choice
 
 config TARGET_AM43XX_EVM
 	bool "Support am43xx_evm"
+	select BOARD_EARLY_INIT_F if !SKIP_LOWLEVEL_INIT
 	select BOARD_LATE_INIT
 	select TI_I2C_BOARD_DETECT
 	imply DM_I2C

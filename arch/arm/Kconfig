@@ -996,7 +996,6 @@ config ARCH_MX7
 	select SYS_FSL_HAS_SEC
 	select SYS_FSL_SEC_COMPAT_4
 	select SYS_FSL_SEC_LE
-	imply BOARD_EARLY_INIT_F
 	imply MXC_GPIO
 	imply SYS_THUMB_BUILD
 
@@ -1017,7 +1016,6 @@ config ARCH_MX6
 
 config ARCH_MX5
 	bool "Freescale MX5"
-	select BOARD_EARLY_INIT_F
 	select CPU_V7A
 	select GPIO_EXTRA_HEADER
 	select MACH_IMX
@@ -1114,7 +1112,6 @@ config ARCH_RENESAS
 	select DM_SERIAL
 	select GPIO_EXTRA_HEADER
 	select LTO
-	imply BOARD_EARLY_INIT_F
 	imply CMD_DM
 	imply FAT_WRITE
 	imply OF_UPSTREAM
@@ -1299,6 +1296,7 @@ config ARCH_VERSAL2
 config ARCH_VERSAL_NET
 	bool "Support Xilinx Versal NET Platform"
 	select ARM64
+	select BOARD_EARLY_INIT_F if DEBUG_UART
 	select CLK
 	select DM
 	select DM_SERIAL
@@ -1563,6 +1561,7 @@ config TARGET_LX2162AQDS
 config TARGET_HIKEY
 	bool "Support HiKey 96boards Consumer Edition Platform"
 	select ARM64
+	select BOARD_EARLY_INIT_F
 	select DM
 	select DM_GPIO
 	select DM_SERIAL
@@ -1806,6 +1805,7 @@ config TARGET_LS1021AIOT
 	bool "Support ls1021aiot"
 	select ARCH_LS1021A
 	select ARCH_SUPPORT_PSCI
+	select BOARD_EARLY_INIT_F
 	select BOARD_LATE_INIT
 	select CPU_V7A
 	select CPU_V7_HAS_NONSEC
@@ -2152,6 +2152,7 @@ config TARGET_DURIAN
 config TARGET_POMELO
 	bool "Support Phytium Pomelo Platform"
 	select ARM64
+	select BOARD_EARLY_INIT_F
 	select DM
 	select AHCI
 	select SCSI_AHCI
@@ -2167,6 +2168,7 @@ config TARGET_POMELO
 config TARGET_PE2201
 	bool "Support Phytium PE2201 Platform"
 	select ARM64
+	select BOARD_EARLY_INIT_F
 	help
 	  Support for pe2201 platform.It has 2GB Sdram, uart and pcie.
 

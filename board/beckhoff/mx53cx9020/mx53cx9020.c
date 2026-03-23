@@ -156,12 +156,6 @@ static void clock_1GHz(void)
 		printf("CPU:   Switch DDR clock to 400MHz failed\n");
 }
 
-int board_early_init_f(void)
-{
-
-	return 0;
-}
-
 int board_init(void)
 {
 	gd->bd->bi_boot_params = PHYS_SDRAM_1 + 0x100;

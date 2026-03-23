@@ -6,6 +6,7 @@ choice
 
 config TARGET_DA850EVM
 	bool "DA850 EVM board"
+	select BOARD_EARLY_INIT_F
 	select MACH_DAVINCI_DA850_EVM
 	select SOC_DA850
 	select SUPPORT_SPL
@@ -13,12 +14,14 @@ config TARGET_DA850EVM
 
 config TARGET_OMAPL138_LCDK
 	bool "OMAPL138 LCDK"
+	select BOARD_EARLY_INIT_F
 	select SOC_DA8XX
 	select SUPPORT_SPL
 	select SPL_BOARD_INIT
 
 config TARGET_LEGOEV3
 	bool "LEGO MINDSTORMS EV3"
+	select BOARD_EARLY_INIT_F
 	select MACH_DAVINCI_DA850_EVM
 	select SOC_DA850
 
