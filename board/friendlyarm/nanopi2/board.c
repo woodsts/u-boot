@@ -406,11 +406,6 @@ __exit:
  * call from u-boot
  */
 
-int board_early_init_f(void)
-{
-	return 0;
-}
-
 int board_init(void)
 {
 	bd_hwrev_init();
