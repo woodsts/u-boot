@@ -97,11 +97,6 @@ u32 spl_mmc_boot_mode(struct mmc *mmc, const u32 boot_device)
 	return MMCSD_MODE_RAW;
 }
 
-__weak int board_early_init_f(void)
-{
-	return 0;
-}
-
 __weak int arch_cpu_init(void)
 {
 	return 0;
@@ -111,7 +106,8 @@ void board_init_f(ulong dummy)
 {
 	int ret;
 
-	board_early_init_f();
+	if (IS_ENABLED(CONFIG_BOARD_EARLY_INIT_F))
+		board_early_init_f();
 
 	ret = spl_early_init();
 	if (ret) {
