@@ -714,8 +714,7 @@ config ARCH_MISC_INIT
 	  and will be called after the console is set up, after relocation.
 
 config BOARD_EARLY_INIT_F
-	bool "Call board-specific init before relocation"
-	depends on !COMPILE_TEST
+	bool
 	help
 	  Some boards need to perform initialisation as soon as possible
 	  after boot. With this option, U-Boot calls board_early_init_f()
