@@ -94,11 +94,6 @@ static void setup_ups(void)
 	gpio_direction_output(BOOSTER_OFF, 0);
 }
 
-int board_early_init_f(void)
-{
-	return 0;
-}
-
 /*
  * Do not overwrite the console
  * Use always serial for U-Boot console
