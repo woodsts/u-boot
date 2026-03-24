@@ -43,11 +43,6 @@ void s_init(void)
 		init_generic_timer();
 }
 
-int board_early_init_f(void)
-{
-	return 0;
-}
-
 int board_init(void)
 {
 	/* Allow WDT reset */

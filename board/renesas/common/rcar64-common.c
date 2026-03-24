@@ -69,8 +69,3 @@ int __weak board_init(void)
 {
 	return 0;
 }
-
-int __weak board_early_init_f(void)
-{
-	return 0;
-}
