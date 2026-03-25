@@ -7,7 +7,6 @@
 #include <init.h>
 #include <asm/arch-rockchip/clock.h>
 
-#ifdef CONFIG_XPL_BUILD
 /* provided to defeat compiler optimisation in board_init_f() */
 void gru_dummy_function(int i)
 {
@@ -15,23 +14,24 @@ void gru_dummy_function(int i)
 
 int board_early_init_f(void)
 {
-# if defined(CONFIG_TARGET_CHROMEBOOK_BOB) || defined(CONFIG_TARGET_CHROMEBOOK_KEVIN)
-	int sum, i;
+	if (IS_ENABLED(CONFIG_XPL_BUILD) &&
+			(IS_ENABLED(CONFIG_TARGET_CHROMEBOOK_BOB) ||
+			 IS_ENABLED(CONFIG_TARGET_CHROMEBOOK_KEVIN))) {
+		int sum, i;
 
-	/*
-	 * Add a delay and ensure that the compiler does not optimise this out.
-	 * This is needed since the power rails tail a while to turn on, and
-	 * we get garbage serial output otherwise.
-	 */
-	sum = 0;
-	for (i = 0; i < 150000; i++)
-		sum += i;
-	gru_dummy_function(sum);
-#endif /* CONFIG_TARGET_CHROMEBOOK_BOB */
+		/*
+		 * Add a delay and ensure that the compiler does not optimise this out.
+		 * This is needed since the power rails tail a while to turn on, and
+		 * we get garbage serial output otherwise.
+		 */
+		sum = 0;
+		for (i = 0; i < 150000; i++)
+			sum += i;
+		gru_dummy_function(sum);
+	}
 
 	return 0;
 }
-#endif
 
 #ifndef CONFIG_XPL_BUILD
 int board_early_init_r(void)
