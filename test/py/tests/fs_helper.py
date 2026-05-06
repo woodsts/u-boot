@@ -24,6 +24,13 @@ class FsHelper:
 
         # The filesystem and srcdir are erased after the 'with' statement.
 
+        To set the image filename:
+
+            with FsHelper(ubman.config, 'ext4', 10, 'mmc1') as fsh:
+                fsh.fs_img = 'myfile.img'
+                fsh.mk_fs()
+                ...
+
         It is also possible to use an existing srcdir:
 
             with FsHelper(ubman.config, 'fat32', 10, 'usb2') as fsh:
@@ -32,7 +39,8 @@ class FsHelper:
                 ...
 
     Properties:
-        fs_img (str): Filename for the filesystem image
+        fs_img (str): Filename for the filesystem image; this is set to a
+            default value but can be overwritten before mk_fs()
     """
     def __init__(self, config, fs_type, size_mb, prefix):
         """Set up a new object
@@ -54,10 +62,18 @@ class FsHelper:
         self.size_mb = size_mb
         self.prefix = prefix
         self.quiet = True
-        self.fs_img = None
         self.tmpdir = None
         self.srcdir = None
         self._do_cleanup = False
+
+        # Use a default filename; the caller can adjust it
+        leaf = f'{prefix}.{fs_type}.img'
+        if config:
+            self.fs_img = os.path.join(config.persistent_data_dir, leaf)
+            if os.path.exists(self.fs_img):
+                os.remove(self.fs_img)
+        else:
+            self.fs_img = leaf
 
         # Some distributions do not add /sbin to the default PATH, where
         # mkfs lives
@@ -102,12 +118,9 @@ class FsHelper:
         self._do_cleanup = True
         src_dir = self.srcdir if os.listdir(self.srcdir) else None
 
-        fs_img = os.path.join(self.config.persistent_data_dir,
-                              f'{self.prefix}.{self.fs_type}.img')
-
+        fs_img = self.fs_img
         mkfs_opt, fs_lnxtype = self._get_fs_args()
 
-        check_call(f'rm -f {fs_img}', shell=True)
         with open(fs_img, 'wb') as fsi:
             fsi.truncate(self.size_mb << 20)
         check_call(f'mkfs.{fs_lnxtype} {mkfs_opt} {fs_img}', shell=True,
@@ -123,7 +136,6 @@ class FsHelper:
                        shell=True)
         elif fs_lnxtype == 'exfat' and src_dir:
             check_call(f'fattools cp {src_dir}/* {fs_img}', shell=True)
-        self.fs_img = fs_img
 
     def setup(self):
         """Set up the srcdir ready to receive files"""
