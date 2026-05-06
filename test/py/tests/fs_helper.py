@@ -62,20 +62,14 @@ class FsHelper:
         self.srcdir = None
         self._do_cleanup = False
 
-    def mk_fs(self):
-        """Make a new filesystem and copy in the files
+    def _get_fs_args(self):
+        """Get the mkfs options and program to use
 
-        Raises:
-            CalledProcessError: if any error occurs when creating the
-                filesystem
+        Returns:
+            tuple:
+                str: mkfs options, e.g. '-F 32' for fat32
+                str: mkfs program to use, e.g. 'ext4' for ext4
         """
-        self.setup()
-        self._do_cleanup = True
-        src_dir = self.srcdir if os.listdir(self.srcdir) else None
-
-        fs_img = os.path.join(self.config.persistent_data_dir,
-                              f'{self.prefix}.{self.fs_type}.img')
-
         if self.fs_type == 'fat12':
             mkfs_opt = '-F 12'
         elif self.fs_type == 'fat16':
@@ -91,6 +85,23 @@ class FsHelper:
             fs_lnxtype = 'vfat'
         else:
             fs_lnxtype = self.fs_type
+        return mkfs_opt, fs_lnxtype
+
+    def mk_fs(self):
+        """Make a new filesystem and copy in the files
+
+        Raises:
+            CalledProcessError: if any error occurs when creating the
+                filesystem
+        """
+        self.setup()
+        self._do_cleanup = True
+        src_dir = self.srcdir if os.listdir(self.srcdir) else None
+
+        fs_img = os.path.join(self.config.persistent_data_dir,
+                              f'{self.prefix}.{self.fs_type}.img')
+
+        mkfs_opt, fs_lnxtype = self._get_fs_args()
 
         if src_dir:
             if fs_lnxtype == 'ext4':
