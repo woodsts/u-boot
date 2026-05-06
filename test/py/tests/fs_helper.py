@@ -108,7 +108,8 @@ class FsHelper:
         mkfs_opt, fs_lnxtype = self._get_fs_args()
 
         check_call(f'rm -f {fs_img}', shell=True)
-        check_call(f'truncate -s {self.size_mb}M {fs_img}', shell=True)
+        with open(fs_img, 'wb') as fsi:
+            fsi.truncate(self.size_mb << 20)
         check_call(f'mkfs.{fs_lnxtype} {mkfs_opt} {fs_img}', shell=True,
                    stdout=DEVNULL if self.quiet else None)
         if self.fs_type == 'ext4':
