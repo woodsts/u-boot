@@ -8,12 +8,9 @@
 import re
 import os
 import shutil
-from subprocess import call, check_call, check_output, CalledProcessError
+from subprocess import check_call, check_output, CalledProcessError
 from subprocess import DEVNULL
 import tempfile
-
-# size_gran (int): Size granularity of file system image in bytes
-SIZE_GRAN = 1 << 20
 
 
 class FsHelper:
@@ -62,6 +59,11 @@ class FsHelper:
         self.srcdir = None
         self._do_cleanup = False
 
+        # Some distributions do not add /sbin to the default PATH, where
+        # mkfs lives
+        if '/sbin' not in os.environ['PATH'].split(os.pathsep):
+            os.environ['PATH'] += os.pathsep + '/sbin'
+
     def _get_fs_args(self):
         """Get the mkfs options and program to use
 
@@ -105,36 +107,22 @@ class FsHelper:
 
         mkfs_opt, fs_lnxtype = self._get_fs_args()
 
-        size = self.size_mb << 20
-        count = (size + SIZE_GRAN - 1) // SIZE_GRAN
-
-        # Some distributions do not add /sbin to the default PATH, where
-        # mkfs lives
-        if '/sbin' not in os.environ['PATH'].split(os.pathsep):
-            os.environ['PATH'] += os.pathsep + '/sbin'
-
-        try:
-            check_call(f'rm -f {fs_img}', shell=True)
-            check_call(f'truncate -s $(( {SIZE_GRAN} * {count} )) {fs_img}',
+        check_call(f'rm -f {fs_img}', shell=True)
+        check_call(f'truncate -s {self.size_mb}M {fs_img}', shell=True)
+        check_call(f'mkfs.{fs_lnxtype} {mkfs_opt} {fs_img}', shell=True,
+                   stdout=DEVNULL if self.quiet else None)
+        if self.fs_type == 'ext4':
+            sb_content = check_output(f'tune2fs -l {fs_img}',
+                                      shell=True).decode()
+            if 'metadata_csum' in sb_content:
+                check_call(f'tune2fs -O ^metadata_csum {fs_img}', shell=True)
+        elif fs_lnxtype == 'vfat' and src_dir:
+            flags = f"-smpQ{'' if self.quiet else 'v'}"
+            check_call(f'mcopy -i {fs_img} {flags} {src_dir}/* ::/',
                        shell=True)
-            check_call(f'mkfs.{fs_lnxtype} {mkfs_opt} {fs_img}', shell=True,
-                       stdout=DEVNULL if self.quiet else None)
-            if self.fs_type == 'ext4':
-                sb_content = check_output(f'tune2fs -l {fs_img}',
-                                          shell=True).decode()
-                if 'metadata_csum' in sb_content:
-                    check_call(f'tune2fs -O ^metadata_csum {fs_img}',
-                               shell=True)
-            elif fs_lnxtype == 'vfat' and src_dir:
-                flags = f"-smpQ{'' if self.quiet else 'v'}"
-                check_call(f'mcopy -i {fs_img} {flags} {src_dir}/* ::/',
-                           shell=True)
-            elif fs_lnxtype == 'exfat' and src_dir:
-                check_call(f'fattools cp {src_dir}/* {fs_img}', shell=True)
-            self.fs_img = fs_img
-        except CalledProcessError:
-            call(f'rm -f {fs_img}', shell=True)
-            raise
+        elif fs_lnxtype == 'exfat' and src_dir:
+            check_call(f'fattools cp {src_dir}/* {fs_img}', shell=True)
+        self.fs_img = fs_img
 
     def setup(self):
         """Set up the srcdir ready to receive files"""
