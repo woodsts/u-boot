@@ -76,6 +76,8 @@ class FsHelper:
             mkfs_opt = '-F 16'
         elif self.fs_type == 'fat32':
             mkfs_opt = '-F 32'
+        elif self.fs_type.startswith('ext'):
+            mkfs_opt = f'-d {self.srcdir}'
         else:
             mkfs_opt = ''
 
@@ -102,13 +104,6 @@ class FsHelper:
                               f'{self.prefix}.{self.fs_type}.img')
 
         mkfs_opt, fs_lnxtype = self._get_fs_args()
-
-        if src_dir:
-            if fs_lnxtype == 'ext4':
-                mkfs_opt = mkfs_opt + ' -d ' + src_dir
-            elif fs_lnxtype != 'vfat' and fs_lnxtype != 'exfat':
-                raise ValueError(
-                    f'src_dir not implemented for fs {fs_lnxtype}')
 
         size = self.size_mb << 20
         count = (size + SIZE_GRAN - 1) // SIZE_GRAN
