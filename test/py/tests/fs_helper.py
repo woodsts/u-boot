@@ -63,12 +63,72 @@ class FsHelper:
         self._do_cleanup = False
 
     def mk_fs(self):
-        """Make a new filesystem and copy in the files"""
+        """Make a new filesystem and copy in the files
+
+        Raises:
+            CalledProcessError: if any error occurs when creating the
+                filesystem
+        """
         self.setup()
         self._do_cleanup = True
         src_dir = self.srcdir if os.listdir(self.srcdir) else None
-        self.fs_img = mk_fs(self.config, self.fs_type, self.size_mb << 20,
-                            self.prefix, src_dir, quiet=self.quiet)
+
+        fs_img = os.path.join(self.config.persistent_data_dir,
+                              f'{self.prefix}.{self.fs_type}.img')
+
+        if self.fs_type == 'fat12':
+            mkfs_opt = '-F 12'
+        elif self.fs_type == 'fat16':
+            mkfs_opt = '-F 16'
+        elif self.fs_type == 'fat32':
+            mkfs_opt = '-F 32'
+        else:
+            mkfs_opt = ''
+
+        if self.fs_type == 'exfat':
+            fs_lnxtype = 'exfat'
+        elif re.match('fat', self.fs_type) or self.fs_type == 'fs_generic':
+            fs_lnxtype = 'vfat'
+        else:
+            fs_lnxtype = self.fs_type
+
+        if src_dir:
+            if fs_lnxtype == 'ext4':
+                mkfs_opt = mkfs_opt + ' -d ' + src_dir
+            elif fs_lnxtype != 'vfat' and fs_lnxtype != 'exfat':
+                raise ValueError(
+                    f'src_dir not implemented for fs {fs_lnxtype}')
+
+        size = self.size_mb << 20
+        count = (size + SIZE_GRAN - 1) // SIZE_GRAN
+
+        # Some distributions do not add /sbin to the default PATH, where
+        # mkfs lives
+        if '/sbin' not in os.environ['PATH'].split(os.pathsep):
+            os.environ['PATH'] += os.pathsep + '/sbin'
+
+        try:
+            check_call(f'rm -f {fs_img}', shell=True)
+            check_call(f'truncate -s $(( {SIZE_GRAN} * {count} )) {fs_img}',
+                       shell=True)
+            check_call(f'mkfs.{fs_lnxtype} {mkfs_opt} {fs_img}', shell=True,
+                       stdout=DEVNULL if self.quiet else None)
+            if self.fs_type == 'ext4':
+                sb_content = check_output(f'tune2fs -l {fs_img}',
+                                          shell=True).decode()
+                if 'metadata_csum' in sb_content:
+                    check_call(f'tune2fs -O ^metadata_csum {fs_img}',
+                               shell=True)
+            elif fs_lnxtype == 'vfat' and src_dir:
+                flags = f"-smpQ{'' if self.quiet else 'v'}"
+                check_call(f'mcopy -i {fs_img} {flags} {src_dir}/* ::/',
+                           shell=True)
+            elif fs_lnxtype == 'exfat' and src_dir:
+                check_call(f'fattools cp {src_dir}/* {fs_img}', shell=True)
+            self.fs_img = fs_img
+        except CalledProcessError:
+            call(f'rm -f {fs_img}', shell=True)
+            raise
 
     def setup(self):
         """Set up the srcdir ready to receive files"""
@@ -190,81 +250,12 @@ class DiskHelper:
         self.cleanup()
 
 
-def mk_fs(config, fs_type, size, prefix, src_dir=None, fs_img=None, quiet=False):
-    """Create a file system volume
-
-    Args:
-        config (u_boot_config): U-Boot configuration
-        fs_type (str): File system type, e.g. 'ext4'
-        size (int): Size of file system in bytes
-        prefix (str): Prefix string of volume's file name
-        src_dir (str): Root directory to use, or None for none
-        fs_img (str or None): Leaf filename for image, or None to use a
-            default name. The image is always placed under
-            persistent_data_dir.
-        quiet (bool): Suppress non-error output
-
-    Raises:
-        CalledProcessError: if any error occurs when creating the filesystem
-    """
-    if not fs_img:
-        fs_img = f'{prefix}.{fs_type}.img'
-    fs_img = os.path.join(config.persistent_data_dir, fs_img)
-
-    if fs_type == 'fat12':
-        mkfs_opt = '-F 12'
-    elif fs_type == 'fat16':
-        mkfs_opt = '-F 16'
-    elif fs_type == 'fat32':
-        mkfs_opt = '-F 32'
-    else:
-        mkfs_opt = ''
-
-    if fs_type == 'exfat':
-        fs_lnxtype = 'exfat'
-    elif re.match('fat', fs_type) or fs_type == 'fs_generic':
-        fs_lnxtype = 'vfat'
-    else:
-        fs_lnxtype = fs_type
-
-    if src_dir:
-        if fs_lnxtype == 'ext4':
-            mkfs_opt = mkfs_opt + ' -d ' + src_dir
-        elif fs_lnxtype != 'vfat' and fs_lnxtype != 'exfat':
-            raise ValueError(f'src_dir not implemented for fs {fs_lnxtype}')
-
-    count = (size + SIZE_GRAN - 1) // SIZE_GRAN
-
-    # Some distributions do not add /sbin to the default PATH, where mkfs lives
-    if '/sbin' not in os.environ["PATH"].split(os.pathsep):
-        os.environ["PATH"] += os.pathsep + '/sbin'
-
-    try:
-        check_call(f'rm -f {fs_img}', shell=True)
-        check_call(f'truncate -s $(( {SIZE_GRAN} * {count} )) {fs_img}',
-                   shell=True)
-        check_call(f'mkfs.{fs_lnxtype} {mkfs_opt} {fs_img}', shell=True,
-                   stdout=DEVNULL if quiet else None)
-        if fs_type == 'ext4':
-            sb_content = check_output(f'tune2fs -l {fs_img}',
-                                      shell=True).decode()
-            if 'metadata_csum' in sb_content:
-                check_call(f'tune2fs -O ^metadata_csum {fs_img}', shell=True)
-        elif fs_lnxtype == 'vfat' and src_dir:
-            flags = f"-smpQ{'' if quiet else 'v'}"
-            check_call(f'mcopy -i {fs_img} {flags} {src_dir}/* ::/',
-                       shell=True)
-        elif fs_lnxtype == 'exfat' and src_dir:
-            check_call(f'fattools cp {src_dir}/* {fs_img}', shell=True)
-        return fs_img
-    except CalledProcessError:
-        call(f'rm -f {fs_img}', shell=True)
-        raise
-
 # Just for trying out
 if __name__ == "__main__":
     import collections
 
-    CNF= collections.namedtuple('config', 'persistent_data_dir')
+    CNF = collections.namedtuple('config', 'persistent_data_dir')
 
-    mk_fs(CNF('.'), 'ext4', 0x1000000, 'pref')
+    fsh = FsHelper(CNF('.'), 'ext4', 16, 'pref')
+    fsh.setup()
+    fsh.mk_fs()
