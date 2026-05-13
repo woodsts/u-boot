@@ -11,7 +11,7 @@
   # USB can be unreliable.
   retry: 2
   dependencies: []
-  tags: [ 'konsulko-sage-labgrid' ]
+  tags: [ 'konsulko-puma' ]
   before_script:
     # Clone uboot-test-hooks
     - git config --global --add safe.directory "${CI_PROJECT_DIR}"
