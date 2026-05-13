@@ -15,11 +15,9 @@
   before_script:
     # Clone uboot-test-hooks
     - git config --global --add safe.directory "${CI_PROJECT_DIR}"
-    - git clone --depth=1 https://source.denx.de/u-boot/u-boot-test-hooks /tmp/uboot-test-hooks
+    - git clone --depth=1 --branch add-puma-lab https://source.denx.de/u-boot/u-boot-test-hooks /tmp/uboot-test-hooks
     - ln -s sage /tmp/uboot-test-hooks/bin/`hostname`
     - ln -s sage /tmp/uboot-test-hooks/py/`hostname`
-    - export LG_ENV="/tmp/uboot-test-hooks/bin/sage/labgrid-sage-env.yaml";
-      export LG_COORDINATOR=172.17.0.1:20408
     # Prepare python environment
     - python3 -m venv /tmp/venv;
       . /tmp/venv/bin/activate;
@@ -87,6 +85,8 @@
 BeagleBone Black:
   <<: *sage_lab_dfn
   variables:
+    LG_COORDINATOR: sage.ohiolab:20408
+    LG_ENV: "/tmp/uboot-test-hooks/bin/sage/labgrid-sage-env.yaml";
     LABGRID_EXPORTER: "sage-exporter-bbb-1"
     LG_PLACE: "bbb-1"
     TEST_PY_BD: "am335x_evm"
@@ -96,6 +96,8 @@ BeagleBone Black (lwIP):
   <<: *sage_lab_dfn
   needs: [ "BeagleBone Black" ]
   variables:
+    LG_COORDINATOR: sage.ohiolab:20408
+    LG_ENV: "/tmp/uboot-test-hooks/bin/sage/labgrid-sage-env.yaml";
     LABGRID_EXPORTER: "sage-exporter-bbb-1"
     LG_PLACE: "bbb-1"
     TEST_PY_BD: "am335x_evm"
@@ -104,6 +106,8 @@ BeagleBone Black (lwIP):
 Pine64+:
   <<: *sage_lab_dfn
   variables:
+    LG_COORDINATOR: sage.ohiolab:20408
+    LG_ENV: "/tmp/uboot-test-hooks/bin/sage/labgrid-sage-env.yaml";
     LABGRID_EXPORTER: "sage-exporter-pine64-1"
     LG_PLACE: "pine64-1"
     TEST_PY_BD: "pine64_plus"
@@ -113,6 +117,8 @@ Pine64+ (lwIP):
   <<: *sage_lab_dfn
   needs: [ "Pine64+" ]
   variables:
+    LG_COORDINATOR: sage.ohiolab:20408
+    LG_ENV: "/tmp/uboot-test-hooks/bin/sage/labgrid-sage-env.yaml";
     LABGRID_EXPORTER: "sage-exporter-pine64-1"
     LG_PLACE: "pine64-1"
     TEST_PY_BD: "pine64_plus"
@@ -123,6 +129,8 @@ Pine64+ (lwIP):
 SolidRun Hummingboard 2:
   <<: *sage_lab_dfn
   variables:
+    LG_COORDINATOR: sage.ohiolab:20408
+    LG_ENV: "/tmp/uboot-test-hooks/bin/sage/labgrid-sage-env.yaml";
     LABGRID_EXPORTER: "sage-exporter-hb-1"
     LG_PLACE: "hb-1"
     TEST_PY_BD: "mx6cuboxi"
@@ -132,6 +140,8 @@ SolidRun Hummingboard 2 (lwIP):
   <<: *sage_lab_dfn
   needs: [ "SolidRun Hummingboard 2" ]
   variables:
+    LG_COORDINATOR: sage.ohiolab:20408
+    LG_ENV: "/tmp/uboot-test-hooks/bin/sage/labgrid-sage-env.yaml";
     LABGRID_EXPORTER: "sage-exporter-hb-1"
     LG_PLACE: "hb-1"
     TEST_PY_BD: "mx6cuboxi"
@@ -140,6 +150,8 @@ SolidRun Hummingboard 2 (lwIP):
 Raspberry Pi 4:
   <<: *sage_lab_dfn
   variables:
+    LG_COORDINATOR: sage.ohiolab:20408
+    LG_ENV: "/tmp/uboot-test-hooks/bin/sage/labgrid-sage-env.yaml";
     LABGRID_EXPORTER: "sage-exporter-rpi4-1"
     LG_PLACE: "rpi4-1"
     TEST_PY_BD: "rpi_4"
@@ -149,6 +161,8 @@ Raspberry Pi 4 (rpi_arm64):
   <<: *sage_lab_dfn
   needs: [ "Raspberry Pi 4" ]
   variables:
+    LG_COORDINATOR: sage.ohiolab:20408
+    LG_ENV: "/tmp/uboot-test-hooks/bin/sage/labgrid-sage-env.yaml";
     LABGRID_EXPORTER: "sage-exporter-rpi4-1"
     LG_PLACE: "rpi4-1"
     TEST_PY_BD: "rpi_arm64"
@@ -158,6 +172,8 @@ Raspberry Pi 4 (rpi_arm64, lwIP):
   <<: *sage_lab_dfn
   needs: [ "Raspberry Pi 4 (rpi_arm64)" ]
   variables:
+    LG_COORDINATOR: sage.ohiolab:20408
+    LG_ENV: "/tmp/uboot-test-hooks/bin/sage/labgrid-sage-env.yaml";
     LABGRID_EXPORTER: "sage-exporter-rpi4-1"
     LG_PLACE: "rpi4-1"
     TEST_PY_BD: "rpi_arm64"
@@ -167,6 +183,8 @@ Raspberry Pi 4 (rpi_4_32b):
   <<: *sage_lab_dfn
   needs: [ "Raspberry Pi 4 (rpi_arm64, lwIP)" ]
   variables:
+    LG_COORDINATOR: sage.ohiolab:20408
+    LG_ENV: "/tmp/uboot-test-hooks/bin/sage/labgrid-sage-env.yaml";
     LABGRID_EXPORTER: "sage-exporter-rpi4-1"
     LG_PLACE: "rpi4-1"
     TEST_PY_BD: "rpi_4_32b"
@@ -176,6 +194,8 @@ Raspberry Pi 4 (rpi_4_32b, lwIP):
   <<: *sage_lab_dfn
   needs: [ "Raspberry Pi 4 (rpi_4_32b)" ]
   variables:
+    LG_COORDINATOR: sage.ohiolab:20408
+    LG_ENV: "/tmp/uboot-test-hooks/bin/sage/labgrid-sage-env.yaml";
     LABGRID_EXPORTER: "sage-exporter-rpi4-1"
     LG_PLACE: "rpi4-1"
     TEST_PY_BD: "rpi_4_32b"
@@ -184,6 +204,8 @@ Raspberry Pi 4 (rpi_4_32b, lwIP):
 Raspberry Pi 3:
   <<: *sage_lab_dfn
   variables:
+    LG_COORDINATOR: sage.ohiolab:20408
+    LG_ENV: "/tmp/uboot-test-hooks/bin/sage/labgrid-sage-env.yaml";
     LABGRID_EXPORTER: "sage-exporter-rpi3-1"
     LG_PLACE: "rpi3-1"
     TEST_PY_BD: "rpi_3"
@@ -193,6 +215,8 @@ Raspberry Pi 3 (rpi_arm64):
   <<: *sage_lab_dfn
   needs: [ "Raspberry Pi 3" ]
   variables:
+    LG_COORDINATOR: sage.ohiolab:20408
+    LG_ENV: "/tmp/uboot-test-hooks/bin/sage/labgrid-sage-env.yaml";
     LABGRID_EXPORTER: "sage-exporter-rpi3-1"
     LG_PLACE: "rpi3-1"
     TEST_PY_BD: "rpi_arm64"
@@ -202,6 +226,8 @@ Raspberry Pi 3 (rpi_arm64, lwIP):
   <<: *sage_lab_dfn
   needs: [ "Raspberry Pi 3 (rpi_arm64)" ]
   variables:
+    LG_COORDINATOR: sage.ohiolab:20408
+    LG_ENV: "/tmp/uboot-test-hooks/bin/sage/labgrid-sage-env.yaml";
     LABGRID_EXPORTER: "sage-exporter-rpi3-1"
     LG_PLACE: "rpi3-1"
     TEST_PY_BD: "rpi_arm64"
@@ -211,6 +237,8 @@ Raspberry Pi 3 (rpi_3_32b):
   <<: *sage_lab_dfn
   needs: [ "Raspberry Pi 3 (rpi_arm64, lwIP)" ]
   variables:
+    LG_COORDINATOR: sage.ohiolab:20408
+    LG_ENV: "/tmp/uboot-test-hooks/bin/sage/labgrid-sage-env.yaml";
     LABGRID_EXPORTER: "sage-exporter-rpi3-1"
     LG_PLACE: "rpi3-1"
     TEST_PY_BD: "rpi_3_32b"
@@ -220,6 +248,8 @@ Raspberry Pi 3 (rpi_3_32b, lwIP):
   <<: *sage_lab_dfn
   needs: [ "Raspberry Pi 3 (rpi_3_32b)" ]
   variables:
+    LG_COORDINATOR: sage.ohiolab:20408
+    LG_ENV: "/tmp/uboot-test-hooks/bin/sage/labgrid-sage-env.yaml";
     LABGRID_EXPORTER: "sage-exporter-rpi3-1"
     LG_PLACE: "rpi3-1"
     TEST_PY_BD: "rpi_3_32b"
