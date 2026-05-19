@@ -13,6 +13,7 @@
 #include <dm/ofnode_decl.h>
 #include <linux/types.h>
 
+#if CONFIG_IS_ENABLED(EVENT)
 /**
  * enum event_t - Types of events supported by U-Boot
  *
@@ -386,7 +387,6 @@ const char *event_type_name(enum event_t type);
  */
 int event_notify(enum event_t type, void *data, int size);
 
-#if CONFIG_IS_ENABLED(EVENT)
 /**
  * event_notify_null() - notify spies about an event
  *
@@ -396,12 +396,6 @@ int event_notify(enum event_t type, void *data, int size);
  * @return 0 if OK, -ve on error
  */
 int event_notify_null(enum event_t type);
-#else
-static inline int event_notify_null(enum event_t type)
-{
-	return 0;
-}
-#endif
 
 #if CONFIG_IS_ENABLED(EVENT_DYNAMIC)
 /**
@@ -430,4 +424,10 @@ static inline int event_init(void)
 }
 #endif
 
+#else /* !CONFIG_IS_ENABLED(EVENT) */
+static inline int event_notify_null(enum event_t type)
+{
+	return 0;
+}
+#endif /* CONFIG_IS_ENABLED(EVENT) */
 #endif
