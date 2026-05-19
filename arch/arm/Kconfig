@@ -1138,6 +1138,7 @@ config ARCH_SNAPDRAGON
 	select DM_GPIO
 	select DM_SERIAL
 	select DM_RESET
+	select EVENT if OF_LIVE
 	select POWER_DOMAIN
 	select GPIO_EXTRA_HEADER
 	select MSM_SMEM
