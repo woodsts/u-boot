@@ -171,6 +171,13 @@ config DM_BOOTCOUNT_ZYNQMP
 	  Enable support for the bootcount API by utilising the Persistent
 	  Global General Storage Register 2 of the PMU.
 
+config DM_BOOTCOUNT_GPT
+	bool "Support GPT PTE-backed boot counter"
+	depends on EFI_PARTITION
+	help
+	  Add support for maintaining boot count within bits 48:63 of GUID
+	  partition table entry attributes (similarly to ChromiumOS).
+
 endmenu
 
 endif
