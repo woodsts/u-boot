@@ -11,6 +11,9 @@
  */
 
 #include <blk.h>
+#ifdef CONFIG_CMD_GPT_FLAGS
+#include <cros_flags.h>
+#endif
 #include <env.h>
 #include <log.h>
 #include <malloc.h>
@@ -1116,6 +1119,64 @@ out:
 }
 #endif
 
+#ifdef CONFIG_CMD_GPT_FLAGS
+static int do_get_gpt_flags(struct blk_desc *desc, int partnum)
+{
+	u16 guid_flags;
+	int rc;
+
+	rc = read_disk_flags(desc, partnum, &guid_flags);
+	if (rc < 0) {
+		printf("ERROR: partnum %d: failed to read GPT flags: %d\n",
+		       partnum, rc);
+		return CMD_RET_FAILURE;
+	}
+
+	printf("P=%d S=%d T=%d\n",
+	       cros_flags_get_priority(guid_flags),
+	       cros_flags_get_successful(guid_flags),
+	       cros_flags_get_tries(guid_flags));
+
+	return 0;
+}
+
+static int do_set_gpt_flags(struct blk_desc *desc, int partnum,
+                            const char *key, int value)
+{
+	u16 guid_flags;
+	int rc;
+
+	rc = read_disk_flags(desc, partnum, &guid_flags);
+	if (rc < 0) {
+		printf("ERROR: partnum %d: failed to read GPT flags: %d\n",
+		       partnum, rc);
+		return CMD_RET_FAILURE;
+	}
+
+	if (!strcmp(key, "set-flags")) {
+		guid_flags = (u16)(value & 0xffff);
+	} else if (!strcmp(key, "set-priority")) {
+		guid_flags = cros_flags_set_priority(guid_flags, value);
+	} else if (!strcmp(key, "set-successful")) {
+		guid_flags = cros_flags_set_successful(guid_flags, value);
+	} else if (!strcmp(key, "set-tries")) {
+		guid_flags = cros_flags_set_tries(guid_flags, value);
+	} else {
+		printf("ERROR: unsupported command '%s'\n", key);
+		return CMD_RET_FAILURE;
+	}
+
+	rc = write_disk_flags(desc, partnum, guid_flags);
+	if (rc < 0) {
+		pr_err("ERROR: partnum %d: failed to write GPT flags: %d\n",
+               partnum, rc);
+		return CMD_RET_FAILURE;
+    }
+
+	return 0;
+}
+#endif /* CONFIG_CMD_GPT_FLAGS */
+
 /**
  * do_gpt(): Perform GPT operations
  *
@@ -1177,6 +1238,23 @@ static int do_gpt(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])
 	} else if ((strcmp(argv[1], "set-bootable") == 0)) {
 		ret = gpt_set_bootable(blk_dev_desc, argv[4]);
 #endif
+#ifdef CONFIG_CMD_GPT_FLAGS
+	} else if (!strcmp(argv[1], "get-flags")) {
+		if (argc < 5)
+			return CMD_RET_FAILURE;
+		ret = do_get_gpt_flags(blk_dev_desc,
+		                       simple_strtol(argv[4], NULL, 0));
+	} else if (!strcmp(argv[1], "set-flags") ||
+		   !strcmp(argv[1], "set-priority") ||
+		   !strcmp(argv[1], "set-successful") ||
+		   !strcmp(argv[1], "set-tries")) {
+		if (argc < 6)
+			return CMD_RET_FAILURE;
+		ret = do_set_gpt_flags(blk_dev_desc, /* argv[2,3] */
+		                       simple_strtol(argv[4], NULL, 0),
+		                       argv[1],
+		                       simple_strtol(argv[5], NULL, 0));
+#endif
 	} else {
 		return CMD_RET_USAGE;
 	}
@@ -1236,5 +1314,24 @@ U_BOOT_CMD(gpt, CONFIG_SYS_MAXARGS, 1, do_gpt,
 	" gpt rename mmc 0 3 foo\n"
 	" gpt set-bootable mmc 0 boot_a,boot_b\n"
 	" gpt transpose mmc 0 1 2\n"
+#endif
+#ifdef CONFIG_CMD_GPT_FLAGS
+	"gpt partition boot flag manipulation:\n"
+	" gpt get-flags <interface> <dev> <partid>\n"
+	"    - read top 16-bit of partition attributes (bits 48:63)\n"
+	" gpt set-flags <interface> <dev> <partid> <flags-in-hex>\n"
+	"    - write top 16-bit of partition attributes (bits 48:63)\n"
+	" gpt set-successful <interface> <dev> <partid> {0,1}\n"
+	"    - set 'boot successful' bit\n"
+	" gpt set-priority <interface> <dev> <partid> [0..15]\n"
+	"    - set priority; 0 - non-bootable\n"
+	" gpt set-tries <interface> <dev> <partid> [0..15]\n"
+	"    - set tries (boot counter)\n"
+	" Example usage:\n"
+	" gpt get-flags nvme 0 1\n"
+	" gpt set-flags nvme 0 1 0xff\n"
+	" gpt set-priority nvme 0 1 0\n"
+	" gpt set-successful nvme 0 1 1\n"
+	" gpt set-tries nvme 0 1 15\n"
 #endif
 );
