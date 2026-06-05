@@ -13,7 +13,8 @@ if BOOTCOUNT_LIMIT
 choice
 	prompt "Boot count device"
 	default BOOTCOUNT_AM33XX if AM33XX || SOC_DA8XX
-	default BOOTCOUNT_GENERIC
+	default BOOTCOUNT_GENERIC if !VENDOR_COREBOOT
+	default DM_BOOTCOUNT if VENDOR_COREBOOT
 
 config BOOTCOUNT_GENERIC
 	bool "Generic default boot counter"
