@@ -980,6 +980,135 @@ int write_mbr_and_gpt_partitions(struct blk_desc *desc, void *buf)
 
 	return 0;
 }
+
+int read_disk_flags(struct blk_desc *desc, int partnum, u16 *flags)
+{
+	ALLOC_CACHE_ALIGN_BUFFER_PAD(gpt_header, gpt_head, 1, desc->blksz);
+	gpt_entry *gpt_pte = NULL;
+	u64 attrs;
+
+	/* "part" argument must be at least 1 */
+	if (partnum < 1)
+		return -EINVAL;
+
+	gpt_repair_headers(desc);
+
+	/* This function validates AND fills in the GPT header and PTE */
+	if (find_valid_gpt(desc, gpt_head, &gpt_pte) != 1)
+		return -EINVAL;
+
+	if (partnum > le32_to_cpu(gpt_head->num_partition_entries) ||
+	    !is_pte_valid(&gpt_pte[partnum - 1])) {
+		free(gpt_pte);
+		return -EPERM;
+	}
+
+	attrs = le64_to_cpu(gpt_pte[partnum - 1].attributes.raw);
+	*flags = (attrs >> 48) & 0xFFFF;
+
+	free(gpt_pte);
+
+	return 0;
+}
+
+static int write_gpt_pte(struct blk_desc *desc, gpt_header *gpt_h, gpt_entry *gpt_e)
+{
+	const int cnt = BLOCK_CNT((le32_to_cpu(gpt_h->num_partition_entries)
+					   * sizeof(gpt_entry)), desc);
+	u32 crc32;
+	int rc;
+
+	crc32 = efi_crc32((const unsigned char *)gpt_e,
+			      le32_to_cpu(gpt_h->num_partition_entries) *
+			      le32_to_cpu(gpt_h->sizeof_partition_entry));
+	gpt_h->partition_entry_array_crc32 = cpu_to_le32(crc32);
+
+	gpt_h->header_crc32 = 0;
+	crc32 = efi_crc32((const unsigned char *)gpt_h,
+			      le32_to_cpu(gpt_h->header_size));
+	gpt_h->header_crc32 = cpu_to_le32(crc32);
+
+	rc = blk_dwrite(desc, le64_to_cpu(gpt_h->my_lba), 1, gpt_h);
+	if (rc != 1) {
+		pr_err("device %d: failed to update GPT header: %d\n",
+		       desc->devnum, rc);
+		return rc ?: -EIO;
+	}
+
+	rc = blk_dwrite(desc, le64_to_cpu(gpt_h->partition_entry_lba), cnt, gpt_e);
+	if (rc != cnt) {
+		pr_err("device %d: failed to update GPT PTE: %d\n",
+		       desc->devnum, rc);
+		return rc ?: -EIO;
+	}
+
+	return 0;
+}
+
+int write_disk_flags(struct blk_desc *desc, int partnum, u16 flags)
+{
+	ALLOC_CACHE_ALIGN_BUFFER_PAD(gpt_header, gpt_h1, 1, desc->blksz);
+	ALLOC_CACHE_ALIGN_BUFFER_PAD(gpt_header, gpt_h2, 1, desc->blksz);
+	gpt_entry *gpt_e1 = NULL, *gpt_e2 = NULL;
+	u64 attrs;
+	int rc;
+
+	/* "part" argument must be at least 1 */
+	if (partnum < 1)
+		return -EINVAL;
+
+	gpt_repair_headers(desc);
+
+	rc = is_gpt_valid(desc, GPT_PRIMARY_PARTITION_TABLE_LBA, gpt_h1, &gpt_e1);
+	if (!rc) {
+		rc = -EPERM;
+		goto out;
+	}
+	if (partnum > le32_to_cpu(gpt_h1->num_partition_entries) ||
+	    !is_pte_valid(&gpt_e1[partnum - 1])) {
+		rc = -EINVAL;
+		goto out;
+	}
+
+	attrs = le64_to_cpu(gpt_e1[partnum - 1].attributes.raw);
+	attrs &= ~(0xFFFFULL << 48);
+	attrs |= ((u64)flags << 48);
+	gpt_e1[partnum - 1].attributes.raw = cpu_to_le64(attrs);
+
+	rc = write_gpt_pte(desc, gpt_h1, gpt_e1);
+	if (rc < 0) {
+		pr_err("partnum %d: failed to update primary GPT PTE\n", partnum);
+		goto out;
+	}
+
+	rc = is_gpt_valid(desc, desc->lba - 1, gpt_h2, &gpt_e2);
+	if (!rc) {
+		rc = -EPERM;
+		goto out;
+	}
+	if (partnum > le32_to_cpu(gpt_h2->num_partition_entries) ||
+	    !is_pte_valid(&gpt_e2[partnum - 1])) {
+		rc = -EINVAL;
+		goto out;
+	}
+
+	attrs = le64_to_cpu(gpt_e2[partnum - 1].attributes.raw);
+	attrs &= ~(0xFFFFULL << 48);
+	attrs |= ((u64)flags << 48);
+	gpt_e2[partnum - 1].attributes.raw = cpu_to_le64(attrs);
+
+	rc = write_gpt_pte(desc, gpt_h2, gpt_e2);
+	if (rc < 0) {
+		pr_err("partnum %d: failed to update secondary GPT PTE\n", partnum);
+		goto out;
+	}
+
+out:
+	free(gpt_e1);
+	free(gpt_e2);
+
+	return rc;
+}
 #endif
 
 /*
