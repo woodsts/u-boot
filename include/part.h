@@ -678,6 +678,30 @@ int get_disk_guid(struct blk_desc *desc, char *guid);
  */
 int part_get_gpt_pte(struct blk_desc *desc, int part, gpt_entry *gpt_e);
 
+/**
+ * write_disk_flags() - Write the top 16 bits of GPT partition table
+ *                      entry attributes.
+ *
+ * @desc:	block device descriptor
+ * @partnum:	GPT partition ID
+ * @flags:	attributes value
+ *
+ * Return:	zero on success, otherwise error
+ */
+int write_disk_flags(struct blk_desc *desc, int partnum, u16 flags);
+
+/**
+ * read_disk_flags() - Read the top 16 bits of GPT partition table
+ *                     entry attributes.
+ *
+ * @desc:	block device descriptor
+ * @partnum:	GPT partition ID
+ * @flags:	pointer to attributes value (cannot be NULL)
+ *
+ * Return:	zero on success, otherwise error
+ */
+int read_disk_flags(struct blk_desc *desc, int partnum, u16 *flags);
+
 #endif
 
 #if CONFIG_IS_ENABLED(DOS_PARTITION)

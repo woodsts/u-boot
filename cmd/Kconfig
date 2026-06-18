@@ -1319,6 +1319,14 @@ config CMD_GPT
 	  Enable the 'gpt' command to ready and write GPT style partition
 	  tables.
 
+config CMD_GPT_FLAGS
+	bool "GPT partition flags commands"
+	depends on CMD_GPT
+	select PARTITION_TYPE_GUID
+	help
+	  Enables the GUID partition table attributes manipulation (bits 48:63)
+	  in a ChromiumOS-style manner.
+
 config CMD_GPT_RENAME
 	bool "GPT partition renaming commands"
 	depends on CMD_GPT
